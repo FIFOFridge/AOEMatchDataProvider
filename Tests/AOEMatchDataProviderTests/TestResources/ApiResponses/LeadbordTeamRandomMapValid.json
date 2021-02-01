@@ -1,0 +1,29 @@
+{
+  "total": 65173,
+  "leaderboard_id": 4,
+  "start": 1,
+  "count": 1,
+  "leaderboard": [
+    {
+      "profile_id": 459658,
+      "rank": 2503,
+      "rating": 2432,
+      "steam_id": "76561199003184910",
+      "icon": null,
+      "name": "DS_HOANG |AOEBuilds.com",
+      "clan": "Biry",
+      "country": "VN",
+      "previous_rating": 2423,
+      "highest_rating": 2432,
+      "streak": 5,
+      "lowest_streak": -4,
+      "highest_streak": 19,
+      "games": 228,
+      "wins": 181,
+      "losses": 47,
+      "drops": 11,
+      "last_match": 1607745262,
+      "last_match_time": 1607745262
+    }
+  ]
+}

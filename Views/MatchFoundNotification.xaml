@@ -1,0 +1,27 @@
+﻿<UserControl x:Class="AOEMatchDataProvider.Views.MatchFoundNotification"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AOEMatchDataProvider.Views"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:common="clr-namespace:AOEMatchDataProvider.Controls.Common"
+             mc:Ignorable="d" 
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="250" d:DesignWidth="500">
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
+            <Label FontSize="16" Foreground="{DynamicResource ForegroundBrush}">Press </Label>
+            <common:KeyHint FontSize="16" Foreground="{DynamicResource ForegroundColorString}" Background="{DynamicResource BackgroundColorString}" Text="HOME"/>
+            <Label FontSize="16" Foreground="{DynamicResource ForegroundBrush}"> to show match details</Label>
+        </WrapPanel>
+
+        <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0, 75, 0, 0">
+            <Label FontSize="16" Foreground="{DynamicResource ForegroundBrush}">Press</Label>
+            <common:KeyHint FontSize="16" Foreground="{DynamicResource ForegroundColorString}" Background="{DynamicResource BackgroundColorString}" Text="END"/>
+            <Label FontSize="16" Foreground="{DynamicResource ForegroundBrush}">to skip details and hide notification</Label>
+        </WrapPanel>
+    </Grid>
+    
+
+</UserControl>

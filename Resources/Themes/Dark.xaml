@@ -1,0 +1,25 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:AOEMatchDataProvider.Resources.Themes"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+    <system:String x:Key="ForegroundColorString">#FFc7bfe3</system:String>
+    <system:String x:Key="BackgroundColorString">#FF1D1A27</system:String>
+    
+    <Color x:Key="ForegroundColor">#FFc7bfe3</Color>
+    
+    <Color x:Key="BackgroundColor">#FF1D1A27</Color>
+    <Color x:Key="BackgroundAccentColor">#312a47</Color>
+    
+    <Color x:Key="FrameGradientColorEnd">#3FFFFFFF</Color>
+    
+    <LinearGradientBrush x:Key="FrameGradientBrush" EndPoint="0.5,1" StartPoint="0.5,0">
+        <GradientStop Color="#00000000" Offset="0.9"/>
+        <GradientStop Color="{DynamicResource FrameGradientColorEnd}"/>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="ForegroundBrush" Color="{DynamicResource ForegroundColor}"/>
+
+    <SolidColorBrush x:Key="BackgroundBrush" Color="{DynamicResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="BackgroundAccentBrush" Color="{DynamicResource BackgroundAccentColor}"/>
+</ResourceDictionary>

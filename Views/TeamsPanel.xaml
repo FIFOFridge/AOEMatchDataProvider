@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="AOEMatchDataProvider.Views.TeamsPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:prism="http://prismlibrary.com/"
+             xmlns:local="clr-namespace:AOEMatchDataProvider.Views"
+             xmlns:matchdata="clr-namespace:AOEMatchDataProvider.Controls.MatchData"
+             xmlns:models="clr-namespace:AOEMatchDataProvider.Models"
+             xmlns:converters="clr-namespace:AOEMatchDataProvider.Converters"
+             mc:Ignorable="d" 
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+
+        <!-- player panel embeded inside stack panel -->
+        <!-- FIXME: -->
+        <!--<DataTemplate x:Key="UserDataTemplate">
+            <StackPanel Orientation="Horizontal">
+                -->
+        <!--<matchdata:PlayerPanel
+                        PlayerName="{Binding Name}"
+                        PlayerColor="{Binding Color}"
+                        
+                        OneVsOneElo="{
+                            Binding Rating, 
+                            Converter={StaticResource UserRankToEloConverter}, 
+                            ConverterParameter={x:Static models:UserRankMode.RandomMap}}"
+                        
+                        TeamGameElo="{
+                            Binding Rating, 
+                            Converter={StaticResource UserRankToEloConverter}, 
+                            ConverterParameter={x:Static models:UserRankMode.TeamRandomMap}}"
+                    
+                        Civilization="{Binding Civilization}"
+                        />-->
+        <!--
+                <matchdata:PlayerPanel
+                    PlayerName="{Binding Path=SelectedItem}"
+                    Civilization="d"
+                    />
+                -->
+        <!--OneVsOneElo="{Binding Rating, Converter=UserRankToEloConverter, ConverterParameter=UserRankMode.RandomMap}"-->
+        <!--
+                <Button Content="{Binding Name}"/>
+            </StackPanel>
+        </DataTemplate>-->
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="13*"/>
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="295*"/>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="100*"/>
+            <ColumnDefinition Width="295*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Data Panels section -->
+        <!-- Data panels background -->
+        <Rectangle Grid.ColumnSpan="2" Fill="{DynamicResource BackgroundAccentBrush}" />
+        <Rectangle Grid.Column="3" Grid.RowSpan="1" Grid.ColumnSpan="2" Fill="{DynamicResource BackgroundAccentBrush}" />
+        <Rectangle Name="DataPanelSectionFill" Fill="{DynamicResource BackgroundBrush}"  Margin="0" Grid.ColumnSpan="2" />
+        <Rectangle Name="DataPanelSectionFill2" Fill="{DynamicResource BackgroundBrush}" Margin="0" Grid.ColumnSpan="2" Grid.Column="3" />
+        <!-- Data panels -->
+        <WrapPanel 
+            x:Name="team1" 
+            Orientation="Vertical" 
+            Grid.Column="0" 
+            Grid.RowSpan="1" 
+            Grid.ColumnSpan="2" 
+            Margin="{Binding ElementName=DataPanelSectionFill, Path=Margin}"/>
+        <WrapPanel 
+            x:Name="team2" 
+            Orientation="Vertical" 
+            Grid.Column="3" 
+            Grid.RowSpan="1" 
+            Grid.ColumnSpan="2" 
+            Margin="{Binding ElementName=DataPanelSectionFill2, Path=Margin}"/>
+
+        <!--<Frame Background="#FF323131" Visibility="Visible" Grid.ColumnSpan="3" Margin="95.117,0,102.291,0" Grid.RowSpan="2" Grid.Column="1"/>-->
+
+        <!-- Match details section -->
+        <!-- Border -->
+        <Rectangle Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Fill="{DynamicResource BackgroundAccentBrush}" />
+        <!-- Fill -->
+        <Rectangle x:Name="MatchDetailsContentRectangle" Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Fill="{DynamicResource BackgroundBrush}" Margin="5, 1, 5, 5" />
+
+        <StackPanel  Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Margin="{Binding ElementName=MatchDetailsContentRectangle, Path=Margin}">
+            <!--<TextBlock Text="{Binding MatchTypeFormatted, FallbackValue='Invalid Binding'}" FontFamily="{StaticResource Texturina}" FontSize="12" Foreground="WhiteSmoke" HorizontalAlignment="Left" Margin="5,3,0,0" />-->
+            <TextBlock Text="{Binding ServerName, FallbackValue=Invalid Binding}" FontFamily="{StaticResource Texturina}" FontSize="12" Foreground="WhiteSmoke" Margin="5,15,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <!--<TextBlock Text="{Binding MatchTypeFormatted, FallbackValue='Invalid Binding'}" FontFamily="{StaticResource Texturina}" FontSize="12" Foreground="WhiteSmoke" HorizontalAlignment="Left" Margin="5,3,0,0" />-->
+        </StackPanel>
+    </Grid>
+</UserControl>

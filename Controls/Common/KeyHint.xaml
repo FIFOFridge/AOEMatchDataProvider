@@ -1,0 +1,77 @@
+﻿<UserControl x:Class="AOEMatchDataProvider.Controls.Common.KeyHint"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AOEMatchDataProvider.Controls.Common"
+             mc:Ignorable="d" 
+             Width="auto"
+             Height="auto"
+             >
+    <Viewbox Width="64" Height="32" Stretch="Uniform">
+        <Canvas Name="CanvasRoot" 
+                Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Viewbox}}, Path=Width}" 
+                Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Viewbox}}, Path=Height}" 
+                >
+            <Canvas.LayoutTransform>
+                <ScaleTransform ScaleY="1" ScaleX="1" />
+            </Canvas.LayoutTransform>
+            
+            <!-- root/background -->
+            <Path StrokeThickness="2.0" Stroke="#ff000000" StrokeMiterLimit="1.0" Fill="#ffd2d2d2" Data="F1 M 52.042,31.750 L 11.458,31.750 C 5.130,31.750 0.000,26.620 0.000,20.292 L 0.000,11.458 C 0.000,5.130 5.130,0.000 11.458,0.000 L 52.042,0.000 C 58.370,0.000 63.500,5.130 63.500,11.458 L 63.500,20.292 C 63.500,26.620 58.370,31.750 52.042,31.750 Z"/>
+
+            <Grid
+                    Width="{Binding ElementName=CanvasRoot, Path=Width}" 
+                    Height="{Binding ElementName=CanvasRoot, Path=Height}" 
+                    >
+                <!-- root/text/HOME -->
+                <TextBlock 
+                        Foreground="{Binding Foreground, FallbackValue='#ff000000'}" 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center" 
+                        FontSize="{Binding FontSize, FallbackValue='14'}"
+                        FontFamily="Texturina Thin"
+                        Text="{Binding Text, FallbackValue='Invalid Binding'}"
+                        />
+            </Grid>
+        </Canvas>
+    </Viewbox>
+    <!--<Viewbox 
+            Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=Width}" 
+            Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=Height}"
+            Margin="0"
+            >
+            <Canvas
+                Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=Width}" 
+                Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=Height}"
+                Margin="0"
+                >
+                -->
+    <!-- root/background -->
+    <!--
+                <Path 
+                    StrokeThickness="3.0" 
+                    StrokeMiterLimit="1.0" 
+                    Stroke="{Binding Foreground, FallbackValue='#ff000000'}" 
+                    Fill="{Binding Background, FallbackValue='#ffd2d2d2'}" 
+                    Data="F1 M 227.542,119.500 L 11.458,119.500 C 5.130,119.500 0.000,114.370 0.000,108.042 L 0.000,11.458 C 0.000,5.130 5.130,0.000 11.458,0.000 L 227.542,0.000 C 233.870,0.000 239.000,5.130 239.000,11.458 L 239.000,108.042 C 239.000,114.370 233.870,119.500 227.542,119.500 Z"/>
+
+                <Grid
+                    Width="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=Width}" 
+                    Height="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=Height}" 
+                    >
+                    -->
+    <!-- root/text/HOME -->
+    <!--
+                <TextBlock 
+                    Foreground="{Binding Foreground, FallbackValue='#ff000000'}" 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" 
+                    FontSize="44.00" 
+                    FontFamily="Texturina Thin" 
+                    Text="{Binding Text, FallbackValue='Invalid Binding'}"
+                    Margin="55,26,70,55"/>
+            </Grid>
+            </Canvas>
+        </Viewbox>-->
+</UserControl>

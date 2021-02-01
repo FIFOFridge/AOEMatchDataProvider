@@ -1,0 +1,6 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:AOEMatchDataProvider.Resources.Fonts">
+    <FontFamily x:Key="Texturina" >/Resources/Fonts/Texturina.ttf #Texturina</FontFamily>
+    <FontFamily x:Key="TexturinaThin" >/Resources/Fonts/Texturina.ttf #Texturina Thin</FontFamily>
+</ResourceDictionary>

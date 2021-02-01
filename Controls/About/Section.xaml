@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="AOEMatchDataProvider.Controls.About.Section"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AOEMatchDataProvider.Controls.About"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="600">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="45*"/>
+        </Grid.RowDefinitions>
+        
+        <Label Content="{Binding Title, FallbackValue='Invalid Binding'}" 
+               Foreground="{DynamicResource ForegroundBrush}"
+               Background="{DynamicResource BackgroundAccentBrush}"
+               FontSize="12pt" Grid.Row="0" Grid.ColumnSpan="2"/>
+        <!-- todo: add expand/hide checkbox -->
+        <!--<CheckBox 
+            Grid.Row="0" 
+            Grid.Column="1"
+            Background="{DynamicResource BackgroundAccentBrush}"
+            Style="{StaticResource }"
+            />-->
+
+        <ContentControl Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="2"
+            >
+            <StackPanel>
+                <Label 
+                    Content="{Binding URL, FallbackValue='Invalid Binding'}" 
+                    FontSize="10pt"
+                    Height="30" 
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    Background="{DynamicResource BackgroundBrush}"/>
+                <Label 
+                    Content="{Binding LicenseType, FallbackValue='Invalid Binding'}" 
+                    FontSize="10pt"
+                    Height="30" 
+                    Foreground="{DynamicResource ForegroundBrush}"
+                    Background="{DynamicResource BackgroundBrush}"/>
+                <TextBox Text="{Binding LicenseContent,FallbackValue='Invalid Binding'}" Foreground="{DynamicResource ForegroundBrush}" IsReadOnly="True" Height="410" Background="{DynamicResource BackgroundBrush}"/>
+            </StackPanel>
+        </ContentControl>
+    </Grid>
+</UserControl>

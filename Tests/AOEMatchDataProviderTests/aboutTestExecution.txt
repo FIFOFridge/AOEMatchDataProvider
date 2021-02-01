@@ -1,0 +1,16 @@
+// ----------------------------------------------------------------------------------------------------------------------
+//I do not take responibility for any unwanted changes made by any scripts you are launching anything at your own risk
+// ----------------------------------------------------------------------------------------------------------------------
+
+//commend below allows to run anything in current session (terminal), so be aware of other 
+//script(s) that you are going to execute, my recomendation is to close terminal after extending
+//execution policy and use it ONLY for this running "runTests.ps1" script at same directory
+
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process
+
+//set $vsproduct to your version of Visual Studio ex. "2015", "2017"
+//set $vsedition to your edition of Visual Stuido ex. "Community", "Enterprise"
+//set $msbuildversion to your version of MSBuild tool ex. "14.0", "15.0"
+
+//will launch tests and display their category with and include results
+.\runTest.ps1
