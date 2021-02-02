@@ -88,6 +88,7 @@ namespace AOEMatchDataProvider.Controls.Common
         public KeyHint()
         {
             InitializeComponent();
+            DataContext = this;
         }
     }
 }

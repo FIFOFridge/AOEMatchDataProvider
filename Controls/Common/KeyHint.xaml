@@ -18,13 +18,13 @@
             </Canvas.LayoutTransform>
             
             <!-- root/background -->
-            <Path StrokeThickness="2.0" Stroke="#ff000000" StrokeMiterLimit="1.0" Fill="#ffd2d2d2" Data="F1 M 52.042,31.750 L 11.458,31.750 C 5.130,31.750 0.000,26.620 0.000,20.292 L 0.000,11.458 C 0.000,5.130 5.130,0.000 11.458,0.000 L 52.042,0.000 C 58.370,0.000 63.500,5.130 63.500,11.458 L 63.500,20.292 C 63.500,26.620 58.370,31.750 52.042,31.750 Z"/>
+            <Path StrokeThickness="2.0" Stroke="{Binding Foreground, FallbackValue=#ff000000}" StrokeMiterLimit="1.0" Fill="{Binding Background, FallbackValue=#ffd2d2d2}" Data="F1 M 52.042,31.750 L 11.458,31.750 C 5.130,31.750 0.000,26.620 0.000,20.292 L 0.000,11.458 C 0.000,5.130 5.130,0.000 11.458,0.000 L 52.042,0.000 C 58.370,0.000 63.500,5.130 63.500,11.458 L 63.500,20.292 C 63.500,26.620 58.370,31.750 52.042,31.750 Z"/>
 
             <Grid
                     Width="{Binding ElementName=CanvasRoot, Path=Width}" 
                     Height="{Binding ElementName=CanvasRoot, Path=Height}" 
                     >
-                <!-- root/text/HOME -->
+                <!-- root/text -->
                 <TextBlock 
                         Foreground="{Binding Foreground, FallbackValue='#ff000000'}" 
                         HorizontalAlignment="Center"
