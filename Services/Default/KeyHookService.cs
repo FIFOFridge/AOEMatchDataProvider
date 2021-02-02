@@ -168,7 +168,7 @@ namespace AOEMatchDataProvider.Services.Default
                     keyHandlerPair = handlers[owner].Where(i => i.key == keys).First();
 
                     if (keyHandlerPair != null)
-                        handlers.Remove(keyHandlerPair);
+                        handlers[owner].Remove(keyHandlerPair);
                 }
             }
         }
