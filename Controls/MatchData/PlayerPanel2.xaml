@@ -59,7 +59,7 @@
             HorizontalAlignment="{Binding ContentAlign, FallbackValue=Left}" 
             Margin="10,0,0,0" 
             Height="29" 
-            Width="130" 
+            Width="auto" 
             Grid.ColumnSpan="4"/>
         
         <!-- Secondary ELO -->
@@ -75,7 +75,7 @@
             HorizontalAlignment="{Binding ContentAlign, FallbackValue=Left}" 
             Margin="10,0,0,0" 
             Height="29" 
-            Width="130" 
+            Width="auto" 
             />
 
         <!-- Right frame - player color -->
