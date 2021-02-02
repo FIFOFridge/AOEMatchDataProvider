@@ -21,7 +21,11 @@ namespace AOEMatchDataProvider.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if (value.GetType() != typeof(bool))
+                throw new InvalidOperationException("Incorrect value type");
+
+            var v = !((bool)value);
+            return v;
         }
     }
 }
