@@ -30,7 +30,8 @@ namespace AOEMatchDataProviderTests.Helpers
                 new StorageTestingService());
             Container.RegisterInstance<IQueryCacheService>(
                 new AOEMatchDataProvider.Services.Default.QueryCacheService(
-                        Container.Resolve<IStorageService>()
+                        Container.Resolve<IStorageService>(),
+                        Container.Resolve<ILogService>()
                     )
                 );
 
@@ -79,7 +80,8 @@ namespace AOEMatchDataProviderTests.Helpers
                 );
             Container.RegisterInstance<IQueryCacheService>(
                 new AOEMatchDataProvider.Services.Default.QueryCacheService(
-                        Container.Resolve<IStorageService>()
+                        Container.Resolve<IStorageService>(),
+                        Container.Resolve<ILogService>()
                     )
                 );
         }

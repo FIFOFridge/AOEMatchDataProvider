@@ -17,12 +17,14 @@ namespace AOEMatchDataProvider.Services.Default
         SemaphoreSlim queryThrottler;
 
         IStorageService StorageService { get; }
+        ILogService LogService { get; }
 
-        public QueryCacheService(IStorageService storageService)
+        public QueryCacheService(IStorageService storageService, ILogService logService)
         {
             queryThrottler = new SemaphoreSlim(4);
 
             StorageService = storageService;
+            LogService = logService;
             //LoadLocalyCachedQueries();
         }
 
@@ -32,6 +34,8 @@ namespace AOEMatchDataProvider.Services.Default
             //create new instance if not exists in storage
             if (!(StorageService.Has("cachedQueries")))
             {
+                LogService.Info("Creating cachedQueries entry");
+
                 Queries = new QueriesCache
                 {
                     CachedQueries = new Dictionary<string, QueryCacheEntry>()
@@ -43,6 +47,8 @@ namespace AOEMatchDataProvider.Services.Default
             //load if found
             else
             {
+                LogService.Info("Loading cachedQueries entry");
+
                 Queries = StorageService.Get<QueriesCache>("cachedQueries");
 
                 //todo: inspect why queries are null
@@ -55,6 +61,8 @@ namespace AOEMatchDataProvider.Services.Default
                 //- CachedQueries are loaded with "null" value
                 if(Queries.CachedQueries == null)
                 {
+                    LogService.Info("Recreating Queries.CachedQueries");
+
                     //recreate and flush to make sure CachedQueries are not null
                     Queries = new QueriesCache
                     {
@@ -70,13 +78,17 @@ namespace AOEMatchDataProvider.Services.Default
         {
             ValidateEntry(request); //remove if expiered
 
-            if (Queries.CachedQueries.ContainsKey(request)) //submit request if not cached
+            if (Queries.CachedQueries.ContainsKey(request)) //return cache if contains key
             {
+                LogService.Debug($"Returning cached request: {request}");
+
                 var entry = Queries.CachedQueries[request];
 
                 //update if needed
                 if(ShouldBeUpdated(request))
                 {
+                    LogService.Debug($"Updating cached request: {request}");
+
                     entry.ResponseValue = await ExecuteQuery(request, cancellationToken, timeout);
                     entry.RetryCount++;
                 }
@@ -84,6 +96,8 @@ namespace AOEMatchDataProvider.Services.Default
                 StorageService.Flush();
                 return entry.ResponseValue;
             }
+
+            LogService.Debug($"Submiting cachable request: {request}");
 
             //submit initial query
             var wrapper = await ExecuteQuery(request, cancellationToken, timeout);
