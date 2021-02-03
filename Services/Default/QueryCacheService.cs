@@ -44,6 +44,25 @@ namespace AOEMatchDataProvider.Services.Default
             else
             {
                 Queries = StorageService.Get<QueriesCache>("cachedQueries");
+
+                //todo: inspect why queries are null
+                //inspection context:
+                //- app launched without any storage entries loaded from local drive (clean start)
+                //- CachedQueries initialized by (this) service
+                //- CachedQueries flushed to disk
+                //- app closed without any updates to CachedQueries
+                //- app launched
+                //- CachedQueries are loaded with "null" value
+                if(Queries.CachedQueries == null)
+                {
+                    //recreate and flush to make sure CachedQueries are not null
+                    Queries = new QueriesCache
+                    {
+                        CachedQueries = new Dictionary<string, QueryCacheEntry>()
+                    };
+
+                    StorageService.Flush();
+                }
             }
         }
 
