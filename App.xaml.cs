@@ -191,11 +191,14 @@ namespace AOEMatchDataProvider
             logProperties.Add("exception", exception.ToString());
             logProperties.Add("stack", exception.StackTrace);
 
-            logger.Critical("Critical error occured", logProperties);
+            var appConfigurationService = App.Resolve<IAppConfigurationService>();
+            var logsPath = System.IO.Path.Combine(appConfigurationService.StorageDirectory, "logs");
+
+            logger.Critical($"Critical exception occured: {exception.ToString()} \n stack: {exception.StackTrace}", logProperties);
 
             Instance.DisposeCritical();
 
-            MessageBox.Show($"Critical error occured, if it's not first time when error occured and your are using latest app version, please consider submiting bug. Please include current session log file.\n Error: {exception.Message}\n\n. Do you want to save current logfile to your desktop? (log.txt)");
+            MessageBox.Show($"Critical error occured, if it's not first time when error occured and your are using latest app version, please consider submiting bug. Please include current session log file.\n\n Error:\n {exception.Message}\n\n. Logs file location: {logsPath}");
             Environment.Exit(1);
         }
 
