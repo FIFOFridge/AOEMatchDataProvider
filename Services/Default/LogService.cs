@@ -70,33 +70,24 @@ namespace AOEMatchDataProvider.Services.Default
 
         public void Debug(string message, Dictionary<string, object> logProperties = null)
         {
-            if (logProperties == null)
-            {
-                logger.Log(CreateLogEvent(LogLevel.Debug, message, logProperties));
-                return;
-            }
+            if (logProperties != null)
+                message = InsertProperties(message, logProperties);
 
             logger.Debug(message);
         }
 
         public void Critical(string message, Dictionary<string, object> logProperties = null)
         {
-            if(logProperties == null)
-            {
-                logger.Log(CreateLogEvent(LogLevel.Fatal, message, logProperties));
-                return;
-            }
+            if (logProperties != null)
+                message = InsertProperties(message, logProperties);
 
             logger.Fatal(message);
         }
 
         public void Error(string message, Dictionary<string, object> logProperties = null)
         {
-            if (logProperties == null)
-            {
-                logger.Log(CreateLogEvent(LogLevel.Error, message, logProperties));
-                return;
-            }
+            if (logProperties != null)
+                message = InsertProperties(message, logProperties);
 
             logger.Error(message);
         }
@@ -114,38 +105,33 @@ namespace AOEMatchDataProvider.Services.Default
 
         public void Info(string message, Dictionary<string, object> logProperties = null)
         {
-            if (logProperties == null)
-            {
-                logger.Log(CreateLogEvent(LogLevel.Info, message, logProperties));
-                return;
-            }
+            if (logProperties != null)
+                message = InsertProperties(message, logProperties);
 
             logger.Info(message);
         }
 
         public void Warning(string message, Dictionary<string, object> logProperties = null)
         {
+            if (logProperties != null)
+                message = InsertProperties(message, logProperties);
+
             logger.Warn(message);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        LogEventInfo CreateLogEvent(LogLevel logLevel, string message, Dictionary<string, object> logProperties)
+        string InsertProperties(string message, Dictionary<string, object> logProperties)
         {
-            var @event = new LogEventInfo
-            {
-                Message = message,
-                Level = logLevel
-            };
-
+            //log all passed properties (independently on logger layout)
             if (logProperties != null)
             {
                 foreach (var logProperty in logProperties)
                 {
-                    @event.Properties.Add(logProperty.Key, logProperty.Value);
+                    message += $"\n\t\t\t Property:{logProperty.Key} = {logProperty.Value.ToString()}";
                 }
             }
 
-            return @event;
+            return message;
         }
 
         public void Dispose()
