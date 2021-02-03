@@ -1,4 +1,5 @@
 ﻿using AOEMatchDataProvider.Controls.MatchData;
+using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Extensions;
 using AOEMatchDataProvider.Models;
@@ -43,6 +44,13 @@ namespace AOEMatchDataProvider.Views
 
             EventAggregator.GetEvent<UserCollectionChanged>().Subscribe(HandleUserCollectionChanged);
             EventAggregator.GetEvent<UserRatingChangedEvent>().Subscribe(HandleUserRatingChanged);
+
+            Unloaded += TeamsPanel_Unloaded;
+        }
+
+        private void TeamsPanel_Unloaded(object sender, RoutedEventArgs e)
+        {
+            EventAggregator.GetEvent<ViewDestroyed>().Publish(this);
         }
 
         void HandleUserCollectionChanged(IEnumerable<Models.UserMatchData> userMatchData)

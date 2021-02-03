@@ -79,6 +79,8 @@ namespace AOEMatchDataProvider.ViewModels
 
         void DisplayMatch()
         {
+            ApplicationCommands.ShowWindow.Execute(null);
+
             if(!NavigationHelper.NavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
                 AppCriticalExceptionHandlerService.HandleCriticalError(exception);
         }
@@ -86,7 +88,7 @@ namespace AOEMatchDataProvider.ViewModels
         void HideWindowAndLoadMatchInBackground()
         {
             //hide window and then navigate to match
-            ApplicationCommands.ToggleWindowVisibility.Execute(null);
+            ApplicationCommands.HideWindow.Execute(null);
 
             if (!NavigationHelper.NavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
                 AppCriticalExceptionHandlerService.HandleCriticalError(exception);
