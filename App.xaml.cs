@@ -35,6 +35,9 @@ namespace AOEMatchDataProvider
         //internal Dictionary<Type, Func<object, IViewInjector>> InjectableViews { get; private set; }
 
         internal static App Instance { get; private set; }
+        //mutex to make sure only one instance of app is running
+        internal static Mutex InstanceMutex { get; private set; }
+
 
         Window shell;
         static IUnityContainer appContainer;
@@ -45,8 +48,9 @@ namespace AOEMatchDataProvider
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
             Instance = this;
+
+            ValidateAppSingleInstanceState();
 
             IKeyHookService keyHookService = Resolve<IKeyHookService>();
             IStorageService storageService = Resolve<IStorageService>();
@@ -202,8 +206,17 @@ namespace AOEMatchDataProvider
             Environment.Exit(1);
         }
 
-        void DisposeAppResources(IEnumerable<IDisposable> disposableResources = null)
+        #region Disposing app resources
+        void DisposeMutex()
         {
+            if (InstanceMutex != null)
+                InstanceMutex.ReleaseMutex();
+        }
+
+        public void DisposeAppResources(IEnumerable<IDisposable> disposableResources = null)
+        {
+            DisposeMutex();
+
             if (disposableResources == null)
                 disposableResources = this.disposableResources; //all registred disposable resources
 
@@ -234,11 +247,25 @@ namespace AOEMatchDataProvider
 
         void DisposeCritical()
         {
+            DisposeMutex();
+
             DisposeAppResources(
                 disposableResources.Where(
                     disposableResource => disposableResource is ICriticalDisposable
                     )
                 );
+        }
+        #endregion
+
+        public static void ValidateAppSingleInstanceState()
+        {
+            InstanceMutex = new Mutex(true, "fac07ff0-d1e1-4354-9c97-2f82d76c6346", out bool createdNew);
+
+            if(!createdNew)
+            {
+                MessageBox.Show("Application is already running");
+                Environment.Exit(2);
+            }
         }
 
         public static string GetAppPathDirectory()
