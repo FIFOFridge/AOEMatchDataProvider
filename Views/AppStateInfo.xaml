@@ -15,6 +15,6 @@
             <common:KeyHint></common:KeyHint>
             <Label Foreground="Wheat">b</Label>
         </WrapPanel>-->
-        <TextBlock Text="{Binding Description, FallbackValue='Invalid BInding'}" FontSize="14pt" Foreground="WhiteSmoke" VerticalAlignment="Center" TextAlignment="Center" Padding="32"/>
+        <TextBlock Text="{Binding Description, FallbackValue='Invalid Binding'}" FontSize="16pt" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" TextAlignment="Center" Padding="32"/>
     </Grid>
 </UserControl>

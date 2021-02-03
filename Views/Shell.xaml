@@ -11,7 +11,10 @@
         WindowStyle="None"
         AllowsTransparency="True"
         Topmost="True"
-       
+        
+        Left="50"
+        Top="20"
+        
         ResizeMode="NoResize"
         Background="{DynamicResource BackgroundBrush}"
         
@@ -69,7 +72,7 @@
             </StackPanel.Background>
         </StackPanel>
 
-        <ContentControl IsHitTestVisible="{Binding IgnoreInput, FallbackValue=true, Converter={StaticResource BooleanNegationConverter}}" Grid.Row="1" prism:RegionManager.RegionName="MainRegion" Grid.ColumnSpan="2" Grid.RowSpan="{Binding MainRegionRowSpan}"/>
-        <ContentControl IsHitTestVisible="{Binding IgnoreInput, FallbackValue=true, Converter={StaticResource BooleanNegationConverter}}" Grid.Row="2" prism:RegionManager.RegionName="QuickActionRegion" Grid.ColumnSpan="2"/>
+        <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion" Grid.ColumnSpan="2" Grid.RowSpan="{Binding MainRegionRowSpan}"/>
+        <ContentControl Grid.Row="2" prism:RegionManager.RegionName="QuickActionRegion" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

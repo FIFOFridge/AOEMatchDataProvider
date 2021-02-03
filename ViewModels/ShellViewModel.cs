@@ -75,6 +75,8 @@ namespace AOEMatchDataProvider.ViewModels
         public DelegateCommand HideWindowCommand { get; private set; }
         public DelegateCommand<object> SetTransparencyCommand { get; private set; }
 
+        public DelegateCommand CloseAppCommand { get; private set; }
+
         public Models.Match CurrentMatch { get; set; }
 
         public ShellViewModel(
@@ -117,6 +119,9 @@ namespace AOEMatchDataProvider.ViewModels
             ApplicationCommands.HideWindow.RegisterCommand(HideWindowCommand);
             ApplicationCommands.SetTransparency.RegisterCommand(SetTransparencyCommand);
             #endregion Setup Application Commands
+            #region Window/Shell Commands
+            CloseAppCommand = new DelegateCommand(CloseApp);
+            #endregion
 
             //setup app toggle key
             //keyHookService.Add(System.Windows.Forms.Keys.Home, ToggleWindowVisibilityCommand.Execute);
@@ -274,6 +279,22 @@ namespace AOEMatchDataProvider.ViewModels
             var _opacity = double.Parse(opacity.ToString());
 
             Opacity = _opacity;
+        }
+
+        void CloseApp()
+        {
+            LogService.Info("Closing app by user");
+
+            CanUpdateMatchData = false;
+
+            //StorageService.Flush();
+
+            //hide window as fast as possible, then dispose app resources and terminate process
+            HideWindowCommand.Execute();
+            
+            App.Instance.DisposeAppResources();
+
+            Environment.Exit(0);
         }
     }
 }
