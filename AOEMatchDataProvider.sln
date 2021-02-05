@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2041
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOEMatchDataProvider", "AOEMatchDataProvider.csproj", "{9314E27A-2E6D-4221-8F1D-164AB8A4AE83}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{F1A0AE5F-D00E-4E6C-9B27-ED53041C1216}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOEMatchDataProviderTests", "Tests\AOEMatchDataProviderTests\AOEMatchDataProviderTests.csproj", "{57A9D230-C3BB-40F5-8FC8-0F026C9D59B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".assets", ".assets", "{05C4DC46-AEAE-4027-8FD6-7804DA168C5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
