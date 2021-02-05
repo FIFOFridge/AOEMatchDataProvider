@@ -275,7 +275,7 @@ namespace AOEMatchDataProvider.Controls.MatchData
         //    return gradientBrush;
         //}
 
-        void UpdateUserELO()
+        public void UpdateUserELO()
         {
             //primary elo
             try

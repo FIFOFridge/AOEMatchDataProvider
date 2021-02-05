@@ -2,6 +2,7 @@
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Extensions;
+using AOEMatchDataProvider.Extensions.ExceptionHandling;
 using AOEMatchDataProvider.Models;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.ViewModels;
@@ -73,8 +74,8 @@ namespace AOEMatchDataProvider.Views
             var id = userRatingData.Item1;
             var rank = userRatingData.Item2;
 
-            var found = false;
             Models.UserMatchData targetData = null;
+            PlayerPanel2 targetControl = null;
 
             team1.Dispatcher.Invoke(() =>
             {
@@ -86,6 +87,7 @@ namespace AOEMatchDataProvider.Views
                     if (control.UserMatchData.UserGameProfileId.ProfileId == id.ProfileId)
                     {
                         targetData = control.UserMatchData;
+                        targetControl = control;
                         break;
                     }
                 }
@@ -101,21 +103,55 @@ namespace AOEMatchDataProvider.Views
                     if (control.UserMatchData.UserGameProfileId.ProfileId == id.ProfileId)
                     {
                         targetData = control.UserMatchData;
+                        targetControl = control;
                         break;
                     }
                 }
 
-                //if trying to update not existing id then throw
-                //if (!found)
-                //    throw new ArgumentOutOfRangeException("Invalid user game profile id to update");
+                //if found
+                if (targetData != null)
+                {
+                    team1.Dispatcher.Invoke(() =>
+                    {
+                        var logPropertiesBeforeUpdate = new Dictionary<string, object>
+                        {
+                            { "update target", targetData.ToString() }
+                        };
 
-                if (found)
-                    targetData.MergeUserRank(rank);
+                        LogService.Debug($"Merging user {id} rank", logPropertiesBeforeUpdate);
+                        
+                        try
+                        {
+                            targetData.MergeUserRank(rank);
+
+                            var logPropertiesAfterUpdate = new Dictionary<string, object>
+                            {
+                                { "update target", targetData.ToString() }
+                            };
+
+                            //todo: refactor implementing INotifyPropertyChanged chain in models to auto perform property update
+                            targetControl.UpdateUserELO();
+
+                            LogService.Debug($"Merged user {id} rank", logPropertiesAfterUpdate);
+                        } 
+                        catch(Exception e)
+                        {
+                            //rethrow if should be handled ie: if exception is StackOverflowException
+                            e.RethrowIfExceptionCantBeHandled();
+
+                            var logProperties = new Dictionary<string, object>();
+                            logProperties.Add("id", id);
+                            logProperties.Add("stack", e.StackTrace);
+
+                            LogService.Warning($"Unable to merge user ratings: {e.ToString()}", logProperties);
+                        }
+                    });
+                }
                 else
                 {
                     var logProperties = new Dictionary<string, object>();
-                    logProperties.Add("Team 1: ", team1.Children);
-                    logProperties.Add("Team 2: ", team2.Children);
+                    //logProperties.Add("Team 1: ", team1.Children);
+                    //logProperties.Add("Team 2: ", team2.Children);
                     logProperties.Add("User id to update: ", id);
                     LogService.Error("Unable to find game profileId to update");
                 }

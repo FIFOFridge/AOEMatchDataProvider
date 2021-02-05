@@ -115,7 +115,7 @@ namespace AOEMatchDataProvider.ViewModels
             KeyHookService = keyHookService;
             LogService = logService;
 
-            ApplicationCommands.ShowWindow.Execute(null);
+            //ApplicationCommands.ShowWindow.Execute(null);
 
             updateTimer = new System.Timers.Timer(AppConfigurationService.TeamPanelUpdateTick)
             {
@@ -136,7 +136,7 @@ namespace AOEMatchDataProvider.ViewModels
                     view => view.DataContext == this //if view has this context then handle operation
                 );
 
-            //Task.Run(UpdateUsersData);
+            Task.Run(UpdateUsersData);
         }
 
         //Request more detailed user rank data if needed, only in case of team games, when team game elo is not not unreliable
@@ -183,12 +183,18 @@ namespace AOEMatchDataProvider.ViewModels
                     break;
             }
 
+            int userELOUpdateTimeout = AppConfigurationService.DefaultRequestTimeout;
+
             foreach (var user in UserMatchData)
             {
-                var userDataUpdateTask = UserRankService.GetUserRank(user.UserGameProfileId, userRankModeToUpadte, 5000);
+                //update primary/secondary ELO
+                LogService.Info($"Starting user ELO update: for user id: {user.UserGameProfileId} user rank mode to update: {userRankModeToUpadte}, operation timeout: {userELOUpdateTimeout}");
+
+                var userDataUpdateTask = UserRankService.GetUserRank(user.UserGameProfileId, userRankModeToUpadte, userELOUpdateTimeout);
+
                 updateTasks.Add(
                     userDataUpdateTask.ContinueWith(
-                        t => HandleUserDataUpdated(userDataUpdateTask, userRankModeToUpadte, user.UserGameProfileId)
+                            t => HandleUserDataUpdated(userDataUpdateTask, userRankModeToUpadte, user.UserGameProfileId)
                         )
                     );
             }
