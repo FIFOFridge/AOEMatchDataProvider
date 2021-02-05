@@ -29,6 +29,11 @@ namespace AOEMatchDataProvider.Models
         {
             //Rating = new Dictionary<UserRankMode, UserRank>();
         }
+
+        public override string ToString()
+        {
+            return $"User match data (UserGameProfileId: {UserGameProfileId.ToString()}), ratings: {UserRankData.ToString()}";
+        }
     }
 
     //TODO: implement deathmatches
