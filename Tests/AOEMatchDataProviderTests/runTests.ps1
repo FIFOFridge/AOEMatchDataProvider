@@ -1,4 +1,4 @@
-$vsproduct = "2017"
+$vsproduct = "2019"
 $vsedition = "Community"
 $buildtoolsversion = "15.0"
 

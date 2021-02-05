@@ -47,5 +47,17 @@ namespace AOEMatchDataProvider.Models
         {
             return JsonConvert.DeserializeObject<UserRankData>(serialized);
         }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+
+            foreach(var userRating in UserRatings)
+            {
+                sb.Append("\n " + userRating.Key.ToString() + " -> elo: " + userRating.Value.Elo);
+            }
+
+            return sb.ToString();
+        }
     }
 }

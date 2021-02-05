@@ -73,20 +73,23 @@ namespace AOEMatchDataProvider.ViewModels
 
             //ignore mouse input
             Shell.IgnoreInput = true;
-            ApplicationCommands.SetTransparency.Execute(0.6);
+            ApplicationCommands.SetTransparency.Execute(0.75);
             parameters = navigationContext.Parameters;
         }
 
         void DisplayMatch()
         {
             ApplicationCommands.ShowWindow.Execute(null);
+            ApplicationCommands.SetTransparency.Execute(0.8);
 
-            if(!NavigationHelper.NavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
+            if (!NavigationHelper.NavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
                 AppCriticalExceptionHandlerService.HandleCriticalError(exception);
         }
 
         void HideWindowAndLoadMatchInBackground()
         {
+            ApplicationCommands.SetTransparency.Execute(0.8);
+
             //hide window and then navigate to match
             ApplicationCommands.HideWindow.Execute(null);
 

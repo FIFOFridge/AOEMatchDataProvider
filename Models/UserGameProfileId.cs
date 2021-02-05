@@ -9,5 +9,10 @@ namespace AOEMatchDataProvider.Models
     public class UserGameProfileId
     {
         public string ProfileId { get; set; }
+
+        public override string ToString()
+        {
+            return $"Profile ID: {ProfileId}";
+        }
     }
 }

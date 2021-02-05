@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace AOEMatchDataProvider.Models
 {
-    public class UserMatchData
+    public class UserMatchData : INotifyPropertyChanged
     {
         //[JsonIgnore]
         //public Dictionary<UserRankMode, UserRank> Rating { get; set; }
+        
         public UserRankData UserRankData { get; internal set; }
 
         public string Name { get; set; }
@@ -28,6 +29,15 @@ namespace AOEMatchDataProvider.Models
         public UserMatchData()
         {
             //Rating = new Dictionary<UserRankMode, UserRank>();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+
+
+        public override string ToString()
+        {
+            return $"User match data (UserGameProfileId: {UserGameProfileId.ToString()}), ratings: {UserRankData.ToString()}";
         }
     }
 
