@@ -61,7 +61,7 @@ namespace AOEMatchDataProvider.ViewModels
         public IRegionManager RegionManager { get; }
         public ILogService LogService { get; }
         #endregion Services
-        
+
         //bool isRunning;
         //bool IsRunning
         //{
@@ -129,35 +129,6 @@ namespace AOEMatchDataProvider.ViewModels
             CanUpdateMatchData = true;
         }
 
-        void UpdateMatchDetails(Models.Match match)
-        {
-            if (string.IsNullOrEmpty(match.Opened) || !string.IsNullOrEmpty(match.Finished)) //waiting for match
-            {
-                var navigationParameters = new NavigationParameters
-                {
-                    { "description", "Waiting for match..." }
-                };
-
-                //todo: set app state for waiting for match
-                RegionManager.RequestNavigate("MainRegion", "AppStateInfo", navigationParameters);
-                return;
-            }
-
-            //todo: display: preparation phase
-            //if (!string.IsNullOrEmpty(match.Opened) && !string.IsNullOrEmpty(match.Started))
-            //{ }
-
-            if (match.IsInProgress)
-            {
-                //if fetched match == current match then skip update
-                if (CurrentMatch != null && CurrentMatch.MatchId == match.MatchId)
-                    return;
-
-                RegionManager.RequestNavigate("MainRegion", "TeamsPanel");
-                EventAggregator.GetEvent<UserCollectionChanged>().Publish(match.Users);
-            }
-        }
-
         async void UpdateMatchData()
         {
             if (!canUpdateMatchData) //make sure we can update
@@ -177,6 +148,21 @@ namespace AOEMatchDataProvider.ViewModels
                 }
 
                 requestWrapper = await UserRankService.GetUserMatch(((AppSettings)appSettings).UserId, AppConfigurationService.MatchUpdateTimeout);
+
+                //if request failed then display API connection issues
+                if (requestWrapper == null || requestWrapper.Exception != null)
+                {
+                    var logProperties = new Dictionary<string, object>();
+                    logProperties.Add("exception", requestWrapper.Exception);
+                    logProperties.Add("stack", requestWrapper.Exception.StackTrace);
+
+                    LogService.Error($"Unable to update match data: {requestWrapper.Exception.ToString()}", logProperties);
+
+                    navigationParameter.Add("description", "Can not connect to API");
+
+                    if (!NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter, out Exception exception))
+                        AppCriticalExceptionHandlerService.HandleCriticalError(exception);
+                }
 
                 //if current match is already displayed then skip
                 if (CurrentMatch != null && requestWrapper.Value.MatchId == CurrentMatch.MatchId)
@@ -218,7 +204,7 @@ namespace AOEMatchDataProvider.ViewModels
                         RegionManager.RequestNavigate("MainRegion", "AppStateInfo", navigationParameter);
                     }
 #endif
-                } 
+                }
                 //DEBUG & RELEASE, handle failed request
                 else //request not successed
                 {
@@ -247,7 +233,12 @@ namespace AOEMatchDataProvider.ViewModels
 
                 //log exception and terminate app, as it should be done default in case of unhandled exception
                 //App.HandleCriticalError(e);
+
+                Dictionary<string, object> logProperties = new Dictionary<string, object>();
+                logProperties.Add("stack", e.StackTrace);
+
                 AppCriticalExceptionHandlerService.HandleCriticalError(e);
+                LogService.Error($"Unknow error occured while updating match data: {e.ToString()}", logProperties);
             }
             finally
             {
@@ -291,7 +282,7 @@ namespace AOEMatchDataProvider.ViewModels
 
             //hide window as fast as possible, then dispose app resources and terminate process
             HideWindowCommand.Execute();
-            
+
             App.Instance.DisposeAppResources();
 
             Environment.Exit(0);
