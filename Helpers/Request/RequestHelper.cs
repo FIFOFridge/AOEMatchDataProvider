@@ -1,6 +1,7 @@
 ﻿#define TEST
 
 using AOEMatchDataProvider.Other;
+using AOEMatchDataProvider.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,13 @@ namespace AOEMatchDataProvider.Helpers.Request
     {
         HttpClient HttpClient { get; }
 
+        static IAppConfigurationService AppConfigurationService { get; set; }
+
+        static bool IsInitialized => AppConfigurationService != null;
+
         static RequestHelper instance;
         public static RequestHelper Instance
         {
-
-
             get
             {
                 if (instance == null)
@@ -34,66 +37,28 @@ namespace AOEMatchDataProvider.Helpers.Request
             HttpClient = new HttpClient();
         }
 
-        public static async Task<bool> ConnectionCheck(CancellationToken cancellationToken)
+        public static void InitializeRequestHelper(IAppConfigurationService appConfigurationService/*, TimeSpan maxTimeout*/)
         {
-            //todo: implement with static httpClient
-            return true;
-            //using (HttpClient client = new HttpClient())
-            //{
-            //    client.Timeout = TimeSpan.FromSeconds(10);
+            if (AppConfigurationService != null)
+                throw new InvalidOperationException("Request helper is already initialized");
 
-            //    try
-            //    {
-            //        HttpResponseMessage response = await client.GetAsync("https://aoe2.net/", cancellationToken);
-
-            //        if (!(response.IsSuccessStatusCode))
-            //            return false;
-
-            //        return true;
-
-            //    }
-            //    catch (HttpRequestException hre)
-            //    {
-            //        return false;
-            //    }
-            //}
+            //HttpClient.Timeout = maxTimeout;
+            AppConfigurationService = appConfigurationService;
         }
 
-        //https://stackoverflow.com/questions/46874693/re-using-httpclient-but-with-a-different-timeout-setting-per-request
-        //public static async Task<ResponseWrapper> SubmitRequest(string query, CancellationToken cancellationToken, int timeout = 10)
-        //{
-
-        //    //ResponseWrapper responseWrapper = new ResponseWrapper();
-        //    //HttpClient client = new HttpClient();
-
-        //    ////using (HttpClient client = new HttpClient())
-        //    ////{
-        //    //    client.Timeout = TimeSpan.FromSeconds(timeout);
-
-        //    //    try
-        //    //    {
-        //    //        HttpResponseMessage response = await client.GetAsync(query, cancellationToken);
-        //    //        responseWrapper.ResponseContent = await response.Content.ReadAsStringAsync();
-
-        //    //        responseWrapper.Response = response;
-        //    //        responseWrapper.IsSuccess = response.IsSuccessStatusCode;
-        //    //    }
-        //    //    catch (HttpRequestException hre)
-        //    //    {
-        //    //        responseWrapper.Exception = hre;
-        //    //    }
-        //    //    finally
-        //    //    {
-        //    //        client.Dispose(); //dispose manually to avoid OperationCancelledException throwing after reuest is completed
-        //    //    }
-        //    ////}
-
-        //    //return responseWrapper;
-        //}
-
-        public static async Task<RequestResponseWrapper> SubmitRequest(string query, CancellationToken cancellationToken, int timeout = 10)
+        public static async Task<RequestResponseWrapper> GetAsync(string query, CancellationToken cancellationToken)
         {
+            if (!IsInitialized)
+                throw new InvalidOperationException("RequestHelper have to be initialized");
+
             RequestResponseWrapper responseWrapper = new RequestResponseWrapper();
+
+            //set default timeout for request
+            if(cancellationToken == CancellationToken.None)
+            {
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                cancellationTokenSource.CancelAfter(AppConfigurationService.DefaultRequestTimeout);
+            }
 
             try
             {
@@ -103,6 +68,7 @@ namespace AOEMatchDataProvider.Helpers.Request
                 responseWrapper.Response = response;
                 responseWrapper.IsSuccess = response.IsSuccessStatusCode;
             }
+            //handle time out/cancellation exception (OperationCanceledException) and request exception
             catch (HttpRequestException hre)
             {
                 responseWrapper.Exception = hre;
@@ -127,7 +93,7 @@ namespace AOEMatchDataProvider.Helpers.Request
             public Exception Exception { get; internal set; }
             public string ResponseContent { get; internal set; }
 
-            // make sure it will be only constructed in controller
+            // make sure it will be only constructed in RequestHelper
             internal RequestResponseWrapper()
             {
 
