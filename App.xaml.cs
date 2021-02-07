@@ -65,6 +65,9 @@ namespace AOEMatchDataProvider
             //PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
             PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Warning | SourceLevels.Error;
 
+            //initialize request helper
+            RequestHelper.InitializeRequestHelper(Resolve<IAppConfigurationService>());
+
             LoadSettings();
             StartupNavigate();
         }
