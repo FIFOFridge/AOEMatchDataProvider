@@ -118,7 +118,7 @@ namespace AOEMatchDataProvider.Services.Default
 
             try
             {
-                responseWrapper = await RequestHelper.SubmitRequest(request, cancellationToken, timeout);
+                responseWrapper = await RequestHelper.GetAsync(request, cancellationToken);
             }
             finally
             {

@@ -90,7 +90,7 @@ namespace AOEMatchDataProvider.Services.Default
                 requestState.isRunning = true;
                 //sumbit query
                 requestWrapper.RequestUrl = finallQuery;
-                var requestResult = requestWrapper.RequestResponseWrapper = await RequestHelper.SubmitRequest(finallQuery, cts.Token);
+                var requestResult = requestWrapper.RequestResponseWrapper = await RequestHelper.GetAsync(finallQuery, cts.Token);
 
                 var responseRaw = requestResult.ResponseContent;
 
@@ -310,7 +310,7 @@ namespace AOEMatchDataProvider.Services.Default
 
             try
             {
-                var response = await RequestHelper.SubmitRequest(request, CancellationToken.None, 10);
+                var response = await RequestHelper.GetAsync(request, CancellationToken.None);
                 
                 requestWrapper.RequestResponseWrapper = response;
 
