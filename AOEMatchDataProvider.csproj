@@ -186,6 +186,9 @@
     <Compile Include="Controls\Common\KeyHint.xaml.cs">
       <DependentUpon>KeyHint.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\LicenseWindow\LicenseHolder.xaml.cs">
+      <DependentUpon>LicenseHolder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\MatchData\PlayerPanel.xaml.cs">
       <DependentUpon>PlayerPanel.xaml</DependentUpon>
     </Compile>
@@ -257,6 +260,7 @@
     <Compile Include="ViewModels\AppStateInfoViewModel.cs" />
     <Compile Include="ViewModels\InfoBarViewModel.cs" />
     <Compile Include="ViewModels\InitialConfigurationViewModel.cs" />
+    <Compile Include="ViewModels\LicenseWindowViewModel.cs" />
     <Compile Include="ViewModels\MatchFoundNotificationViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\TeamsPanelViewModel.cs" />
@@ -273,6 +277,9 @@
       <DependentUpon>InitialConfiguration.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\ITeamsPanelView.cs" />
+    <Compile Include="Views\LicenseWindow.xaml.cs">
+      <DependentUpon>LicenseWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MatchFoundNotification.xaml.cs">
       <DependentUpon>MatchFoundNotification.xaml</DependentUpon>
     </Compile>
@@ -287,6 +294,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\Common\KeyHint.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\LicenseWindow\LicenseHolder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -336,6 +347,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\InitialConfiguration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LicenseWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
