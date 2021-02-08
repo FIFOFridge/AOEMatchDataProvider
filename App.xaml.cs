@@ -1,5 +1,6 @@
 ﻿using AOEMatchDataProvider.Command;
 using AOEMatchDataProvider.Events.Views;
+using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Models.Settings;
 using AOEMatchDataProvider.Mvvm;
@@ -69,7 +70,7 @@ namespace AOEMatchDataProvider
             RequestHelper.InitializeRequestHelper(Resolve<IAppConfigurationService>());
 
             LoadSettings();
-            StartupNavigate();
+            InitialNavigation();
         }
 
         //Resolve type using default app container
@@ -94,26 +95,35 @@ namespace AOEMatchDataProvider
             storage.Flush();
         }
 
-        internal static void StartupNavigate()
+        internal static void InitialNavigation()
         {
             var storage = Resolve<IStorageService>();
             var eventAggregator = Resolve<IEventAggregator>();
             var regionManager = App.Resolve<IRegionManager>();
             var settings = storage.Get<AppSettings>("settings");
 
-            //if settings not set or both ids are missing then redirect to initial configuration
-            if(settings.UserId == null || 
+            //make sure string resources are valid
+            if (!storage.Has("stringResources"))
+            {
+                if (!NavigationHelper.NavigateTo("MainRegion", "InitialResourcesValidation", null, out Exception exception))
+                    HandleCriticalError(exception);
+
+                return;
+            }
+
+            //if userId not set then navigate to user configuration
+            if (settings.UserId == null || 
                 (string.IsNullOrEmpty(settings.UserId.GameProfileId) &&
                  string.IsNullOrEmpty(settings.UserId.SteamId)
                 )
             )
             {
-                regionManager.RequestNavigate("MainRegion", "InitialConfiguration");
+                if (!NavigationHelper.NavigateTo("MainRegion", "InitialConfiguration", null, out Exception exception))
+                    HandleCriticalError(exception);
+
+                return;
             }
-            else if(!storage.Has("stringResources")) //make sure string resources exist
-            {
-                regionManager.RequestNavigate("MainRegion", "InitialConfiguration");
-            }
+
             //redirect to app state info
             else
             {
@@ -170,6 +180,7 @@ namespace AOEMatchDataProvider
             //region: MainRegion
             containerRegistry.RegisterForNavigation<MatchFoundNotification>();
             containerRegistry.RegisterForNavigation<InitialConfiguration>();
+            containerRegistry.RegisterForNavigation<InitialResourcesValidation>();
             containerRegistry.RegisterForNavigation<AppStateInfo>();
             containerRegistry.RegisterForNavigation<TeamsPanel>();
 

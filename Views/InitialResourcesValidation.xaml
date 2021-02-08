@@ -1,0 +1,39 @@
+﻿<UserControl x:Class="AOEMatchDataProvider.Views.InitialResourcesValidation"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AOEMatchDataProvider.Views"
+             mc:Ignorable="d" 
+             
+             d:DesignHeight="350" 
+             d:DesignWidth="500"
+             
+             xmlns:prism="http://prismlibrary.com/"
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             >
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+
+        <WrapPanel Grid.Row="2" Grid.RowSpan="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Label VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="18" Content="{Binding ResourcesStateDescription, FallbackValue='Invalid Binding'}" />
+            <Viewbox Width="36" Height="36" Visibility="{Binding ResourcesStateErrorVisibility, FallbackValue=Collapsed}">
+                <Canvas Width="24" Height="24">
+                    <Path Fill="Red" Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2C6.47,2 2,6.47 2,12C2,17.53 6.47,22 12,22C17.53,22 22,17.53 22,12C22,6.47 17.53,2 12,2M14.59,8L12,10.59L9.41,8L8,9.41L10.59,12L8,14.59L9.41,16L12,13.41L14.59,16L16,14.59L13.41,12L16,9.41L14.59,8Z" />
+                </Canvas>
+            </Viewbox>
+        </WrapPanel>
+
+        <!--<Button Content="Continue" Grid.Row="6" Width="80"/>-->
+        <Button Command="{Binding RetryUpdateCommand}" Content="Retry download" Grid.Row="6" Width="120" IsEnabled="{Binding CanRetry, FallbackValue=False}"/>
+    </Grid>
+</UserControl>

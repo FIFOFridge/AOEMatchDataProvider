@@ -125,48 +125,7 @@ namespace AOEMatchDataProvider.ViewModels
 
             detectedUserIdMode = UserIdMode.Invalid;
 
-            //start resources download in background
-            if (!(StorageService.Has("stringResources"))) {
-                 Task.Run(DownloadAppResources);
-                    //.ContinueWith(task => HandleResourcesDownload(task, ));
-            }
-
             UpdateCanContinue();
-        }
-
-        async Task DownloadAppResources()
-        {
-            LogService.Info("Downloading app resources...");
-
-            if (IsDownlaodingAppResources)
-                return;
-
-            IsDownlaodingAppResources = true;
-
-            try
-            {
-                RequestWrapper<AoeNetAPIStringResources> resourcesRequestWrapper = await UserRankService.GetStringResources();
-
-                if (!resourcesRequestWrapper.IsSuccess)
-                    IsDownlaodingAppResources = true;
-
-                //FIXME: INCLUDE TO APP RESOURCES 
-                //cache for 7 days
-                //StorageService.Set("stringResources", resourcesRequestWrapper.Value, false, DateTime.UtcNow.AddDays(7));
-                StorageService.Create("stringResources", resourcesRequestWrapper.Value, StorageEntryExpirePolicy.Expire, DateTime.UtcNow.AddDays(7));
-                StorageService.Flush();
-            } 
-            catch(Exception e)
-            {
-                //log exception and rethrow
-                LogService.Warning($"Unable to downlad app resources: {e.ToString()}");
-                throw e;
-            }
-            finally
-            {
-                IsDownlaodingAppResources = false;
-                UpdateCanContinue();
-            }
         }
 
         //void HandleResourcesDownload(Task resourcesDownloadTask)

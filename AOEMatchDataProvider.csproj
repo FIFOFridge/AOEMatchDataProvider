@@ -180,9 +180,6 @@
     </ApplicationDefinition>
     <Compile Include="Command\ApplicationCommands.cs" />
     <Compile Include="Command\IApplicationCommands.cs" />
-    <Compile Include="Controls\About\Section.xaml.cs">
-      <DependentUpon>Section.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Common\KeyHint.xaml.cs">
       <DependentUpon>KeyHint.xaml</DependentUpon>
     </Compile>
@@ -216,6 +213,7 @@
     <Compile Include="Helpers\Windows\WindowManagmentHelper.cs" />
     <Compile Include="Helpers\WPF\BindingLoger.cs" />
     <Compile Include="Models\ISerializableModel.cs" />
+    <Compile Include="Models\Licenses\License.cs" />
     <Compile Include="Models\LogService\LogPropertyCollection.cs" />
     <Compile Include="Models\MatchType.cs" />
     <Compile Include="Models\QueryCacheService\QueriesCache.cs" />
@@ -260,6 +258,7 @@
     <Compile Include="ViewModels\AppStateInfoViewModel.cs" />
     <Compile Include="ViewModels\InfoBarViewModel.cs" />
     <Compile Include="ViewModels\InitialConfigurationViewModel.cs" />
+    <Compile Include="ViewModels\InitialResourcesValidationViewModel.cs" />
     <Compile Include="ViewModels\LicenseWindowViewModel.cs" />
     <Compile Include="ViewModels\MatchFoundNotificationViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
@@ -276,6 +275,9 @@
     <Compile Include="Views\InitialConfiguration.xaml.cs">
       <DependentUpon>InitialConfiguration.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\InitialResourcesValidation.xaml.cs">
+      <DependentUpon>InitialResourcesValidation.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ITeamsPanelView.cs" />
     <Compile Include="Views\LicenseWindow.xaml.cs">
       <DependentUpon>LicenseWindow.xaml</DependentUpon>
@@ -289,10 +291,6 @@
     <Compile Include="Views\TeamsPanel.xaml.cs">
       <DependentUpon>TeamsPanel.xaml</DependentUpon>
     </Compile>
-    <Page Include="Controls\About\Section.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\Common\KeyHint.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -347,6 +345,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\InitialConfiguration.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\InitialResourcesValidation.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
