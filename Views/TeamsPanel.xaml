@@ -49,7 +49,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="13*"/>
-            <RowDefinition Height="2*"/>
+            <!--<RowDefinition Height="2*"/>-->
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="295*"/>
@@ -85,14 +85,14 @@
 
         <!-- Match details section -->
         <!-- Border -->
-        <Rectangle Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Fill="{DynamicResource BackgroundAccentBrush}" />
+        <!--<Rectangle Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Fill="{DynamicResource BackgroundAccentBrush}" />-->
         <!-- Fill -->
-        <Rectangle x:Name="MatchDetailsContentRectangle" Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Fill="{DynamicResource BackgroundBrush}" Margin="5, 1, 5, 5" />
+        <!--<Rectangle x:Name="MatchDetailsContentRectangle" Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Fill="{DynamicResource BackgroundBrush}" Margin="5, 1, 5, 5" />-->
 
-        <StackPanel  Grid.ColumnSpan="3" Grid.Column="1" Grid.Row="1" Margin="{Binding ElementName=MatchDetailsContentRectangle, Path=Margin}">
-            <!--<TextBlock Text="{Binding MatchTypeFormatted, FallbackValue='Invalid Binding'}" FontFamily="{StaticResource Texturina}" FontSize="12" Foreground="WhiteSmoke" HorizontalAlignment="Left" Margin="5,3,0,0" />-->
-            <TextBlock Text="{Binding ServerName, FallbackValue=Invalid Binding}" FontFamily="{StaticResource Texturina}" FontSize="12" Foreground="WhiteSmoke" Margin="5,15,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <!--<TextBlock Text="{Binding MatchTypeFormatted, FallbackValue='Invalid Binding'}" FontFamily="{StaticResource Texturina}" FontSize="12" Foreground="WhiteSmoke" HorizontalAlignment="Left" Margin="5,3,0,0" />-->
-        </StackPanel>
+        <!--<stackpanel  grid.columnspan="3" grid.column="1" grid.row="1" margin="{binding elementname=matchdetailscontentrectangle, path=margin}">
+            --><!--<textblock text="{binding matchtypeformatted, fallbackvalue='invalid binding'}" fontfamily="{staticresource texturina}" fontsize="12" foreground="whitesmoke" horizontalalignment="left" margin="5,3,0,0" />--><!--
+            <textblock text="{binding servername, fallbackvalue=invalid binding}" fontfamily="{staticresource texturina}" fontsize="12" foreground="whitesmoke" margin="5,15,0,0" horizontalalignment="center" verticalalignment="center" />
+            --><!--<textblock text="{binding matchtypeformatted, fallbackvalue='invalid binding'}" fontfamily="{staticresource texturina}" fontsize="12" foreground="whitesmoke" horizontalalignment="left" margin="5,3,0,0" />--><!--
+        </stackpanel>-->
     </Grid>
 </UserControl>
