@@ -223,8 +223,11 @@ namespace AOEMatchDataProvider
         #region Disposing app resources
         void DisposeMutex()
         {
-            if (InstanceMutex != null)
-                InstanceMutex.ReleaseMutex();
+            this.Dispatcher.Invoke(() =>
+            {
+                if (InstanceMutex != null)
+                    InstanceMutex.ReleaseMutex();
+            });
         }
 
         public void DisposeAppResources(IEnumerable<IDisposable> disposableResources = null)
