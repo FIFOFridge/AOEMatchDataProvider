@@ -10,6 +10,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AOEMatchDataProviderTests", "Tests\AOEMatchDataProviderTests\AOEMatchDataProviderTests.csproj", "{57A9D230-C3BB-40F5-8FC8-0F026C9D59B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".assets", ".assets", "{05C4DC46-AEAE-4027-8FD6-7804DA168C5F}"
+	ProjectSection(SolutionItems) = preProject
+		.assets\appIcon.ico = .assets\appIcon.ico
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

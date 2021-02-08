@@ -4,6 +4,7 @@ using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Models.Settings;
 using AOEMatchDataProvider.Services;
+using AOEMatchDataProvider.Views;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -76,7 +77,8 @@ namespace AOEMatchDataProvider.ViewModels
         public DelegateCommand<object> SetTransparencyCommand { get; private set; }
 
         public DelegateCommand CloseAppCommand { get; private set; }
-
+        public DelegateCommand ShowLicensesWindowCommand { get; private set; }
+        
         public Models.Match CurrentMatch { get; set; }
 
         public ShellViewModel(
@@ -121,6 +123,7 @@ namespace AOEMatchDataProvider.ViewModels
             #endregion Setup Application Commands
             #region Window/Shell Commands
             CloseAppCommand = new DelegateCommand(CloseApp);
+            ShowLicensesWindowCommand = new DelegateCommand(ShowLicensesWindow);
             #endregion
 
             //setup app toggle key
@@ -270,6 +273,12 @@ namespace AOEMatchDataProvider.ViewModels
             var _opacity = double.Parse(opacity.ToString());
 
             Opacity = _opacity;
+        }
+
+        void ShowLicensesWindow()
+        {
+            var window = new LicenseWindow();
+            window.Show();
         }
 
         void CloseApp()

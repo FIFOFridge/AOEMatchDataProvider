@@ -24,7 +24,7 @@ namespace AOEMatchDataProvider.Controls.LicenseWindow
     {
         #region DependencyProperties
         public static readonly DependencyProperty TitleProperty =
-        DependencyProperty.Register("Title", typeof(string), typeof(Section));
+        DependencyProperty.Register("Title", typeof(string), typeof(LicenseHolder));
 
         public string Title
         {
@@ -37,7 +37,7 @@ namespace AOEMatchDataProvider.Controls.LicenseWindow
         }
 
         public static readonly DependencyProperty UrlProperty =
-        DependencyProperty.Register("Url", typeof(string), typeof(Section));
+        DependencyProperty.Register("Url", typeof(string), typeof(LicenseHolder));
 
         public string Url
         {
@@ -50,7 +50,7 @@ namespace AOEMatchDataProvider.Controls.LicenseWindow
         }
 
         public static readonly DependencyProperty LicenseTypeProperty =
-        DependencyProperty.Register("LicenseType", typeof(string), typeof(Section));
+        DependencyProperty.Register("LicenseType", typeof(string), typeof(LicenseHolder));
 
         public string LicenseType
         {
@@ -63,7 +63,7 @@ namespace AOEMatchDataProvider.Controls.LicenseWindow
         }
 
         public static readonly DependencyProperty LicenseContentProperty =
-        DependencyProperty.Register("LicenseContent", typeof(string), typeof(Section));
+        DependencyProperty.Register("LicenseContent", typeof(string), typeof(LicenseHolder));
 
         public string LicenseContent
         {
