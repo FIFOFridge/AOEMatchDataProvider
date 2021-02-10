@@ -150,7 +150,7 @@ namespace AOEMatchDataProvider
         protected override Window CreateShell()
         {
             //shell = new MatchData(); //save reference
-            shell = new Shell();
+            shell = new Shell(App.Resolve<IEventAggregator>());
 
             appContainerRegistry.RegisterInstance<IShell>(shell as IShell);
 
@@ -183,6 +183,9 @@ namespace AOEMatchDataProvider
             containerRegistry.RegisterForNavigation<InitialResourcesValidation>();
             containerRegistry.RegisterForNavigation<AppStateInfo>();
             containerRegistry.RegisterForNavigation<TeamsPanel>();
+
+            containerRegistry.RegisterForNavigation<BottomButtonsPanel>();
+            containerRegistry.RegisterForNavigation<BottomShadowPanel>();
 
             //region: QuickActions
             //todo: Implement quick actions & empty region
