@@ -113,6 +113,28 @@ namespace AOEMatchDataProvider.ViewModels
             Licenses.Add(
                 new License
                 {
+                    Title = "Squirrel.Windows",
+                    Url = "https://github.com/Squirrel/Squirrel.Windows/",
+                    Author = "GitHub, Inc.",
+                    LicenseType = "MIT License",
+                    LicenseTypeLicenseContent = "Copyright (c) 2012 GitHub, Inc.\n\nPermission is hereby granted,  free of charge,  to any person obtaining a\ncopy of this software and associated documentation files (the \"Software\"),\nto deal in the Software without restriction, including without limitation\nthe rights to  use, copy, modify, merge, publish, distribute, sublicense,\nand/or sell copies of the Software, and to permit persons to whom the\nSoftware is furnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING\nFROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER\nDEALINGS IN THE SOFTWARE.\n"
+                }
+            );
+
+            Licenses.Add(
+                new License
+                {
+                    Title = "Country Flags",
+                    Url = "https://github.com/MeshackMusundi/CountryFlag",
+                    Author = "Meshack Musundi",
+                    LicenseType = "MIT",
+                    LicenseTypeLicenseContent = "MIT License\n\nCopyright (c) 2017 Meshack Musundi\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the \"Software\"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\nSOFTWARE."
+                }
+            );
+
+            Licenses.Add(
+                new License
+                {
                     Title = "Icons by https://materialdesignicons.com/",
                     Url = "https://github.com/PrismLibrary/Prism",
                     Author = "https://materialdesignicons.com/",
