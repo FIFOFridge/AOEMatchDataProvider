@@ -2,6 +2,7 @@
 using AOEMatchDataProvider.Controls.MatchData;
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
+using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Models;
 using AOEMatchDataProvider.Mvvm;
 using AOEMatchDataProvider.Services;
@@ -135,8 +136,6 @@ namespace AOEMatchDataProvider.ViewModels
                     false,
                     view => view.DataContext == this //if view has this context then handle operation
                 );
-
-            Task.Run(UpdateUsersData);
         }
 
         //Request more detailed user rank data if needed, only in case of team games, when team game elo is not not unreliable
@@ -270,11 +269,15 @@ namespace AOEMatchDataProvider.ViewModels
             if (!navigationContext.Parameters.ContainsKey("MatchType"))
                 throw new ArgumentNullException();
 
+            ApplicationCommands.SetMaxWindowOpacity.Execute(0.9);
+
             UserMatchData = (List<Models.UserMatchData>)navigationContext.Parameters["UserMatchData"];
             MatchType = (MatchType)navigationContext.Parameters["MatchType"];
 
-            //Task.Run(UpdateUsersData);
+            NavigationHelper.NavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
+
             EventAggregator.GetEvent<UserCollectionChanged>().Publish(userMatchData);
+            Task.Run(UpdateUsersData);
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

@@ -1,10 +1,13 @@
-﻿using AOEMatchDataProvider.Events.Views;
+﻿using AOEMatchDataProvider.Command;
+using AOEMatchDataProvider.Events.Views;
+using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Models;
 using AOEMatchDataProvider.Services;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
+using Prism.Regions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +19,7 @@ using System.Windows.Controls;
 
 namespace AOEMatchDataProvider.ViewModels
 {
-    public class InitialResourcesValidationViewModel : BindableBase
+    public class InitialResourcesValidationViewModel : BindableBase, INavigationAware
     {
         System.Windows.Visibility resourcesStateErrorVisibility;
         System.Windows.Visibility ResourcesStateErrorVisibility { get => resourcesStateErrorVisibility; set => SetProperty(ref resourcesStateErrorVisibility, value); }
@@ -37,17 +40,19 @@ namespace AOEMatchDataProvider.ViewModels
         IStorageService StorageService { get; }
         IEventAggregator EventAggregator { get; }
         IUserRankService UserRankService { get; }
+        IApplicationCommands ApplicationCommands { get; }
 
         public DelegateCommand RetryUpdateCommand { get; set; }
 
         Timer retryTimer;
 
-        public InitialResourcesValidationViewModel(IStorageService storageService, ILogService logService, IEventAggregator eventAggregator, IUserRankService userRankService)
+        public InitialResourcesValidationViewModel(IStorageService storageService, ILogService logService, IEventAggregator eventAggregator, IUserRankService userRankService, IApplicationCommands applicationCommands)
         {
             StorageService = storageService;
             LogService = logService;
             EventAggregator = eventAggregator;
             UserRankService = userRankService;
+            ApplicationCommands = applicationCommands;
 
             EventAggregator.GetEvent<ViewDestroyed>().Subscribe(
                 HandleViewDestroyed,
@@ -60,6 +65,23 @@ namespace AOEMatchDataProvider.ViewModels
 
             ResourcesStateErrorVisibility = System.Windows.Visibility.Collapsed;
             ValidateResourcesState();
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            ApplicationCommands.SetMaxWindowOpacity.Execute(1);
+
+            NavigationHelper.NavigateTo("QuickActionRegion", "BottomShadowPanel", null, out _);
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
         }
 
         //todo: make app check for updates

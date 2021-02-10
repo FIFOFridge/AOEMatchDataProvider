@@ -1,6 +1,7 @@
 ﻿using AOEMatchDataProvider.Converters;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Resources.Other;
 using AOEMatchDataProvider.Services;
 using System;
 using System.Collections.Generic;
@@ -111,6 +112,21 @@ namespace AOEMatchDataProvider.Controls.MatchData
             {
                 borderColor = value;
                 //CreateRightBorderGradient(value);
+                OnPropertyChanged();
+            }
+        }
+
+        int borderColorGradientAngle;
+        public int BorderColorGradientAngle
+        {
+            get
+            {
+                return borderColorGradientAngle;
+            }
+
+            protected set
+            {
+                borderColorGradientAngle = value;
                 OnPropertyChanged();
             }
         }
@@ -261,20 +277,6 @@ namespace AOEMatchDataProvider.Controls.MatchData
             userRankModeConverter = new UserRankModeConverter();
         }
 
-        //LinearGradientBrush CreateRightBorderGradient(string color)
-        //{
-        //    LinearGradientBrush gradientBrush = new LinearGradientBrush();
-        //    gradientBrush.EndPoint = new Point(0.5, 1);
-        //    gradientBrush.StartPoint = new Point(0.5, 0);
-
-        //    var playerColor = (Color)ColorConverter.ConvertFromString(color);
-
-        //    gradientBrush.GradientStops.Add(new GradientStop(Colors.Transparent, 0.90)); //transparent
-        //    gradientBrush.GradientStops.Add(new GradientStop(playerColor, 0.0));
-
-        //    return gradientBrush;
-        //}
-
         public void UpdateUserELO()
         {
             //primary elo
@@ -327,7 +329,13 @@ namespace AOEMatchDataProvider.Controls.MatchData
             if (UserMatchData.Color == null)
                 throw new InvalidOperationException("Player color can not be null");
 
-            BorderColor = UserMatchData.Color;
+            //BorderColor = UserMatchData.Color;
+            
+            var key = UserMatchData.Color.ToLower();
+            if(ColorsMaping.Colors.TryGetValue(key, out string mapedColor))
+                BorderColor = mapedColor;
+            else
+                BorderColor = "Black";
         }
 
         //reposition contents placments binding based on ContentAlign dependency property
@@ -335,21 +343,15 @@ namespace AOEMatchDataProvider.Controls.MatchData
         {
             if (ContentAlign == PlayerPanelContentAlignMode.Left)
             {
-                BaseElementColumnIndex = 1;
                 BorderColumnIndex = 0;
-                HorizontalBorderColumnIndex = 1;
                 ContentHorizontalAlignment = HorizontalAlignment.Left;
-                LeftColumnWidth = "150*";
-                RightColumnWidth = "10";
+                BorderColorGradientAngle = -90;
             }
             else //right
             {
-                BaseElementColumnIndex = 3;
-                BorderColumnIndex = 4;
-                HorizontalBorderColumnIndex = 3;
+                BorderColumnIndex = 2;
                 ContentHorizontalAlignment = HorizontalAlignment.Right;
-                LeftColumnWidth = "10";
-                RightColumnWidth = "150*";
+                BorderColorGradientAngle = 90;
             }
         }
     }

@@ -11,6 +11,6 @@ namespace AOEMatchDataProvider.Mvvm
     {
         Window Shell { get; }
 
-        bool IgnoreInput { get; set; }
+        //bool IgnoreInput { get; set; }
     }
 }

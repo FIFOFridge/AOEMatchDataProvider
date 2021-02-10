@@ -12,6 +12,8 @@
         AllowsTransparency="True"
         Topmost="True"
         
+        Focusable="False"
+        
         Left="50"
         Top="20"
         
@@ -22,7 +24,7 @@
         
         Opacity="{Binding Opacity}"
        
-        Title="MatchDataView" Height="200" Width="550"
+        Title="MatchDataView" Height="300" Width="550"
     >
     <Window.Resources>
         <ResourceDictionary>
@@ -42,10 +44,9 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="28"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
-            <RowDefinition Height="20"/>
+            <RowDefinition Height="{Binding ElementName=QuickActionRegionContentControl, Path=Height}"/>
         </Grid.RowDefinitions>
 
         <!-- Title bar and buttons -->
@@ -57,7 +58,7 @@
             HorizontalAlignment="Left"
             Orientation="Horizontal"
             >
-            <Button Command="{Binding CloseAppCommand}" Style="{DynamicResource TransparentImageButton}">
+            <Button Command="{Binding CloseAppCommand}" Style="{StaticResource TransparentImageButton}">
                     <Viewbox Width="24" Height="24">
                         <Canvas Width="24" Height="24">
                             <Path Fill="{DynamicResource ForegroundBrush}" Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
@@ -65,14 +66,16 @@
                     </Viewbox>
             </Button>
 
-            <Button Command="{Binding ShowLicensesWindowCommand}" Style="{DynamicResource TransparentImageButton}">
+            <Button Command="{Binding ShowLicensesWindowCommand}" Style="{StaticResource TransparentImageButton}">
                 <Viewbox Width="24" Height="24">
                     <Canvas Width="24" Height="24">
                         <Path Fill="{DynamicResource ForegroundBrush}" Data="M13.5,4A1.5,1.5 0 0,0 12,5.5A1.5,1.5 0 0,0 13.5,7A1.5,1.5 0 0,0 15,5.5A1.5,1.5 0 0,0 13.5,4M13.14,8.77C11.95,8.87 8.7,11.46 8.7,11.46C8.5,11.61 8.56,11.6 8.72,11.88C8.88,12.15 8.86,12.17 9.05,12.04C9.25,11.91 9.58,11.7 10.13,11.36C12.25,10 10.47,13.14 9.56,18.43C9.2,21.05 11.56,19.7 12.17,19.3C12.77,18.91 14.38,17.8 14.54,17.69C14.76,17.54 14.6,17.42 14.43,17.17C14.31,17 14.19,17.12 14.19,17.12C13.54,17.55 12.35,18.45 12.19,17.88C12,17.31 13.22,13.4 13.89,10.71C14,10.07 14.3,8.67 13.14,8.77Z" />
                     </Canvas>
                 </Viewbox>
             </Button>
-            
+
+            <Label HorizontalAlignment="Center" HorizontalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontFamily="{StaticResource TexturinaThin}" Content="{Binding Title, FallbackValue='AOE Match Data Provider'}"/>
+
             <StackPanel.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                     <GradientStop Color="#FF1D1A27" Offset="0.85"/>
@@ -82,6 +85,6 @@
         </StackPanel>
 
         <ContentControl Grid.Row="1" prism:RegionManager.RegionName="MainRegion" Grid.ColumnSpan="2" Grid.RowSpan="{Binding MainRegionRowSpan}"/>
-        <ContentControl Grid.Row="2" prism:RegionManager.RegionName="QuickActionRegion" Grid.ColumnSpan="2"/>
+        <ContentControl x:Name="QuickActionRegionContentControl"  Grid.Row="2" prism:RegionManager.RegionName="QuickActionRegion" Grid.ColumnSpan="2" MaxHeight="75"/>
     </Grid>
 </Window>

@@ -16,13 +16,14 @@ namespace AOEMatchDataProvider.Resources.Other
         {
             colors = new Dictionary<string, string>
             {
-                { "Blue",   "#FF3545d4" },
-                { "Red",    "#FFd43943" },
-                { "Green",  "#FF58d439" },
-                { "Yellow", "#FFe6d929" },
-                { "Cyan",   "#FF35decd" },
-                { "Grey",   "#FF5c5c5c" },
-                { "Orange", "#FFdeae35" }
+                { "blue",   "#FF3165EA" },
+                { "red",    "#FFEA3131" },
+                { "green",  "#FF41C13E" },
+                { "yellow", "#FFEFE83F" },
+                { "cyan",   "#FF3EAAC1" },
+                { "pink",   "#FFF14BE1" },
+                { "grey",   "#FF454545" },
+                { "orange", "#FFFBA23B" }
             };
 
             Colors = colors;

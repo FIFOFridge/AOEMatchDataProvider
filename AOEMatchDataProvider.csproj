@@ -192,6 +192,7 @@
     <Compile Include="Events\Views\DisplayView.cs" />
     <Compile Include="Events\Views\InfoBar\InfoBarMessageChanged.cs" />
     <Compile Include="Events\Views\InitialConfiguration\UserIdChanged.cs" />
+    <Compile Include="Events\Views\Shell\ShellResizedEvent.cs" />
     <Compile Include="Events\Views\TeamsPanel\UserCollectionChanged.cs" />
     <Compile Include="Events\Views\TeamsPanel\UserRatingChangedEvent.cs" />
     <Compile Include="Events\Views\ViewDestroyed.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Models\UserRankService\UserRankResponseWrapper.cs" />
     <Compile Include="Models\UserRankService\UserRatingResponse.cs" />
     <Compile Include="Models\Views\ShellState.cs" />
+    <Compile Include="Models\Views\Shell\Rectangle.cs" />
     <Compile Include="Mvvm\IShell.cs" />
     <Compile Include="Other\AppWrapper.cs" />
     <Compile Include="Other\ICriticalDisposable.cs" />
@@ -249,6 +251,7 @@
     <Compile Include="Services\IStorageService.cs" />
     <Compile Include="Services\IUserRankService.cs" />
     <Compile Include="ViewModels\AppStateInfoViewModel.cs" />
+    <Compile Include="ViewModels\BottomButtonsPanelViewModel.cs" />
     <Compile Include="ViewModels\InfoBarViewModel.cs" />
     <Compile Include="ViewModels\InitialConfigurationViewModel.cs" />
     <Compile Include="ViewModels\InitialResourcesValidationViewModel.cs" />
@@ -261,6 +264,12 @@
     </Compile>
     <Compile Include="Views\AppStateInfo.xaml.cs">
       <DependentUpon>AppStateInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BottomButtonsPanel.xaml.cs">
+      <DependentUpon>BottomButtonsPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\BottomShadowPanel.xaml.cs">
+      <DependentUpon>BottomShadowPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\InfoBar.xaml.cs">
       <DependentUpon>InfoBar.xaml</DependentUpon>
@@ -317,6 +326,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Resources\Dictionaries\ViewCategories\BottomPanel\Sizes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Resources\Fonts\Fonts.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -330,6 +343,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AppStateInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BottomButtonsPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\BottomShadowPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -394,6 +415,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\Parsers\" />
+    <Folder Include="Resources\Dictionaries\ViewCategories\Configuration\" />
+    <Folder Include="Resources\Dictionaries\ViewCategories\TeamsPanel\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Fonts\Texturina_OFL.txt">

@@ -1,5 +1,6 @@
 ﻿using AOEMatchDataProvider.Command;
 using AOEMatchDataProvider.Events.Views;
+using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Services;
 using Prism.Events;
 using Prism.Mvvm;
@@ -81,6 +82,9 @@ namespace AOEMatchDataProvider.ViewModels
             if (!(navigationContext.Parameters.ContainsKey("description")))
                 throw new InvalidOperationException($"Navigation event is missing 'description' parameter: {navigationContext}");
 
+            NavigationHelper.NavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
+            
+            ApplicationCommands.SetMaxWindowOpacity.Execute(0.85);
             Description = navigationContext.Parameters["description"] as string;
         }
 

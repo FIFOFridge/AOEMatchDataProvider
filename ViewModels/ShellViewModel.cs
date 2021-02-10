@@ -1,4 +1,5 @@
 ﻿using AOEMatchDataProvider.Command;
+using AOEMatchDataProvider.Events.Views.Shell;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Helpers.Request;
@@ -11,11 +12,14 @@ using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 
 namespace AOEMatchDataProvider.ViewModels
 {
@@ -32,7 +36,7 @@ namespace AOEMatchDataProvider.ViewModels
             set
             {
                 SetProperty(ref opacity, value);
-                LogService.Info($"Window opacity has been changed to: {value}");
+                LogService.Debug($"Window opacity has been changed to: {value}");
             }
         }
 
@@ -47,10 +51,9 @@ namespace AOEMatchDataProvider.ViewModels
             set
             {
                 SetProperty(ref canUpdateMatchData, value);
-                LogService.Info($"CanUpdateMatchData has been changed to: {value}");
+                LogService.Debug($"CanUpdateMatchData has been changed to: {value}");
             }
         }
-
         #region Services
         public IApplicationCommands ApplicationCommands { get; }
         public IAppConfigurationService AppConfigurationService { get; }
@@ -75,11 +78,37 @@ namespace AOEMatchDataProvider.ViewModels
         public DelegateCommand ShowWindowCommand { get; private set; }
         public DelegateCommand HideWindowCommand { get; private set; }
         public DelegateCommand<object> SetTransparencyCommand { get; private set; }
+        public DelegateCommand<object> SetCurrentShellMaxOpacityCommand { get; private set; }
+        public DelegateCommand<object> SetIgnoreInputCommand { get; private set; }
 
         public DelegateCommand CloseAppCommand { get; private set; }
         public DelegateCommand ShowLicensesWindowCommand { get; private set; }
         
         public Models.Match CurrentMatch { get; set; }
+        
+        bool ignoreInput;
+        public bool IgnoreInput
+        {
+            get
+            {
+                return ignoreInput;
+            }
+
+            set
+            {
+                if (value == true)
+                    EnableIgnoreInput();
+                else
+                    DisableIgnoreInput();
+
+                ignoreInput = value;
+            }
+        }
+
+        public double currentMaxOpacity;
+        public double CurrentMaxOpacity { get; set; }
+
+        static readonly double minimumVisibleOpacity = 0.5;
 
         public ShellViewModel(
             IApplicationCommands applicationCommands,
@@ -110,28 +139,31 @@ namespace AOEMatchDataProvider.ViewModels
             ShowWindowCommand = new DelegateCommand(() => SetWindowOpacity(1));
             HideWindowCommand = new DelegateCommand(() => SetWindowOpacity(0));
             SetTransparencyCommand = new DelegateCommand<object>((p) => SetWindowOpacity(p));
+            SetCurrentShellMaxOpacityCommand = new DelegateCommand<object>(SetWindowMaxOpacity);
+            SetIgnoreInputCommand = new DelegateCommand<object>(SetIgnoreInput);
             //SetTransparencyCommand = new DelegateCommand<object>(SetWindowOpacity);
 
             ApplicationCommands = applicationCommands;
 
-            //register UpdateMatchDataCommand app command
             ApplicationCommands.UpdateMatchDataCommand.RegisterCommand(UpdateMatchDataCommand);
             ApplicationCommands.ToggleWindowVisibility.RegisterCommand(ToggleWindowVisibilityCommand);
             ApplicationCommands.ShowWindow.RegisterCommand(ShowWindowCommand);
             ApplicationCommands.HideWindow.RegisterCommand(HideWindowCommand);
-            ApplicationCommands.SetTransparency.RegisterCommand(SetTransparencyCommand);
+            ApplicationCommands.SetWindowOpacity.RegisterCommand(SetTransparencyCommand);
+            ApplicationCommands.SetMaxWindowOpacity.RegisterCommand(SetCurrentShellMaxOpacityCommand);
+            ApplicationCommands.SetIgnoreInput.RegisterCommand(SetIgnoreInputCommand);
             #endregion Setup Application Commands
             #region Window/Shell Commands
             CloseAppCommand = new DelegateCommand(CloseApp);
             ShowLicensesWindowCommand = new DelegateCommand(ShowLicensesWindow);
             #endregion
 
-            //setup app toggle key
-            //keyHookService.Add(System.Windows.Forms.Keys.Home, ToggleWindowVisibilityCommand.Execute);
+            EventAggregator.GetEvent<ShellResizedEvent>().Subscribe(HandleShellResizedEvent);
 
             CanUpdateMatchData = true;
         }
 
+        //todo: refactor whole UpdateMatchData by dividing it to separate methods (? and move logic to processing service?)
         async void UpdateMatchData()
         {
             if (!canUpdateMatchData) //make sure we can update
@@ -144,15 +176,11 @@ namespace AOEMatchDataProvider.ViewModels
 
             try
             {
-                //userId is missing so redirect it to configuration screen
-                if (!(StorageService.TryGet("settings", out object appSettings)))
-                {
-                    RegionManager.RequestNavigate("MainRegion", "InitialConfiguration");
-                }
+                var appSettings = StorageService.Get<AppSettings>("settings");
 
-                requestWrapper = await UserRankService.GetUserMatch(((AppSettings)appSettings).UserId, AppConfigurationService.MatchUpdateTimeout);
+                requestWrapper = await UserRankService.GetUserMatch(appSettings.UserId, AppConfigurationService.MatchUpdateTimeout);
 
-                //if request failed then display API connection issues
+                //if request failed then display connection issues
                 if (requestWrapper == null || requestWrapper.Exception != null)
                 {
                     var logProperties = new Dictionary<string, object>();
@@ -161,13 +189,13 @@ namespace AOEMatchDataProvider.ViewModels
 
                     LogService.Error($"Unable to update match data: {requestWrapper.Exception.ToString()}", logProperties);
 
-                    navigationParameter.Add("description", "Can not connect to API");
+                    navigationParameter.Add("description", "Unable to connect");
 
                     if (!NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter, out Exception exception))
                         AppCriticalExceptionHandlerService.HandleCriticalError(exception);
                 }
 
-                //if current match is already displayed then skip
+                //if current match has been already displayed then skip
                 if (CurrentMatch != null && requestWrapper.Value.MatchId == CurrentMatch.MatchId)
                 {
                     LogService.Debug("Skiping match update...");
@@ -217,7 +245,7 @@ namespace AOEMatchDataProvider.ViewModels
 
                     //display error to user
                     navigationParameter.Add("description", $"Unable to get match data: {requestError}");
-                    navigationParameter.Add("IsError", true);
+                    navigationParameter.Add("isError", true);
 
                     if (!NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter, out Exception exception))
                         AppCriticalExceptionHandlerService.HandleCriticalError(exception);
@@ -257,11 +285,11 @@ namespace AOEMatchDataProvider.ViewModels
 
             if (Opacity <= 1 && Opacity > 0) //hide if visible
             {
-                Opacity = 0;
+                SetWindowOpacity(0);
             }
             else //show if hidden
             {
-                Opacity = 1;
+                SetWindowOpacity(1);
             }
         }
 
@@ -272,7 +300,37 @@ namespace AOEMatchDataProvider.ViewModels
             //todo: add safe checks, handle convertion exceptions
             var _opacity = double.Parse(opacity.ToString());
 
+            //make sure _opacity will be smaller then max one
+            if (_opacity > CurrentMaxOpacity)
+                _opacity = CurrentMaxOpacity;
+
             Opacity = _opacity;
+        }
+
+        void SetWindowMaxOpacity(object opacity)
+        {
+            var _opacity = double.Parse(opacity.ToString());
+
+            if (_opacity < minimumVisibleOpacity)
+                throw new ArgumentOutOfRangeException($"Opacity defined as in visible range cannot be less then: {minimumVisibleOpacity}");
+
+            CurrentMaxOpacity = _opacity;
+
+            LogService.Debug($"CurrentMaxOpacity set to: {CurrentMaxOpacity}");
+
+            //check if current window opacity need update
+            //if window is hidden
+            if(Opacity > minimumVisibleOpacity)
+            {
+                //update current window opacity if window is visible
+                if (Opacity != CurrentMaxOpacity)
+                    SetWindowOpacity(CurrentMaxOpacity);
+            }
+        }
+
+        void SetIgnoreInput(object ignoreInputState)
+        {
+            IgnoreInput = (bool)ignoreInputState;
         }
 
         void ShowLicensesWindow()
@@ -296,5 +354,111 @@ namespace AOEMatchDataProvider.ViewModels
 
             Environment.Exit(0);
         }
+
+        #region Ignore Input Logic
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetCursorPos(ref Win32Point pt);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct Win32Point
+        {
+            public Int32 X;
+            public Int32 Y;
+        };
+
+        Models.Views.Shell.Rectangle ShellRectangle { get; set; }
+
+        void HandleShellResizedEvent(Models.Views.Shell.Rectangle rectangle)
+        {
+            ShellRectangle = rectangle;
+        }
+
+        static Point GetMousePosition()
+        {
+            var w32Mouse = new Win32Point();
+            GetCursorPos(ref w32Mouse);
+
+            return new Point(w32Mouse.X, w32Mouse.Y);
+        }
+
+        System.Timers.Timer refreshMousePositionTimer;
+
+        void EnableIgnoreInput()
+        {
+            if (refreshMousePositionTimer != null)
+            {
+                if (refreshMousePositionTimer.Enabled)
+                {
+                    refreshMousePositionTimer.Stop();
+                }
+
+                refreshMousePositionTimer.Dispose();
+            }
+
+            refreshMousePositionTimer = new System.Timers.Timer
+            {
+                AutoReset = true,
+                Interval = 1000 / 10
+            };
+            refreshMousePositionTimer.Elapsed += RefreshMousePositionTimer_Elapsed;
+            refreshMousePositionTimer.Start();
+        }
+
+        static readonly int marginHorziontal = 100;
+        static readonly int marginVertical = 100;
+
+        private void RefreshMousePositionTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            if (!IgnoreInput)
+                return;
+
+            var point = GetMousePosition();
+            bool isNearHorizontal = false;
+            bool isNearVertical = false;
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                if (point.X < (ShellRectangle.Left + ShellRectangle.Width + marginHorziontal))
+                    isNearHorizontal = true;
+                else
+                    isNearHorizontal = false;
+
+                if (point.Y < (ShellRectangle.Top + ShellRectangle.Height + marginVertical))
+                    isNearVertical = true;
+                else
+                    isNearVertical = false;
+
+                if (isNearHorizontal && isNearVertical)
+                {
+                    //check if its no already set
+                    //to avoid unnecessary calls cause it will be called each 100ms if IgnoreInput is set
+                    //and SetWindowOpacity is based on objectType -> ToString() -> double.Parse(...)
+                    //and this methods is already running by UI Dispatcher
+                    if (Opacity != 0)
+                        SetWindowOpacity(0); //hide if its near
+                }
+                else
+                {
+                    //check if its no already set
+                    if (Opacity != CurrentMaxOpacity)
+                        SetWindowOpacity(CurrentMaxOpacity); //show otherwise
+                }
+            });
+        }
+
+        void DisableIgnoreInput()
+        {
+            if (refreshMousePositionTimer != null)
+            {
+                if (refreshMousePositionTimer.Enabled)
+                {
+                    refreshMousePositionTimer.Stop();
+                }
+
+                refreshMousePositionTimer.Dispose();
+            }
+        }
+        #endregion
     }
 }

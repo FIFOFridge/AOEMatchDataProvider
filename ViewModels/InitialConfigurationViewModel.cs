@@ -1,6 +1,8 @@
-﻿using AOEMatchDataProvider.Events.Views;
+﻿using AOEMatchDataProvider.Command;
+using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.InfoBar;
 using AOEMatchDataProvider.Events.Views.InitialConfiguration;
+using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Helpers.Validation;
 using AOEMatchDataProvider.Models;
@@ -20,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace AOEMatchDataProvider.ViewModels
 {
-    public class InitialConfigurationViewModel : BindableBase
+    public class InitialConfigurationViewModel : BindableBase, INavigationAware
     {
         UserIdMode detectedUserIdMode;
         string userId;
@@ -97,6 +99,7 @@ namespace AOEMatchDataProvider.ViewModels
 
         public DelegateCommand ContinueCommand { get; }
 
+        IApplicationCommands ApplicationCommands { get; }
         IEventAggregator EventAggregator { get; }
         IRegionManager RegionManager { get; }
         IStorageService StorageService { get; }
@@ -104,18 +107,19 @@ namespace AOEMatchDataProvider.ViewModels
         ILogService LogService { get; }
 
         public InitialConfigurationViewModel(
-            IEventAggregator eventAggregator, 
+            IEventAggregator eventAggregator,
             IRegionManager regionManager,
             IStorageService storageService,
             IUserRankService userRankService,
-            ILogService logService
-            )
+            ILogService logService,
+            IApplicationCommands applicationCommands)
         {
             EventAggregator = eventAggregator;
             RegionManager = regionManager;
             StorageService = storageService;
             UserRankService = userRankService;
             LogService = logService;
+            ApplicationCommands = applicationCommands;
 
             EventAggregator.GetEvent<UserIdChanged>().Subscribe(UserIdChangedHandler);
 
@@ -126,6 +130,22 @@ namespace AOEMatchDataProvider.ViewModels
             detectedUserIdMode = UserIdMode.Invalid;
 
             UpdateCanContinue();
+        }
+
+        public void OnNavigatedTo(NavigationContext navigationContext)
+        {
+            NavigationHelper.NavigateTo("QuickActionRegion", "BottomShadowPanel", null, out _);
+            ApplicationCommands.SetMaxWindowOpacity.Execute(1);
+        }
+
+        public bool IsNavigationTarget(NavigationContext navigationContext)
+        {
+            return false;
+        }
+
+        public void OnNavigatedFrom(NavigationContext navigationContext)
+        {
+
         }
 
         //void HandleResourcesDownload(Task resourcesDownloadTask)

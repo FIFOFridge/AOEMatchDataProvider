@@ -8,7 +8,9 @@
              xmlns:common="clr-namespace:AOEMatchDataProvider.Controls.Common"
              mc:Ignorable="d" 
              prism:ViewModelLocator.AutoWireViewModel="True"
-             d:DesignHeight="250" d:DesignWidth="500">
+             d:DesignHeight="250" 
+             d:DesignWidth="500"
+             >
     <Grid Background="{DynamicResource BackgroundBrush}">
         <!--<WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center" >
             <Label Foreground="Wheat">b</Label>

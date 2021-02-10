@@ -15,7 +15,9 @@ namespace AOEMatchDataProvider.Command
         public CompositeCommand ToggleWindowVisibility { get; } = new CompositeCommand();
         public CompositeCommand HideWindow { get; } = new CompositeCommand();
         public CompositeCommand ShowWindow { get; } = new CompositeCommand();
-        public CompositeCommand SetTransparency { get; } = new CompositeCommand();
+        public CompositeCommand SetWindowOpacity { get; } = new CompositeCommand();
+        public CompositeCommand SetMaxWindowOpacity { get; } = new CompositeCommand();
+        public CompositeCommand SetIgnoreInput { get; } = new CompositeCommand();
         #endregion Shell managment
 
         public ApplicationCommands() { }

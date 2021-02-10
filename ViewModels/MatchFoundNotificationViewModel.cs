@@ -59,7 +59,8 @@ namespace AOEMatchDataProvider.ViewModels
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             //re enable mouse input
-            Shell.IgnoreInput = false;
+            //Shell.IgnoreInput = false;
+            ApplicationCommands.SetIgnoreInput.Execute(false);
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -71,9 +72,14 @@ namespace AOEMatchDataProvider.ViewModels
             if (!navigationContext.Parameters.ContainsKey("MatchType"))
                 throw new ArgumentNullException();
 
+            NavigationHelper.NavigateTo("QuickActionRegion", "BottomShadowPanel", null, out _);
+
+            ApplicationCommands.SetMaxWindowOpacity.Execute(0.8);
+
             //ignore mouse input
-            Shell.IgnoreInput = true;
-            ApplicationCommands.SetTransparency.Execute(0.6);
+            //Shell.IgnoreInput = true;
+            ApplicationCommands.SetIgnoreInput.Execute(true);
+            ApplicationCommands.SetWindowOpacity.Execute(0.6);
             parameters = navigationContext.Parameters;
         }
 

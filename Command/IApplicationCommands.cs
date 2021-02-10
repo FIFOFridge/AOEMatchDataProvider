@@ -13,9 +13,11 @@ namespace AOEMatchDataProvider.Command
 
         #region Shell managment
         CompositeCommand ToggleWindowVisibility { get; }
-        CompositeCommand SetTransparency { get; }
+        CompositeCommand SetWindowOpacity { get; }
         CompositeCommand HideWindow { get; }
         CompositeCommand ShowWindow { get; }
+        CompositeCommand SetMaxWindowOpacity { get; }
+        CompositeCommand SetIgnoreInput { get; }
         #endregion Shell managment
     }
 }
