@@ -10,8 +10,31 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
-#keys
+# generate/process/repo source specific content
+processResources.ps1
+licenseGenerator.au3
+
+*.cer
 *.pfx
+*.pvk
+*.spc
+
+#deploy
+.deploy/
+.deploy/.gitkeep
+
+#bundled (single .exe) installer
+BundledInstaller.exe
+
+#generated bundle files list
+.bundle-file-list.au3
+
+#sign stuff
+.sign/
+.sign/.gitkeep
+
+#build + sign + deploy
+.deploy.ps1
 
 #ResourcesGenerationScripts
 ResourcesGenerationScripts/
