@@ -91,8 +91,10 @@ namespace AOEMatchDataProvider.Services.Default
                 //sumbit query
                 requestWrapper.RequestUrl = finallQuery;
                 var requestResult = requestWrapper.RequestResponseWrapper = await RequestHelper.GetAsync(finallQuery, cts.Token);
-
                 var responseRaw = requestResult.ResponseContent;
+
+                if (requestResult.IsSuccess)
+                    throw new AggregateException("Request failed", requestResult.Exception);
 
                 requestWrapper.Value = (this as IUserRankDataProcessingService).ProcessMatch(responseRaw, stringResources);
             }
@@ -169,6 +171,9 @@ namespace AOEMatchDataProvider.Services.Default
                     cts.Token,
                     DateTime.UtcNow.AddHours(1.5)
                     );
+
+                if (requestResult.IsSuccess)
+                    throw new AggregateException("Request failed", requestResult.Exception);
 
                 requestWrapper.Value = (this as IUserRankDataProcessingService).ProcessUserRank(requestResult.ResponseContent, rankMode, stringResources);
             }

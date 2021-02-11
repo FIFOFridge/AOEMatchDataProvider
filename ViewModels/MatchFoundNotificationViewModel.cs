@@ -72,7 +72,7 @@ namespace AOEMatchDataProvider.ViewModels
             if (!navigationContext.Parameters.ContainsKey("MatchType"))
                 throw new ArgumentNullException();
 
-            NavigationHelper.NavigateTo("QuickActionRegion", "BottomShadowPanel", null, out _);
+            NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomShadowPanel", null, out _);
 
             ApplicationCommands.SetMaxWindowOpacity.Execute(0.8);
 
@@ -87,7 +87,7 @@ namespace AOEMatchDataProvider.ViewModels
         {
             ApplicationCommands.ShowWindow.Execute(null);
 
-            if(!NavigationHelper.NavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
+            if(!NavigationHelper.TryNavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
                 AppCriticalExceptionHandlerService.HandleCriticalError(exception);
         }
 
@@ -96,7 +96,7 @@ namespace AOEMatchDataProvider.ViewModels
             //hide window and then navigate to match
             ApplicationCommands.HideWindow.Execute(null);
 
-            if (!NavigationHelper.NavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
+            if (!NavigationHelper.TryNavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
                 AppCriticalExceptionHandlerService.HandleCriticalError(exception);
         }
 

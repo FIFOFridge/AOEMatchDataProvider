@@ -61,7 +61,7 @@ namespace AOEMatchDataProvider.Services.Default
 #if DEBUG
             config.AddRule(LogLevel.Debug, LogLevel.Fatal, logFile);
 #else //RELEASE
-            config.AddRule(LogLevel.Info, LogLevel.Fatal, logFile);
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logFile);
 #endif
 
             LogManager.Configuration = config;

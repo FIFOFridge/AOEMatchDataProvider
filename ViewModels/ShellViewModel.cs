@@ -64,6 +64,8 @@ namespace AOEMatchDataProvider.ViewModels
         public IEventAggregator EventAggregator { get; }
         public IRegionManager RegionManager { get; }
         public ILogService LogService { get; }
+        public IAoeDetectionService AoeDetectionService { get; }
+        public IMatchProcessingService MatchProcessingService { get; }
         #endregion Services
 
         //bool isRunning;
@@ -83,9 +85,9 @@ namespace AOEMatchDataProvider.ViewModels
 
         public DelegateCommand CloseAppCommand { get; private set; }
         public DelegateCommand ShowLicensesWindowCommand { get; private set; }
-        
+
         public Models.Match CurrentMatch { get; set; }
-        
+
         bool ignoreInput;
         public bool IgnoreInput
         {
@@ -119,8 +121,9 @@ namespace AOEMatchDataProvider.ViewModels
             IStorageService storageService,
             IEventAggregator eventAggregator,
             IRegionManager regionManager,
-            ILogService logService
-            )
+            ILogService logService,
+            IAoeDetectionService aoeDetectionService,
+            IMatchProcessingService matchProcessingService)
         {
             #region Assign services
             ApplicationCommands = applicationCommands;
@@ -132,9 +135,12 @@ namespace AOEMatchDataProvider.ViewModels
             EventAggregator = eventAggregator;
             RegionManager = regionManager;
             LogService = logService;
+            AoeDetectionService = aoeDetectionService;
+            MatchProcessingService = matchProcessingService;
             #endregion Assign services
+
             #region Setup Application Commands
-            UpdateMatchDataCommand = new DelegateCommand(UpdateMatchData);
+            UpdateMatchDataCommand = new DelegateCommand(UpdateAppState);
             ToggleWindowVisibilityCommand = new DelegateCommand(ToggleWindowVisibility);
             ShowWindowCommand = new DelegateCommand(() => SetWindowOpacity(1));
             HideWindowCommand = new DelegateCommand(() => SetWindowOpacity(0));
@@ -163,120 +169,67 @@ namespace AOEMatchDataProvider.ViewModels
             CanUpdateMatchData = true;
         }
 
-        //todo: refactor whole UpdateMatchData by dividing it to separate methods (? and move logic to processing service?)
-        async void UpdateMatchData()
+        async void UpdateAppState()
         {
             if (!canUpdateMatchData) //make sure we can update
                 return;
 
-            canUpdateMatchData = false;
-
-            NavigationParameters navigationParameter = new NavigationParameters();
-            RequestWrapper<Models.Match> requestWrapper = null;
-
             try
             {
-                var appSettings = StorageService.Get<AppSettings>("settings");
+                NavigationParameters navigationParameter = new NavigationParameters();
 
-                requestWrapper = await UserRankService.GetUserMatch(appSettings.UserId, AppConfigurationService.MatchUpdateTimeout);
-
-                //if request failed then display connection issues
-                if (requestWrapper == null || requestWrapper.Exception != null)
+                if (!AoeDetectionService.IsRunning)
                 {
-                    var logProperties = new Dictionary<string, object>();
-                    logProperties.Add("exception", requestWrapper.Exception);
-                    logProperties.Add("stack", requestWrapper.Exception.StackTrace);
+                    navigationParameter.Add("description", "Waiting for game to start...");
 
-                    LogService.Error($"Unable to update match data: {requestWrapper.Exception.ToString()}", logProperties);
-
-                    navigationParameter.Add("description", "Unable to connect");
-
-                    if (!NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter, out Exception exception))
+                    if (!NavigationHelper.TryNavigateTo("MainRegion", "AppStateInfo", navigationParameter, out Exception exception))
+                    {
                         AppCriticalExceptionHandlerService.HandleCriticalError(exception);
+                        return;
+                    }
                 }
 
-                //if current match has been already displayed then skip
-                if (CurrentMatch != null && requestWrapper.Value.MatchId == CurrentMatch.MatchId)
+                var matchState = await MatchProcessingService.TryUpdateCurrentMatch();
+                switch (matchState)
                 {
-                    LogService.Debug("Skiping match update...");
-                    return;
-                }
+                    case Models.MatchProcessingService.MatchUpdateStatus.ConnectionError:
+                        navigationParameter.Add("description", "Unable to connect...");
+                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        break;
 
-                //update current match
-                CurrentMatch = requestWrapper.Value;
+                    case Models.MatchProcessingService.MatchUpdateStatus.ProcessingError:
+                        navigationParameter.Add("description", "Unable to process data, make sure you are using latest app version \n");
+                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        break;
 
-                if (requestWrapper.IsSuccess)
-                {
-#if DEBUG //if DEBUG and successed then display even old match
-                    navigationParameter.Add("UserMatchData", requestWrapper.Value.Users);
-                    navigationParameter.Add("MatchType", requestWrapper.Value.MatchType);
+#if RELEASE //Dont check in DEBUG to speed up debug process
+                    case Models.MatchProcessingService.MatchUpdateStatus.MatchEnded:
+                        navigationParameter.Add("description", "Waiting for match to start...");
+                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        break;
 
-                    if (requestWrapper.Value.IsInProgress)
-                        LogService.Debug("Displaying match in progress");
-                    else
-                        LogService.Debug("Displaying last (already finished) match");
-
-                    if (!NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter, out Exception exception))
-                        AppCriticalExceptionHandlerService.HandleCriticalError(exception);
-
-#else //if RELEASE and successed then check is in progress
-                    if(requestWrapper.Value.IsInProgress)
-                    {
-                        navigationParameter.Add("UserMatchData", requestWrapper.Value.Users);
-                        navigationParameter.Add("MatchType", requestWrapper.Value.MatchType);
-
-                        if (!NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter, out Exception exception))
-                            AppCriticalExceptionHandlerService.HandleCriticalError(exception);
-                    }
-                    else //if not in progress then display waiting screen
-                    {
-                        navigationParameter.Add("Message", "Waiting for match to start...");
-
-                        RegionManager.RequestNavigate("MainRegion", "AppStateInfo", navigationParameter);
-                    }
+                    case Models.MatchProcessingService.MatchUpdateStatus.UnsupportedMatchType:
+                        navigationParameter.Add("description", "Unsupported match type...");
+                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        break;
 #endif
-                }
-                //DEBUG & RELEASE, handle failed request
-                else //request not successed
-                {
-                    //log request fail
-                    var requestError = RequestWrapperErrorDescriptor.GetRequestWrapperExceptionDescription(requestWrapper); //get exception description
-                    LogService.Error($"Unable to complete match request: {requestError}");
 
-                    //display error to user
-                    navigationParameter.Add("description", $"Unable to get match data: {requestError}");
-                    navigationParameter.Add("isError", true);
+                    case Models.MatchProcessingService.MatchUpdateStatus.SupportedMatchType:
+                        navigationParameter.Add("UserMatchData", MatchProcessingService.CurrentMatch.Users);
+                        navigationParameter.Add("MatchType", MatchProcessingService.CurrentMatch.MatchType);
+                        NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter);
+                        break;
 
-                    if (!NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter, out Exception exception))
-                        AppCriticalExceptionHandlerService.HandleCriticalError(exception);
+                    case Models.MatchProcessingService.MatchUpdateStatus.UnknownError:
+                        navigationParameter.Add("description", "Unknow error occured during processing match");
+                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        break;
                 }
             }
-            catch (Exception e) //we have to handle most of exceptions while executing 'async void'
+            catch (Exception e)
             {
-                //todo: make sure these can be rethrow from 'async void'
-                //todo: if not forward them to App.HandleCriticalError(...)
-                //if (
-                //    e is StackOverflowException ||
-                //    e is ThreadAbortException ||
-                //    e is AccessViolationException
-                //   )
-                //    throw e; //rethrow if not related with method/or shouldn't be manually handled
-
-                //log exception and terminate app, as it should be done default in case of unhandled exception
-                //App.HandleCriticalError(e);
-
-                Dictionary<string, object> logProperties = new Dictionary<string, object>();
-                logProperties.Add("stack", e.StackTrace);
-
                 AppCriticalExceptionHandlerService.HandleCriticalError(e);
-                LogService.Error($"Unknow error occured while updating match data: {e.ToString()}", logProperties);
             }
-            finally
-            {
-                canUpdateMatchData = true;
-                //matchUpdateCancellationToken = CancellationToken.None; //timeout logic moved into UserRankServiec //clear cancellation token
-            }
-
         }
 
         void ToggleWindowVisibility()
@@ -320,7 +273,7 @@ namespace AOEMatchDataProvider.ViewModels
 
             //check if current window opacity need update
             //if window is hidden
-            if(Opacity > minimumVisibleOpacity)
+            if (Opacity > minimumVisibleOpacity)
             {
                 //update current window opacity if window is visible
                 if (Opacity != CurrentMaxOpacity)

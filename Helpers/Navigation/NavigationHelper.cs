@@ -16,7 +16,7 @@ namespace AOEMatchDataProvider.Helpers.Navigation
             regionManager = App.Resolve<IRegionManager>();
         }
 
-        public static bool NavigateTo(string region, string view, NavigationParameters navigationParameters, out Exception exception)
+        public static bool TryNavigateTo(string region, string view, NavigationParameters navigationParameters, out Exception exception)
         {
             Exception e = null;
 
@@ -38,6 +38,23 @@ namespace AOEMatchDataProvider.Helpers.Navigation
             //request navigation failed
             exception = e;
             return false;
+        }
+
+        public static void NavigateTo(string region, string view, NavigationParameters navigationParameters)
+        {
+            Exception e = null;
+
+            App.Current.Dispatcher.Invoke(() =>
+            {
+                regionManager.RequestNavigate(region, view, result =>
+                {
+                    e = result.Error;
+                },
+                navigationParameters);
+            });
+
+            //rethrow navigation exception
+            throw e;
         }
     }
 }

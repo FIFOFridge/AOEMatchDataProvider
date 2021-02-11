@@ -274,7 +274,7 @@ namespace AOEMatchDataProvider.ViewModels
             UserMatchData = (List<Models.UserMatchData>)navigationContext.Parameters["UserMatchData"];
             MatchType = (MatchType)navigationContext.Parameters["MatchType"];
 
-            NavigationHelper.NavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
+            NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
 
             EventAggregator.GetEvent<UserCollectionChanged>().Publish(userMatchData);
             Task.Run(UpdateUsersData);

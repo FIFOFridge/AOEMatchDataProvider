@@ -105,7 +105,7 @@ namespace AOEMatchDataProvider
             //make sure string resources are valid
             if (!storage.Has("stringResources"))
             {
-                if (!NavigationHelper.NavigateTo("MainRegion", "InitialResourcesValidation", null, out Exception exception))
+                if (!NavigationHelper.TryNavigateTo("MainRegion", "InitialResourcesValidation", null, out Exception exception))
                     HandleCriticalError(exception);
 
                 return;
@@ -118,7 +118,7 @@ namespace AOEMatchDataProvider
                 )
             )
             {
-                if (!NavigationHelper.NavigateTo("MainRegion", "InitialConfiguration", null, out Exception exception))
+                if (!NavigationHelper.TryNavigateTo("MainRegion", "InitialConfiguration", null, out Exception exception))
                     HandleCriticalError(exception);
 
                 return;
@@ -172,6 +172,7 @@ namespace AOEMatchDataProvider
             containerRegistry.RegisterSingleton<IStorageService, StorageService>();
             containerRegistry.RegisterSingleton<IQueryCacheService, QueryCacheService>();
             containerRegistry.RegisterSingleton<IAppCriticalExceptionHandlerService, AppCriticalExceptionHandlerService>();
+            containerRegistry.RegisterSingleton<IAoeDetectionService, AoeDetectionService>();
 
             containerRegistry.Register<IUserRankService, UserRankService>();
             #endregion

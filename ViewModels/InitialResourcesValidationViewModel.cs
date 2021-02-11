@@ -71,7 +71,7 @@ namespace AOEMatchDataProvider.ViewModels
         {
             ApplicationCommands.SetMaxWindowOpacity.Execute(1);
 
-            NavigationHelper.NavigateTo("QuickActionRegion", "BottomShadowPanel", null, out _);
+            NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomShadowPanel", null, out _);
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

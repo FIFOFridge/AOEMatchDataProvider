@@ -82,7 +82,7 @@ namespace AOEMatchDataProvider.ViewModels
             if (!(navigationContext.Parameters.ContainsKey("description")))
                 throw new InvalidOperationException($"Navigation event is missing 'description' parameter: {navigationContext}");
 
-            NavigationHelper.NavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
+            NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
             
             ApplicationCommands.SetMaxWindowOpacity.Execute(0.85);
             Description = navigationContext.Parameters["description"] as string;

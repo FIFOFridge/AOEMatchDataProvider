@@ -58,7 +58,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -225,6 +225,7 @@
     <Compile Include="Models\ISerializableModel.cs" />
     <Compile Include="Models\Licenses\License.cs" />
     <Compile Include="Models\LogService\LogPropertyCollection.cs" />
+    <Compile Include="Models\MatchProcessingService\MatchUpdateStatus.cs" />
     <Compile Include="Models\MatchType.cs" />
     <Compile Include="Models\QueryCacheService\QueriesCache.cs" />
     <Compile Include="Models\UserColors.cs" />
@@ -251,6 +252,8 @@
     <Compile Include="Services\Default\AoeDetectionService.cs" />
     <Compile Include="Services\Default\AppConfigurationService.cs" />
     <Compile Include="Services\Default\AppCriticalExceptionHandlerService.cs" />
+    <Compile Include="Services\Default\MatchProcessingService.cs" />
+    <Compile Include="Services\IMatchProcessingService.cs" />
     <Compile Include="Services\IUserRankDataProcessingService.cs" />
     <Compile Include="Services\Default\KeyHookService.cs" />
     <Compile Include="Services\Default\LogService.cs" />
