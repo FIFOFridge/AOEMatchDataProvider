@@ -1,0 +1,10 @@
+version: 0.1.0.{build}
+image: Visual Studio 2019
+before_build:
+- ps: >-
+    nuget restore
+
+    nuget install squirrel.windows -Version 2.0.1
+build:
+  project: AOEMatchDataProvider.sln
+  verbosity: normal
