@@ -100,6 +100,9 @@ namespace AOEMatchDataProvider.ViewModels
         IKeyHookService KeyHookService { get; }
         ILogService LogService { get; }
 
+        string keyHandlerTokenHome;
+        string keyHandlerTokenEnd;
+
         public TeamsPanelViewModel(
             IApplicationCommands applicationCommands,
             IAppConfigurationService appConfigurationService,
@@ -126,8 +129,8 @@ namespace AOEMatchDataProvider.ViewModels
             updateTimer.Start();
 
             //assign home/end keys with window visibility toggle
-            KeyHookService.Add(this, System.Windows.Forms.Keys.Home, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
-            KeyHookService.Add(this, System.Windows.Forms.Keys.End, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
+            keyHandlerTokenHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
+            keyHandlerTokenEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
 
             EventAggregator.GetEvent<ViewDestroyed>()
                 .Subscribe(
@@ -289,8 +292,8 @@ namespace AOEMatchDataProvider.ViewModels
 
         void HandleUnload(UserControl view)
         {
-            KeyHookService.Remove(this, System.Windows.Forms.Keys.Home);
-            KeyHookService.Remove(this, System.Windows.Forms.Keys.End);
+            KeyHookService.Remove(keyHandlerTokenHome);
+            KeyHookService.Remove(keyHandlerTokenEnd);
 
             if (updateTimer != null) //cleanup timer
             {

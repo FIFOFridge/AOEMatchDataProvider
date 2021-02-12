@@ -39,6 +39,9 @@ namespace AOEMatchDataProvider.ViewModels
         IAppConfigurationService AppConfigurationService { get; }
         IKeyHookService KeyHookService { get; }
 
+        string tokenKeyHandlerHome;
+        string tokenKeyHandlerEnd;
+
         public AppStateInfoViewModel(
             IApplicationCommands applicationCommands,
             IEventAggregator eventAggregator,
@@ -51,8 +54,8 @@ namespace AOEMatchDataProvider.ViewModels
             EventAggregator = eventAggregator;
             AppConfigurationService = appConfigurationService;
 
-            KeyHookService.Add(this, System.Windows.Forms.Keys.Home, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
-            KeyHookService.Add(this, System.Windows.Forms.Keys.End, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
+            tokenKeyHandlerHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
+            tokenKeyHandlerEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
 
             updateTimer = new Timer(AppConfigurationService.AppStateInfoUpdateTick)
             {
@@ -70,11 +73,11 @@ namespace AOEMatchDataProvider.ViewModels
                     view => view.DataContext == this //if view has this context then handle operation
                 );
 
-//LIVEDEBUG with DEBUG flag combination will update app state asap and use even old match (usefull for debuging without AOE2DE itslef)
-//remove LIVEDEBUG compilation flag to prevent instant app state update call
-#if LIVEDEBUG
-            UpdateTimer_Elapsed(null, null); //instant call
-#endif
+////LIVEDEBUG with DEBUG flag combination will update app state asap and use even old match (usefull for debuging without AOE2DE itslef)
+////remove LIVEDEBUG compilation flag to prevent instant app state update call
+//#if LIVEDEBUG
+//            UpdateTimer_Elapsed(null, null); //instant call
+//#endif
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -85,7 +88,8 @@ namespace AOEMatchDataProvider.ViewModels
             NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
             
             ApplicationCommands.SetMaxWindowOpacity.Execute(0.85);
-            Description = navigationContext.Parameters["description"] as string;
+            var description = navigationContext.Parameters["description"] as string;
+            Description = description;
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)
@@ -95,7 +99,11 @@ namespace AOEMatchDataProvider.ViewModels
             return false;
         }
 
-        public void OnNavigatedFrom(NavigationContext navigationContext) { }
+        public void OnNavigatedFrom(NavigationContext navigationContext) 
+        {
+            KeyHookService.Remove(tokenKeyHandlerHome);
+            KeyHookService.Remove(tokenKeyHandlerEnd);
+        }
 
         //run update match data, to determinate match status and update application state
         private void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
@@ -108,8 +116,8 @@ namespace AOEMatchDataProvider.ViewModels
         
         void HandleUnload(UserControl view)
         {
-            KeyHookService.Remove(this, System.Windows.Forms.Keys.Home);
-            KeyHookService.Remove(this, System.Windows.Forms.Keys.End);
+            KeyHookService.Remove(tokenKeyHandlerHome);
+            KeyHookService.Remove(tokenKeyHandlerEnd);
 
             if (updateTimer != null) //cleanup timer
             {

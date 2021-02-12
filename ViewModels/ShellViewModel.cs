@@ -171,12 +171,15 @@ namespace AOEMatchDataProvider.ViewModels
 
         async void UpdateAppState()
         {
-            if (!canUpdateMatchData) //make sure we can update
+            if (!CanUpdateMatchData) //make sure we can update
                 return;
+
+            CanUpdateMatchData = false;
 
             try
             {
                 NavigationParameters navigationParameter = new NavigationParameters();
+#if RELEASE
 
                 if (!AoeDetectionService.IsRunning)
                 {
@@ -185,9 +188,12 @@ namespace AOEMatchDataProvider.ViewModels
                     if (!NavigationHelper.TryNavigateTo("MainRegion", "AppStateInfo", navigationParameter, out Exception exception))
                     {
                         AppCriticalExceptionHandlerService.HandleCriticalError(exception);
-                        return;
                     }
+
+                    CanUpdateMatchData = true;
+                    return;
                 }
+#endif
 
                 var matchState = await MatchProcessingService.TryUpdateCurrentMatch();
                 switch (matchState)
@@ -225,6 +231,8 @@ namespace AOEMatchDataProvider.ViewModels
                         NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
                         break;
                 }
+
+                CanUpdateMatchData = true;
             }
             catch (Exception e)
             {

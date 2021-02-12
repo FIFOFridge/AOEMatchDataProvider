@@ -10,7 +10,10 @@ namespace AOEMatchDataProvider.Services
 {
     public interface IKeyHookService : ICriticalDisposable
     {
-        void Add(object owner, Keys keys, Action action);
-        void Remove(object owner, Keys keys);
+        //void Add(object owner, Keys keys, Action action);
+        //void Remove(object owner, Keys keys);
+
+        string Add(Keys keys, Action action);
+        void Remove(string token);
     }
 }

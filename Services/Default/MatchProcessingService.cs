@@ -26,9 +26,10 @@ namespace AOEMatchDataProvider.Services.Default
 
         public Match CurrentMatch { get; protected set; }
 
-        public MatchProcessingService(ILogService logService, IStorageService storageService, IQueryCacheService queryCacheService, IUserRankService userRankProcessingService)
+        public MatchProcessingService(ILogService logService, IStorageService storageService, IQueryCacheService queryCacheService, IUserRankService userRankProcessingService, IAppConfigurationService appConfigurationService)
         {
             #region Assign services
+            AppConfigurationService = appConfigurationService;
             LogService = logService;
             StorageService = storageService;
             QueryCacheService = queryCacheService;

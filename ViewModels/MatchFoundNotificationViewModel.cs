@@ -25,6 +25,9 @@ namespace AOEMatchDataProvider.ViewModels
         IEventAggregator EventAggregator { get; }
         IShell Shell { get; }
 
+        string keyHandlerTokenHome;
+        string keyHandlerTokenEnd;
+
         public MatchFoundNotificationViewModel(
             IKeyHookService keyHookService, 
             IApplicationCommands applicationCommands,
@@ -39,8 +42,8 @@ namespace AOEMatchDataProvider.ViewModels
             AppCriticalExceptionHandlerService = appCriticalExceptionHandlerService;
             Shell = shell;
 
-            KeyHookService.Add(this, System.Windows.Forms.Keys.Home, DisplayMatch);
-            KeyHookService.Add(this, System.Windows.Forms.Keys.End, HideWindowAndLoadMatchInBackground);
+            keyHandlerTokenHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, DisplayMatch);
+            keyHandlerTokenEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, HideWindowAndLoadMatchInBackground);
 
             EventAggregator.GetEvent<ViewDestroyed>()
             .Subscribe(
@@ -102,8 +105,8 @@ namespace AOEMatchDataProvider.ViewModels
 
         void HandleUnload(UserControl view)
         {
-            KeyHookService.Remove(this, System.Windows.Forms.Keys.Home);
-            KeyHookService.Remove(this, System.Windows.Forms.Keys.End);
+            KeyHookService.Remove(keyHandlerTokenHome);
+            KeyHookService.Remove(keyHandlerTokenEnd);
         }
     }
 }

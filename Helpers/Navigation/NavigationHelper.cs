@@ -54,7 +54,8 @@ namespace AOEMatchDataProvider.Helpers.Navigation
             });
 
             //rethrow navigation exception
-            throw e;
+            if(e != null)
+                throw e;
         }
     }
 }

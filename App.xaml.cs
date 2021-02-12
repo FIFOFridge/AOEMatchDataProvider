@@ -130,7 +130,7 @@ namespace AOEMatchDataProvider
 
                 var navigationParameters = new NavigationParameters
                 {
-                    { "description", "Waiting for match to start..." }
+                    { "description", "Waiting for game to start..." }
                 };
 
                regionManager.RequestNavigate("MainRegion", "AppStateInfo", navigationParameters);
@@ -174,6 +174,7 @@ namespace AOEMatchDataProvider
             containerRegistry.RegisterSingleton<IAppCriticalExceptionHandlerService, AppCriticalExceptionHandlerService>();
             containerRegistry.RegisterSingleton<IAoeDetectionService, AoeDetectionService>();
 
+            containerRegistry.Register<IMatchProcessingService, MatchProcessingService>();
             containerRegistry.Register<IUserRankService, UserRankService>();
             #endregion
 
