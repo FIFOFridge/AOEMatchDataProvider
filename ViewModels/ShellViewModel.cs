@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -110,6 +111,8 @@ namespace AOEMatchDataProvider.ViewModels
         public double currentMaxOpacity;
         public double CurrentMaxOpacity { get; set; }
 
+        public string Title { get => "AoE Match Data Provider - Beta - " + Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
+
         static readonly double minimumVisibleOpacity = 0.5;
 
         public ShellViewModel(
@@ -179,7 +182,7 @@ namespace AOEMatchDataProvider.ViewModels
             try
             {
                 NavigationParameters navigationParameter = new NavigationParameters();
-#if RELEASE
+#if !LIVEDEBUG
 
                 if (!AoeDetectionService.IsRunning)
                 {

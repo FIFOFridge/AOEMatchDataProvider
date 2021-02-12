@@ -32,9 +32,15 @@ namespace AOEMatchDataProvider.Services.Default
             }
         }
 
-        public int AppStateInfoUpdateTick { get; } = 1000 * 60 * 4;
+#if LIVEDEBUG
+        public int AppBootingUpdateTick { get; } = 1000;
+        public int AppStateInfoUpdateTick { get; } = 1000 * 60 * 2;
+        public int TeamPanelUpdateTick { get; } = 1000 * 60 * 3;
+#else
+        public int AppBootingUpdateTick { get; } = 1000 * 5; //initial boot is required to avoid double hotkey registration at startup
+        public int AppStateInfoUpdateTick { get; } = 1000 * 60 * 3;
         public int TeamPanelUpdateTick { get; } = 1000 * 60 * 5;
-
+#endif
 
 #if DEBUG
         //TODO: Create some workaround based on debugger status in: AOEMatchDataProvider.Helpers.Request.RequestHelper

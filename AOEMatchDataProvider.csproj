@@ -242,7 +242,6 @@
     <Compile Include="Helpers\Request\RequestWrapper.cs" />
     <Compile Include="Models\UserRankService\UserRankResponseWrapper.cs" />
     <Compile Include="Models\UserRankService\UserRatingResponse.cs" />
-    <Compile Include="Models\Views\ShellState.cs" />
     <Compile Include="Models\Views\Shell\Rectangle.cs" />
     <Compile Include="Mvvm\IShell.cs" />
     <Compile Include="Other\AppWrapper.cs" />
@@ -346,6 +345,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Dictionaries\ViewCategories\BottomPanel\Sizes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Resources\Dictionaries\ViewCategories\Info\Sizes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

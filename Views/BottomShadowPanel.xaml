@@ -35,7 +35,7 @@
         <WrapPanel>
             <Label Opacity="0.5" Content="App by:" Foreground="{DynamicResource ForegroundBrush}" FontSize="10"/>
             <Label Opacity="0.75" Content="FIFOFridge" Foreground="{DynamicResource ForegroundBrush}" FontSize="10"/>
-            <Label Opacity="0.5" Content="powered by:" Foreground="{DynamicResource ForegroundBrush}" FontSize="10"/>
+            <Label Opacity="0.5" Content=" data provided by:" Foreground="{DynamicResource ForegroundBrush}" FontSize="10"/>
             <Label Opacity="0.7" Content="aoe2.net" Foreground="{DynamicResource ForegroundBrush}" FontSize="10"/>
         </WrapPanel>
     </Grid>

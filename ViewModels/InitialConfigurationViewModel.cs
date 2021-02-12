@@ -123,7 +123,8 @@ namespace AOEMatchDataProvider.ViewModels
 
             EventAggregator.GetEvent<UserIdChanged>().Subscribe(UserIdChangedHandler);
 
-            ConfigurationMessage = "To setup app enter one of the following:\n - Your steam ID 64 (for Steam game version)\n - Your game profile ID(for Windows Store game version)";
+            ConfigurationMessage = "To setup app ente:\n - Your steam ID 64 (for Steam game version)";
+            //ConfigurationMessage = "To setup app enter one of the following:\n - Your steam ID 64 (for Steam game version)\n - Your game profile ID(for Windows Store game version)";
 
             ContinueCommand = new DelegateCommand(ContinueClicked);
 
@@ -210,15 +211,15 @@ namespace AOEMatchDataProvider.ViewModels
 
                 settings.UserId.SteamId = userId;
             }
-            else if(detectedUserIdMode == UserIdMode.GameProfileId)
-            {
-                //if (settings.UserId == null)
-                //{
-                    settings.UserId = new Models.UserId();
-                //}
+            //else if(detectedUserIdMode == UserIdMode.GameProfileId)
+            //{
+            //    //if (settings.UserId == null)
+            //    //{
+            //        settings.UserId = new Models.UserId();
+            //    //}
 
-                settings.UserId.GameProfileId = userId;
-            }
+            //    settings.UserId.GameProfileId = userId;
+            //}
 
             var navigationParameters = new NavigationParameters
             {

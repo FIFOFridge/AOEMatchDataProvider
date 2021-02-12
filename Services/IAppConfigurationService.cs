@@ -18,6 +18,7 @@ namespace AOEMatchDataProvider.Services
         int AppStateInfoUpdateTick { get; }
         int TeamPanelUpdateTick { get; }
 
+        int AppBootingUpdateTick { get; }
         int MatchUpdateTimeout { get; }
         int DefaultRequestTimeout { get; }
     }

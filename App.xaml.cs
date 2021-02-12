@@ -123,18 +123,20 @@ namespace AOEMatchDataProvider
 
                 return;
             }
-
-            //redirect to app state info
             else
             {
-
                 var navigationParameters = new NavigationParameters
                 {
-                    { "description", "Waiting for game to start..." }
+                    { "description", "Launching app..." },
+                    { "timer", Resolve<IAppConfigurationService>().AppBootingUpdateTick }
                 };
 
-               regionManager.RequestNavigate("MainRegion", "AppStateInfo", navigationParameters);
+                regionManager.RequestNavigate("MainRegion", "AppStateInfo", navigationParameters);
             }
+
+            //Resolve<IApplicationCommands>().UpdateMatchDataCommand.Execute(null);
+
+            //redirect to app state info
         }
 
         //void SetupInjectableViewModels()

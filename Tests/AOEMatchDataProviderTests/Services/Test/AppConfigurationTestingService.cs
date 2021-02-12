@@ -30,7 +30,8 @@ namespace AOEMatchDataProviderTests.Services.Test
         public int AppStateInfoUpdateTick { get; } = 1000 * 60 * 4;
         public int TeamPanelUpdateTick { get; } = 1000 * 60 * 6;
 #endif
-
+        
+        public int AppBootingUpdateTick => 5000;
         public int MatchUpdateTimeout { get; } = 1000 * 10;
         public int DefaultRequestTimeout { get; } = int.Parse((1000 * 7.5).ToString());
     }

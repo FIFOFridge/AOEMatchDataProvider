@@ -53,8 +53,8 @@ namespace AOEMatchDataProvider.Services.Default
                 if(response.Exception is AggregateException)
                 {
                     if (
-                        response.Exception is HttpRequestException || 
-                        response.Exception is OperationCanceledException
+                        response.RequestResponseWrapper.Exception is HttpRequestException ||
+                        response.RequestResponseWrapper.Exception is OperationCanceledException
                         )
                     {
                         return MatchUpdateStatus.ConnectionError;

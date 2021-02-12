@@ -57,13 +57,6 @@ namespace AOEMatchDataProvider.ViewModels
             tokenKeyHandlerHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
             tokenKeyHandlerEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
 
-            updateTimer = new Timer(AppConfigurationService.AppStateInfoUpdateTick)
-            {
-                AutoReset = true
-            };
-            updateTimer.Elapsed += UpdateTimer_Elapsed;
-            updateTimer.Start();
-
             //handle "unload" event from view to cleanup VM resources
             EventAggregator.GetEvent<ViewDestroyed>()
                 .Subscribe(
@@ -85,6 +78,11 @@ namespace AOEMatchDataProvider.ViewModels
             if (!(navigationContext.Parameters.ContainsKey("description")))
                 throw new InvalidOperationException($"Navigation event is missing 'description' parameter: {navigationContext}");
 
+            if (navigationContext.Parameters.ContainsKey("timer"))
+                SetupTimer(int.Parse(navigationContext.Parameters["timer"].ToString()));
+            else
+                SetupTimer(AppConfigurationService.AppStateInfoUpdateTick);
+
             NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
             
             ApplicationCommands.SetMaxWindowOpacity.Execute(0.85);
@@ -103,6 +101,16 @@ namespace AOEMatchDataProvider.ViewModels
         {
             KeyHookService.Remove(tokenKeyHandlerHome);
             KeyHookService.Remove(tokenKeyHandlerEnd);
+        }
+
+        void SetupTimer(int tick)
+        {
+            updateTimer = new Timer(tick)
+            {
+                AutoReset = true
+            };
+            updateTimer.Elapsed += UpdateTimer_Elapsed;
+            updateTimer.Start();
         }
 
         //run update match data, to determinate match status and update application state

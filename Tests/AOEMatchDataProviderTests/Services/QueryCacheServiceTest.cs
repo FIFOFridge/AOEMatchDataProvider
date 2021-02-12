@@ -1,4 +1,5 @@
-﻿using AOEMatchDataProvider.Services;
+﻿using AOEMatchDataProvider.Helpers.Request;
+using AOEMatchDataProvider.Services;
 using AOEMatchDataProviderTests.Helpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
@@ -40,6 +41,7 @@ namespace AOEMatchDataProviderTests.Services
         public async Task SampleRequestCache()
         {
             TestingResourcesHelper.PreapareTestingDirectory(ServiceResolver.GetService<IAppConfigurationService>());
+            RequestHelper.InitializeRequestHelper(ServiceResolver.GetService<IAppConfigurationService>());
 
             var queryCacheService = ServiceResolver.GetService<IQueryCacheService>() as AOEMatchDataProvider.Services.Default.QueryCacheService; //cast to specified service to get access for internal props
             queryCacheService.Load();
