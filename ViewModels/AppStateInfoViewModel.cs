@@ -65,12 +65,6 @@ namespace AOEMatchDataProvider.ViewModels
                     false,
                     view => view.DataContext == this //if view has this context then handle operation
                 );
-
-////LIVEDEBUG with DEBUG flag combination will update app state asap and use even old match (usefull for debuging without AOE2DE itslef)
-////remove LIVEDEBUG compilation flag to prevent instant app state update call
-//#if LIVEDEBUG
-//            UpdateTimer_Elapsed(null, null); //instant call
-//#endif
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)

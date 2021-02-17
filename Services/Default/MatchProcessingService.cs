@@ -75,7 +75,7 @@ namespace AOEMatchDataProvider.Services.Default
             LastPulledMatchId = response.Value.MatchId;
             IsLastPulledMatchInProgress = response.Value.IsInProgress;
 
-            if (response.Value.IsInProgress)
+            if (!response.Value.IsInProgress)
                 return MatchUpdateStatus.MatchEnded;
 
             //validate match type

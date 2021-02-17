@@ -1,6 +1,5 @@
-﻿using AOEMatchDataProvider.Helpers.Request;
-using AOEMatchDataProvider.Models;
-using AOEMatchDataProvider.Models.UserRankService;
+﻿using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.RequestService;
 using System;
 using System.Collections.Generic;
 using System.Linq;

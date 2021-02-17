@@ -2,7 +2,6 @@
 using AOEMatchDataProvider.Events.Views.Shell;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Helpers.Navigation;
-using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Models.Settings;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.Views;
@@ -179,6 +178,8 @@ namespace AOEMatchDataProvider.ViewModels
 
             CanUpdateMatchData = false;
 
+            LogService.Debug("Updating app state...");
+
             try
             {
                 NavigationParameters navigationParameter = new NavigationParameters();
@@ -186,7 +187,10 @@ namespace AOEMatchDataProvider.ViewModels
 
                 if (!AoeDetectionService.IsRunning)
                 {
+                    LogService.Debug("AoE not running...");
+
                     navigationParameter.Add("description", "Waiting for game to start...");
+                    navigationParameter.Add("timer", 10);
 
                     if (!NavigationHelper.TryNavigateTo("MainRegion", "AppStateInfo", navigationParameter, out Exception exception))
                     {
@@ -198,7 +202,9 @@ namespace AOEMatchDataProvider.ViewModels
                 }
 #endif
 
+                LogService.Debug("Updadting current match state...");
                 var matchState = await MatchProcessingService.TryUpdateCurrentMatch();
+                
                 switch (matchState)
                 {
                     case Models.MatchProcessingService.MatchUpdateStatus.ConnectionError:
@@ -211,7 +217,7 @@ namespace AOEMatchDataProvider.ViewModels
                         NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
                         break;
 
-#if RELEASE //Dont check in DEBUG to speed up debug process
+#if !LIVEDEBUG //Dont check in DEBUG to speed up debug process
                     case Models.MatchProcessingService.MatchUpdateStatus.MatchEnded:
                         navigationParameter.Add("description", "Waiting for match to start...");
                         NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
@@ -220,6 +226,13 @@ namespace AOEMatchDataProvider.ViewModels
                     case Models.MatchProcessingService.MatchUpdateStatus.UnsupportedMatchType:
                         navigationParameter.Add("description", "Unsupported match type...");
                         NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        break;
+#else // Display already finsihed match if debug
+
+                    case Models.MatchProcessingService.MatchUpdateStatus.MatchEnded:
+                        navigationParameter.Add("UserMatchData", MatchProcessingService.CurrentMatch.Users);
+                        navigationParameter.Add("MatchType", MatchProcessingService.CurrentMatch.MatchType);
+                        NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter);
                         break;
 #endif
 
@@ -232,6 +245,10 @@ namespace AOEMatchDataProvider.ViewModels
                     case Models.MatchProcessingService.MatchUpdateStatus.UnknownError:
                         navigationParameter.Add("description", "Unknow error occured during processing match");
                         NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        break;
+
+                    default:
+                        new InvalidOperationException($"Unrecognized match state: {matchState}");
                         break;
                 }
 

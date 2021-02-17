@@ -6,11 +6,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.RequestService;
 using AOEMatchDataProvider.Models.UserRankService;
 using Newtonsoft.Json;
-using static AOEMatchDataProvider.Helpers.Request.RequestHelper;
 
 namespace AOEMatchDataProvider.Services.Default
 {
@@ -21,16 +20,18 @@ namespace AOEMatchDataProvider.Services.Default
         ILogService LogService { get; }
         IStorageService StorageService { get; }
         IQueryCacheService QueryCacheService { get; }
+        IRequestService RequestService { get; }
 
         bool isCacheLoaded;
 
-        public UserRankService(ILogService logService, IStorageService storageService, IQueryCacheService queryCacheService)
+        public UserRankService(ILogService logService, IStorageService storageService, IQueryCacheService queryCacheService, IRequestService requestService)
         {
             requests = new Dictionary<string, RequestState>();
             //userRanksCache = new Dictionary<string, UserRankData>();
             LogService = logService;
             QueryCacheService = queryCacheService;
             StorageService = storageService;
+            RequestService = requestService;
 
             isCacheLoaded = false;
 
@@ -90,7 +91,7 @@ namespace AOEMatchDataProvider.Services.Default
                 requestState.isRunning = true;
                 //sumbit query
                 requestWrapper.RequestUrl = finallQuery;
-                var requestResult = requestWrapper.RequestResponseWrapper = await RequestHelper.GetAsync(finallQuery, cts.Token);
+                var requestResult = requestWrapper.RequestResponseWrapper = await RequestService.GetAsync(finallQuery, cts.Token);
                 var responseRaw = requestResult.ResponseContent;
 
                 if (!requestResult.IsSuccess)
@@ -315,7 +316,7 @@ namespace AOEMatchDataProvider.Services.Default
 
             try
             {
-                var response = await RequestHelper.GetAsync(request, CancellationToken.None);
+                var response = await RequestService.GetAsync(request, CancellationToken.None);
                 
                 requestWrapper.RequestResponseWrapper = response;
 

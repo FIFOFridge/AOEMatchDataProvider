@@ -3,7 +3,6 @@ using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.InfoBar;
 using AOEMatchDataProvider.Events.Views.InitialConfiguration;
 using AOEMatchDataProvider.Helpers.Navigation;
-using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Helpers.Validation;
 using AOEMatchDataProvider.Models;
 using AOEMatchDataProvider.Models.Settings;

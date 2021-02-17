@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static AOEMatchDataProvider.Helpers.Request.RequestHelper;
 
-namespace AOEMatchDataProvider.Helpers.Request
+namespace AOEMatchDataProvider.Models.RequestService
 {
     public class RequestWrapper<TValue> where TValue : class
     {
@@ -24,6 +23,6 @@ namespace AOEMatchDataProvider.Helpers.Request
                 return RequestResponseWrapper.IsSuccess && Exception == null;
             }
         }
-            
+
     }
 }

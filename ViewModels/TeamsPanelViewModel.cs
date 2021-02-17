@@ -4,6 +4,7 @@ using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.RequestService;
 using AOEMatchDataProvider.Mvvm;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.Views;
@@ -206,7 +207,7 @@ namespace AOEMatchDataProvider.ViewModels
             LogService.Debug("All updates has been completed", logProperties);
         }
 
-        void HandleUserDataUpdated(Task<Helpers.Request.RequestWrapper<UserRank>> updateTask, UserRankMode userRankMode, UserGameProfileId userGameProfileId)
+        void HandleUserDataUpdated(Task<RequestWrapper<UserRank>> updateTask, UserRankMode userRankMode, UserGameProfileId userGameProfileId)
         {
             Dictionary<string, object> logProperties = null;
 

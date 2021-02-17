@@ -1,13 +1,11 @@
-﻿using AOEMatchDataProvider.Helpers.Request;
-using AOEMatchDataProvider.Models.QueryCacheHelper;
+﻿using AOEMatchDataProvider.Models.QueryCacheHelper;
+using AOEMatchDataProvider.Models.RequestService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static AOEMatchDataProvider.Helpers.Request.RequestHelper;
-using static AOEMatchDataProvider.Models.QueryCacheHelper.QueriesCache;
 
 namespace AOEMatchDataProvider.Services.Default
 {
@@ -16,15 +14,17 @@ namespace AOEMatchDataProvider.Services.Default
         internal QueriesCache Queries { get; set; }
         SemaphoreSlim queryThrottler;
 
+        IRequestService RequestService { get; }
         IStorageService StorageService { get; }
         ILogService LogService { get; }
 
-        public QueryCacheService(IStorageService storageService, ILogService logService)
+        public QueryCacheService(IStorageService storageService, ILogService logService, IRequestService requestService)
         {
             queryThrottler = new SemaphoreSlim(4);
 
             StorageService = storageService;
             LogService = logService;
+            RequestService = requestService;
             //LoadLocalyCachedQueries();
         }
 
@@ -38,7 +38,7 @@ namespace AOEMatchDataProvider.Services.Default
 
                 Queries = new QueriesCache
                 {
-                    CachedQueries = new Dictionary<string, QueryCacheEntry>()
+                    CachedQueries = new Dictionary<string, QueriesCache.QueryCacheEntry>()
                 };
 
                 StorageService.Create("cachedQueries", Queries, StorageEntryExpirePolicy.Never);
@@ -66,7 +66,7 @@ namespace AOEMatchDataProvider.Services.Default
                     //recreate and flush to make sure CachedQueries are not null
                     Queries = new QueriesCache
                     {
-                        CachedQueries = new Dictionary<string, QueryCacheEntry>()
+                        CachedQueries = new Dictionary<string, QueriesCache.QueryCacheEntry>()
                     };
 
                     StorageService.Flush();
@@ -103,7 +103,7 @@ namespace AOEMatchDataProvider.Services.Default
             var wrapper = await ExecuteQuery(request, cancellationToken, timeout);
 
             //cache request
-            QueryCacheEntry queryCacheEntry = new QueryCacheEntry(wrapper, expire, request, retryCount > 0, retryCount);
+            QueriesCache.QueryCacheEntry queryCacheEntry = new QueriesCache.QueryCacheEntry(wrapper, expire, request, retryCount > 0, retryCount);
             Queries.CachedQueries.Add(request, queryCacheEntry);
 
             StorageService.Flush();
@@ -118,7 +118,7 @@ namespace AOEMatchDataProvider.Services.Default
 
             try
             {
-                responseWrapper = await RequestHelper.GetAsync(request, cancellationToken);
+                responseWrapper = await RequestService.GetAsync(request, cancellationToken);
             }
             finally
             {

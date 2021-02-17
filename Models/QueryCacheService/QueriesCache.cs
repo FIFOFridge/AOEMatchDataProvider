@@ -1,10 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using AOEMatchDataProvider.Models.RequestService;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static AOEMatchDataProvider.Helpers.Request.RequestHelper;
+//using static AOEMatchDataProvider.Helpers.Request.RequestHelper;
 
 namespace AOEMatchDataProvider.Models.QueryCacheHelper
 {

@@ -1,8 +1,8 @@
 ﻿using AOEMatchDataProvider.Command;
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Helpers.Navigation;
-using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.RequestService;
 using AOEMatchDataProvider.Services;
 using Prism.Commands;
 using Prism.Events;
@@ -128,6 +128,7 @@ namespace AOEMatchDataProvider.ViewModels
 
             try
             {
+                //FIXME: no timeout? srsly
                 RequestWrapper<AoeNetAPIStringResources> resourcesRequestWrapper = await UserRankService.GetStringResources();
 
                 if (!resourcesRequestWrapper.IsSuccess)

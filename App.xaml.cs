@@ -175,6 +175,7 @@ namespace AOEMatchDataProvider
             containerRegistry.RegisterSingleton<IQueryCacheService, QueryCacheService>();
             containerRegistry.RegisterSingleton<IAppCriticalExceptionHandlerService, AppCriticalExceptionHandlerService>();
             containerRegistry.RegisterSingleton<IAoeDetectionService, AoeDetectionService>();
+            containerRegistry.RegisterSingleton<IRequestService, RequestService>();
 
             containerRegistry.Register<IMatchProcessingService, MatchProcessingService>();
             containerRegistry.Register<IUserRankService, UserRankService>();
@@ -206,7 +207,7 @@ namespace AOEMatchDataProvider
         {
             disposableResources.Add(App.Resolve<IKeyHookService>()); //register critical disposables
             //disposableResources.Add(App.Resolve<ILogService>());
-            disposableResources.Add(RequestHelper.Instance);
+            //disposableResources.Add(RequestHelper.Instance);
         }
 
         internal static void HandleCriticalError(Exception exception)

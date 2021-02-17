@@ -19,7 +19,7 @@ namespace AOEMatchDataProvider.Services.Default
         {
             var config = new NLog.Config.LoggingConfiguration();
 
-            var logFileName = "log_" + DateTime.Now.ToString("d_MMM_yyyy-h_mm--ss", DateTimeFormatInfo.InvariantInfo);
+            var logFileName = "log_" + DateTime.Now.ToString("d_MMM_yyyy-h_mm_ss", DateTimeFormatInfo.InvariantInfo);
                 //.Replace(":", "-");
 
 #if DEBUG

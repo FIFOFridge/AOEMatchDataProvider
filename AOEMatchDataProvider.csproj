@@ -217,8 +217,6 @@
     <Compile Include="Extensions\UserExtensions.cs" />
     <Compile Include="Helpers\Deserialization\ModelDeserializationHelper.cs" />
     <Compile Include="Helpers\Navigation\NavigationHelper.cs" />
-    <Compile Include="Helpers\Request\RequestHelper.cs" />
-    <Compile Include="Helpers\Request\RequestWrapperErrorDescriptor.cs" />
     <Compile Include="Helpers\Validation\UserIdValidator.cs" />
     <Compile Include="Helpers\Windows\WindowManagmentHelper.cs" />
     <Compile Include="Helpers\WPF\BindingLoger.cs" />
@@ -228,6 +226,8 @@
     <Compile Include="Models\MatchProcessingService\MatchUpdateStatus.cs" />
     <Compile Include="Models\MatchType.cs" />
     <Compile Include="Models\QueryCacheService\QueriesCache.cs" />
+    <Compile Include="Models\RequestService\RequestResponseWrapper.cs" />
+    <Compile Include="Models\RequestService\RequestWrapper.cs" />
     <Compile Include="Models\UserColors.cs" />
     <Compile Include="Models\Settings\AppSettings.cs" />
     <Compile Include="Models\UserGameProfileId.cs" />
@@ -239,7 +239,6 @@
     <Compile Include="Models\UserRankService\AoeNetAPIStringResources.cs" />
     <Compile Include="Models\UserRankService\MatchResponse.cs" />
     <Compile Include="Models\UserRankService\MatchResponseWrapper.cs" />
-    <Compile Include="Helpers\Request\RequestWrapper.cs" />
     <Compile Include="Models\UserRankService\UserRankResponseWrapper.cs" />
     <Compile Include="Models\UserRankService\UserRatingResponse.cs" />
     <Compile Include="Models\Views\Shell\Rectangle.cs" />
@@ -252,7 +251,9 @@
     <Compile Include="Services\Default\AppConfigurationService.cs" />
     <Compile Include="Services\Default\AppCriticalExceptionHandlerService.cs" />
     <Compile Include="Services\Default\MatchProcessingService.cs" />
+    <Compile Include="Services\Default\RequestService.cs" />
     <Compile Include="Services\IMatchProcessingService.cs" />
+    <Compile Include="Services\IRequestService.cs" />
     <Compile Include="Services\IUserRankDataProcessingService.cs" />
     <Compile Include="Services\Default\KeyHookService.cs" />
     <Compile Include="Services\Default\LogService.cs" />
@@ -438,6 +439,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\Parsers\" />
+    <Folder Include="Helpers\Request\" />
     <Folder Include="Resources\Dictionaries\ViewCategories\Configuration\" />
     <Folder Include="Resources\Dictionaries\ViewCategories\TeamsPanel\" />
   </ItemGroup>
