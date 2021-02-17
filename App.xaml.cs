@@ -1,7 +1,6 @@
 ﻿using AOEMatchDataProvider.Command;
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Helpers.Navigation;
-using AOEMatchDataProvider.Helpers.Request;
 using AOEMatchDataProvider.Models.Settings;
 using AOEMatchDataProvider.Mvvm;
 using AOEMatchDataProvider.Other;
@@ -66,9 +65,6 @@ namespace AOEMatchDataProvider
             //PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
             PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Warning | SourceLevels.Error;
 
-            //initialize request helper
-            RequestHelper.InitializeRequestHelper(Resolve<IAppConfigurationService>());
-
             LoadSettings();
             InitialNavigation();
         }
@@ -131,7 +127,7 @@ namespace AOEMatchDataProvider
                     { "timer", Resolve<IAppConfigurationService>().AppBootingUpdateTick }
                 };
 
-                regionManager.RequestNavigate("MainRegion", "AppStateInfo", navigationParameters);
+                NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameters);
             }
 
             //Resolve<IApplicationCommands>().UpdateMatchDataCommand.Execute(null);

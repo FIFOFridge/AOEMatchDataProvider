@@ -218,6 +218,7 @@
     <Compile Include="Helpers\Deserialization\ModelDeserializationHelper.cs" />
     <Compile Include="Helpers\Navigation\NavigationHelper.cs" />
     <Compile Include="Helpers\Validation\UserIdValidator.cs" />
+    <Compile Include="Helpers\Windows\ExternalRedirectionHelper.cs" />
     <Compile Include="Helpers\Windows\WindowManagmentHelper.cs" />
     <Compile Include="Helpers\WPF\BindingLoger.cs" />
     <Compile Include="Models\ISerializableModel.cs" />
