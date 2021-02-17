@@ -52,7 +52,10 @@ namespace AOEMatchDataProvider.Services.Default
 
         public void Flush()
         {
-            foreach(var keyValuePair in storageEntries)
+            if (!Directory.Exists(AppConfigurationService.StorageDirectory))
+                Directory.CreateDirectory(AppConfigurationService.StorageDirectory);
+
+            foreach (var keyValuePair in storageEntries)
             {
                 string serialized = null;
 
@@ -63,7 +66,6 @@ namespace AOEMatchDataProvider.Services.Default
                     (keyValuePair.Value.StorageEntryExpirePolicy == StorageEntryExpirePolicy.Expire && keyValuePair.Value.Expired)
                     )
                     continue;
-
 
                 serialized = JsonConvert.SerializeObject(keyValuePair.Value);
                 File.WriteAllText(

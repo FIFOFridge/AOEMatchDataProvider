@@ -1,6 +1,7 @@
-﻿using AOEMatchDataProvider.Helpers.Request;
+﻿using AOEMatchDataProvider.Models.RequestService;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProviderTests.Helpers;
+using AOEMatchDataProviderTests.Services.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json;
 using System;
@@ -35,18 +36,29 @@ namespace AOEMatchDataProviderTests.Services
         //TODO: Setup mock server for request cache testing: https://github.com/WireMock-Net/WireMock.Net
 
         const string productRequest = "https://reqres.in/api/products/3";
-        const int liveAPITimeout = 1000 * 10;
+        //const int liveAPITimeout = 1000 * 10; replaced by testing request service that handle and return predefined response for specified requests
+        const int timeout = 5000;
 
         [TestMethod]
         public async Task SampleRequestCache()
         {
             TestingResourcesHelper.PreapareTestingDirectory(ServiceResolver.GetService<IAppConfigurationService>());
-            RequestHelper.InitializeRequestHelper(ServiceResolver.GetService<IAppConfigurationService>());
+            var requestTestingService = ServiceResolver.GetService<IRequestService>() as RequestTestingService;
+
+            //return match in progress
+            requestTestingService.AddTestingRule(
+                new System.Text.RegularExpressions.Regex("https://reqres.in/api/products/3"),
+                RequestTestingService.RequestTestingServiceMode.ReturnPredefinedResult,
+                new RequestResponseWrapper()
+                {
+                    ResponseContent = TestingResourcesHelper.GetApiResoponses("Product3.json"),
+                    IsSuccess = true
+                });
 
             var queryCacheService = ServiceResolver.GetService<IQueryCacheService>() as AOEMatchDataProvider.Services.Default.QueryCacheService; //cast to specified service to get access for internal props
             queryCacheService.Load();
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(liveAPITimeout);
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource(timeout);
 
             var requestResponseWrapper = await queryCacheService.GetOrUpdate(productRequest, cancellationTokenSource.Token, DateTime.UtcNow.AddYears(1000));
 

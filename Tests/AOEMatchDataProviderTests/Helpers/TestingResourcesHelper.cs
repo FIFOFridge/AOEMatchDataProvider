@@ -1,4 +1,5 @@
-﻿using AOEMatchDataProvider.Services;
+﻿using AOEMatchDataProvider.Models.Settings;
+using AOEMatchDataProvider.Services;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,6 +43,16 @@ namespace AOEMatchDataProviderTests.Helpers
             }
         }
 
-
+        static internal AppSettings GetTestingSettings()
+        {
+            return new AppSettings()
+            {
+                UserId = new AOEMatchDataProvider.Models.UserId()
+                {
+                    SteamId = "testingId",
+                    GameProfileId = null
+                }
+            };
+        }
     }
 }

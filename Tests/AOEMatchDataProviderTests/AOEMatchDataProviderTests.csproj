@@ -54,6 +54,10 @@
     <Reference Include="Prism.Wpf, Version=7.2.0.1422, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\..\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\Microsoft.NET.Build.Extensions\net461\lib\System.Net.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
@@ -71,11 +75,13 @@
     <Compile Include="Helpers\TestingResourcesHelper.cs" />
     <Compile Include="Models\ModelsParsingTest.cs" />
     <Compile Include="Models\ModelsSerializationTest.cs" />
+    <Compile Include="Services\MatchProcessingServiceTest.cs" />
     <Compile Include="Services\QueryCacheServiceTest.cs" />
     <Compile Include="Services\StorageServiceTest.cs" />
     <Compile Include="Services\Test\AppConfigurationTestingService.cs" />
     <Compile Include="Services\Test\AppCriticalExceptionHandlerTestingService.cs" />
     <Compile Include="Services\Test\LogTestingService.cs" />
+    <Compile Include="Services\Test\RequestTestingService.cs" />
     <Compile Include="Services\Test\StorageTestingService.cs" />
     <Compile Include="Services\Test\VoidStorageTestingService.cs" />
     <Compile Include="Services\UserRankServiceTest.cs" />
@@ -88,23 +94,31 @@
     <None Include="TestResources\ApiResponses\ApiStringResources.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="TestResources\ApiResponses\MatchMinimalResponse.json" />
+    <None Include="TestResources\ApiResponses\MatchMinimalResponse.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="TestResources\ApiResponses\LeadboardRandomMapValid.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestResources\ApiResponses\LeadbordTeamRandomMapValid.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestResources\ApiResponses\MatchDetailsEmptyRating.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestResources\ApiResponses\MatchDetailsValid.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestResources\ApiResponses\MatchFinished.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestResources\ApiResponses\MatchInProgress.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestResources\ApiResponses\MatchUnsupported.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="TestResources\ApiResponses\Product3.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="TestResources\QueryCacheDataCache\cachedQueries.json">
