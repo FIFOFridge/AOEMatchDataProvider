@@ -47,7 +47,7 @@
                 </Viewbox>
             </Button>
             <!-- Coffe icon (made by FIFOFridge) -->
-            <Button Style="{StaticResource TransparentImageButton}">
+            <Button Command="{Binding }" Style="{StaticResource TransparentImageButton}">
                 <!--
                                   THIS PART OF CODE IS LICENSED WITH LICENSE PROVIDED BELOW
             -->

@@ -1,4 +1,5 @@
-﻿using AOEMatchDataProvider.Helpers.Windows;
+using AOEMatchDataProvider.Helpers.Navigation;
+using AOEMatchDataProvider.Helpers.Windows;
 using Prism.Commands;
 using Prism.Mvvm;
 using System;
@@ -19,8 +20,9 @@ namespace AOEMatchDataProvider.ViewModels
         public BottomButtonsPanelViewModel()
         {
             GithubClickCommand = new DelegateCommand(() => ExternalRedirectionHelper.RedirectTo("https://github.com/FIFOFridge/AOEMatchDataProvider"));
-            //SettingsClickCommand = new DelegateCommand(() => ExternalRedirectionHelper.RedirectTo("..."));
-            //CoffeClickCommand = new DelegateCommand(() => ExternalRedirectionHelper.RedirectTo("...")); /*todo*/
+            //todo: create separated settings window
+            //SettingsClickCommand = new DelegateCommand(() => NavigationHelper.NavigateTo("MainRegion", "InitialConfigurationViewModel", null));
+            CoffeClickCommand = new DelegateCommand(() => ExternalRedirectionHelper.RedirectTo("coffe-redirection")); //patch before release
         }
     }
 }
