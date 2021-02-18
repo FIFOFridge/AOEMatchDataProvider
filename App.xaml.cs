@@ -184,6 +184,7 @@ namespace AOEMatchDataProvider
             containerRegistry.RegisterForNavigation<InitialResourcesValidation>();
             containerRegistry.RegisterForNavigation<AppStateInfo>();
             containerRegistry.RegisterForNavigation<TeamsPanel>();
+            containerRegistry.RegisterForNavigation<AppInactivity>();
 
             containerRegistry.RegisterForNavigation<BottomButtonsPanel>();
             containerRegistry.RegisterForNavigation<BottomShadowPanel>();

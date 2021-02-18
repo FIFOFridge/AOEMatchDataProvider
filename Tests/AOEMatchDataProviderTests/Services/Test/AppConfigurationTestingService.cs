@@ -34,5 +34,7 @@ namespace AOEMatchDataProviderTests.Services.Test
         public int AppBootingUpdateTick => 5000;
         public int MatchUpdateTimeout { get; } = 1000 * 10;
         public int DefaultRequestTimeout { get; } = int.Parse((1000 * 7.5).ToString());
+
+        public int AppInactivitySamples => 5;
     }
 }

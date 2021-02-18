@@ -17,6 +17,7 @@ namespace AOEMatchDataProvider.Services
 
         string LastPulledMatchId { get; }
         bool IsLastPulledMatchInProgress { get; }
+        int InRowProcessingFails { get; }
 
         Match CurrentMatch { get; }
 

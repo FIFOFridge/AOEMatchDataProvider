@@ -23,6 +23,7 @@ namespace AOEMatchDataProvider.Services.Default
 
         public string LastPulledMatchId { get; protected set; }
         public bool IsLastPulledMatchInProgress { get; protected set; }
+        public int InRowProcessingFails { get; protected set; }
 
         public Match CurrentMatch { get; protected set; }
 
@@ -57,6 +58,7 @@ namespace AOEMatchDataProvider.Services.Default
                         response.RequestResponseWrapper.Exception is OperationCanceledException
                         )
                     {
+                        InRowProcessingFails++;
                         return MatchUpdateStatus.ConnectionError;
                     }
 
@@ -64,9 +66,11 @@ namespace AOEMatchDataProvider.Services.Default
 
                 if (response.Exception is SerializationException)
                 {
+                    InRowProcessingFails++;
                     return MatchUpdateStatus.ProcessingError;
                 }
 
+                InRowProcessingFails++;
                 return MatchUpdateStatus.UnknownError;
             }
 
@@ -76,7 +80,10 @@ namespace AOEMatchDataProvider.Services.Default
             IsLastPulledMatchInProgress = response.Value.IsInProgress;
 
             if (!response.Value.IsInProgress)
+            {
+                InRowProcessingFails++;
                 return MatchUpdateStatus.MatchEnded;
+            }
 
             //validate match type
             switch(response.Value.MatchType)
@@ -85,9 +92,11 @@ namespace AOEMatchDataProvider.Services.Default
                 case MatchType.TeamRandomMap:
                 case MatchType.Deathmatch:
                 case MatchType.TeamdeathMatch:
+                    InRowProcessingFails = 0;
                     return MatchUpdateStatus.SupportedMatchType;
 
                 default:
+                    InRowProcessingFails++;
                     return MatchUpdateStatus.UnsupportedMatchType;
             }
         }

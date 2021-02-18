@@ -36,13 +36,15 @@ namespace AOEMatchDataProvider.Services.Default
         public int AppBootingUpdateTick { get; } = 1000;
         public int AppStateInfoUpdateTick { get; } = 1000 * 60 * 2;
         public int TeamPanelUpdateTick { get; } = 1000 * 60 * 3;
+        public int AppInactivitySamples { get; } = 5;
 #else
         public int AppBootingUpdateTick { get; } = 1000 * 5; //initial boot is required to avoid double hotkey registration at startup
         public int AppStateInfoUpdateTick { get; } = 1000 * 60 * 3;
         public int TeamPanelUpdateTick { get; } = 1000 * 60 * 5;
+        public int AppInactivitySamples { get; } = 5;
 #endif
 
-#if DEBUG
+#if LIVEDEBUG
         //TODO: Create some workaround based on debugger status in: AOEMatchDataProvider.Helpers.Request.RequestHelper
         //https://docs.microsoft.com/en-us/dotnet/api/system.diagnostics.debugger.isattached?view=net-5.0
 

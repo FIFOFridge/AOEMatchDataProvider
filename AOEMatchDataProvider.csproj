@@ -47,7 +47,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;LIVEDEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
@@ -88,6 +88,17 @@
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LIVEDEBUG|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\LIVEDEBUG\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;LIVEDEBUG</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -270,6 +281,7 @@
     <Compile Include="Services\IQueryCacheService.cs" />
     <Compile Include="Services\IStorageService.cs" />
     <Compile Include="Services\IUserRankService.cs" />
+    <Compile Include="ViewModels\AppInactivityViewModel.cs" />
     <Compile Include="ViewModels\AppStateInfoViewModel.cs" />
     <Compile Include="ViewModels\BottomButtonsPanelViewModel.cs" />
     <Compile Include="ViewModels\InfoBarViewModel.cs" />
@@ -281,6 +293,9 @@
     <Compile Include="ViewModels\TeamsPanelViewModel.cs" />
     <Compile Include="Views\About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AppInactivity.xaml.cs">
+      <DependentUpon>AppInactivity.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AppStateInfo.xaml.cs">
       <DependentUpon>AppStateInfo.xaml</DependentUpon>
@@ -363,6 +378,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AppInactivity.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

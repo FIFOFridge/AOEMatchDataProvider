@@ -190,7 +190,7 @@ namespace AOEMatchDataProvider.ViewModels
                     LogService.Debug("AoE not running...");
 
                     navigationParameter.Add("description", "Waiting for game to start...");
-                    navigationParameter.Add("timer", 10);
+                    navigationParameter.Add("timer", 5000);
 
                     if (!NavigationHelper.TryNavigateTo("MainRegion", "AppStateInfo", navigationParameter, out Exception exception))
                     {
@@ -203,54 +203,85 @@ namespace AOEMatchDataProvider.ViewModels
 #endif
 
                 LogService.Debug("Updadting current match state...");
-                var matchState = await MatchProcessingService.TryUpdateCurrentMatch();
                 
+                string lastMatchId = MatchProcessingService.LastPulledMatchId;
+                int updateFailsInRow = MatchProcessingService.InRowProcessingFails;
+
+                Tuple<string, string> navigationPair = null;
+
+                var matchState = await MatchProcessingService.TryUpdateCurrentMatch();
+
                 switch (matchState)
                 {
                     case Models.MatchProcessingService.MatchUpdateStatus.ConnectionError:
                         navigationParameter.Add("description", "Unable to connect...");
-                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        navigationPair = Tuple.Create("MainRegion", "AppStateInfo");
                         break;
 
                     case Models.MatchProcessingService.MatchUpdateStatus.ProcessingError:
                         navigationParameter.Add("description", "Unable to process data, make sure you are using latest app version \n");
-                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        navigationPair = Tuple.Create("MainRegion", "AppStateInfo");
                         break;
 
 #if !LIVEDEBUG //Dont check in DEBUG to speed up debug process
                     case Models.MatchProcessingService.MatchUpdateStatus.MatchEnded:
                         navigationParameter.Add("description", "Waiting for match to start...");
-                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        navigationPair = Tuple.Create("MainRegion", "AppStateInfo");
                         break;
 
                     case Models.MatchProcessingService.MatchUpdateStatus.UnsupportedMatchType:
                         navigationParameter.Add("description", "Unsupported match type...");
-                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        navigationPair = Tuple.Create("MainRegion", "AppStateInfo");
                         break;
-#else // Display already finsihed match if debug
+#else // Display already finsihed match if LIVEDEBUG
 
                     case Models.MatchProcessingService.MatchUpdateStatus.MatchEnded:
                         navigationParameter.Add("UserMatchData", MatchProcessingService.CurrentMatch.Users);
                         navigationParameter.Add("MatchType", MatchProcessingService.CurrentMatch.MatchType);
-                        NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter);
+                        navigationPair = Tuple.Create("MainRegion", "MatchFoundNotification");
                         break;
 #endif
 
                     case Models.MatchProcessingService.MatchUpdateStatus.SupportedMatchType:
                         navigationParameter.Add("UserMatchData", MatchProcessingService.CurrentMatch.Users);
                         navigationParameter.Add("MatchType", MatchProcessingService.CurrentMatch.MatchType);
-                        NavigationHelper.NavigateTo("MainRegion", "MatchFoundNotification", navigationParameter);
+                        navigationPair = Tuple.Create("MainRegion", "MatchFoundNotification");
                         break;
 
                     case Models.MatchProcessingService.MatchUpdateStatus.UnknownError:
                         navigationParameter.Add("description", "Unknow error occured during processing match");
-                        NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameter);
+                        navigationPair = Tuple.Create("MainRegion", "AppStateInfo");
                         break;
 
                     default:
                         new InvalidOperationException($"Unrecognized match state: {matchState}");
                         break;
                 }
+
+                if(matchState != Models.MatchProcessingService.MatchUpdateStatus.SupportedMatchType) //update failed
+                {
+                    if((updateFailsInRow + 1) > AppConfigurationService.AppInactivitySamples) //check how many failed updates in a row we can get
+                    {
+                        NavigationHelper.NavigateTo("MainRegion", "AppInactivity", navigationParameter); //set application into inactivity mode
+                        CanUpdateMatchData = true;
+                        return;
+                    }
+                }
+
+                if(matchState == Models.MatchProcessingService.MatchUpdateStatus.SupportedMatchType && //update successed and last match id is set
+                    lastMatchId != null
+                    )
+                {
+                    if(lastMatchId == MatchProcessingService.LastPulledMatchId) //last processed match is same as current
+                    {
+                        LogService.Debug("Skiping match update...");
+                        CanUpdateMatchData = true;
+                        return;
+                    }
+                }
+
+                //handle previously set states
+                NavigationHelper.NavigateTo(navigationPair.Item1, navigationPair.Item2, navigationParameter);
 
                 CanUpdateMatchData = true;
             }

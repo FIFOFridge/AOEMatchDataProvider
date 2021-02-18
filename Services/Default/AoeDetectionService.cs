@@ -9,11 +9,25 @@ namespace AOEMatchDataProvider.Services.Default
 {
     public class AoeDetectionService : IAoeDetectionService
     {
+        ILogService LogService { get; }
+
+        public AoeDetectionService(ILogService logService)
+        {
+            LogService = logService;
+        }
+
         public bool IsRunning
         {
             get
             {
-                return Process.GetProcessesByName("aoe2de.exe").Length > 0;
+                foreach (Process pList in Process.GetProcesses())
+                {
+                    if (pList.ProcessName.ToLower().Contains("aoe2de"))
+                        return true;
+                }
+
+
+                return false;
             }
         }
     }
