@@ -10,9 +10,9 @@ namespace AOEMatchDataProviderTests.Services.Test
 {
     public class AppConfigurationTestingService : IAppConfigurationService
     {
-        public string AppVersion => "0.1.0_TESTING"; 
+        public string AppVersion => "0.1.1_TESTING"; 
 
-        public string AppVersionNormalized => "010_TESTING";
+        public string AppVersionNormalized => "011_TESTING";
 
         //public string RootStorageDirectory => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 

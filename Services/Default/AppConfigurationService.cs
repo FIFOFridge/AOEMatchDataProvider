@@ -10,15 +10,15 @@ namespace AOEMatchDataProvider.Services.Default
     internal class AppConfigurationService : IAppConfigurationService
     {
 #if DEBUG
-        public string AppVersion => "0.1.0_PREVIEW_DEBUG";
+        public string AppVersion => "0.1.1_PREVIEW_DEBUG";
 #else
-        public string AppVersion => "0.1.0";
+        public string AppVersion => "0.1.1";
 #endif
 
 #if DEBUG
-        public string AppVersionNormalized => "010_P_D";
+        public string AppVersionNormalized => "011_P_D";
 #else
-        public string AppVersionNormalized => "010";
+        public string AppVersionNormalized => "011";
 #endif
         public string RootStorageDirectory => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
