@@ -33,8 +33,8 @@ BundledInstaller.exe
 .sign/
 .sign/.gitkeep
 
-#build + sign + deploy
-.deploy.ps1
+.patch-for-release.ps1
+.patch-for-staging.ps1
 
 #ResourcesGenerationScripts
 ResourcesGenerationScripts/
