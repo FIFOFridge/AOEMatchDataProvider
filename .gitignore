@@ -10,14 +10,14 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
-# generate/process/repo source specific content
-processResources.ps1
-licenseGenerator.au3
-
 *.cer
 *.pfx
 *.pvk
 *.spc
+
+#nuget template (required for squirrel bundling)
+lib/net45/
+!*/lib/net45/_._
 
 #deploy
 .deploy/
