@@ -118,21 +118,14 @@ namespace AOEMatchDataProvider.Views
                             { "update target", targetData.ToString() }
                         };
 
-                        LogService.Debug($"Merging user {id} rank", logPropertiesBeforeUpdate);
+                        LogService.Trace($"Merging user {id} rank", logPropertiesBeforeUpdate);
                         
                         try
                         {
                             targetData.MergeUserRank(rank);
 
-                            var logPropertiesAfterUpdate = new Dictionary<string, object>
-                            {
-                                { "update target", targetData.ToString() }
-                            };
-
                             //todo: refactor implementing INotifyPropertyChanged chain in models to auto perform property update
                             targetControl.UpdateUserELO();
-
-                            LogService.Debug($"Merged user {id} rank", logPropertiesAfterUpdate);
                         } 
                         catch(Exception e)
                         {

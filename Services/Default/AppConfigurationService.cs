@@ -41,7 +41,7 @@ namespace AOEMatchDataProvider.Services.Default
         public int AppBootingUpdateTick { get; } = 1000 * 5; //initial boot is required to avoid double hotkey registration at startup
         public int AppStateInfoUpdateTick { get; } = 1000 * 60 * 3;
         public int TeamPanelUpdateTick { get; } = 1000 * 60 * 5;
-        public int AppInactivitySamples { get; } = 5;
+        public int AppInactivitySamples { get; } = 4;
 #endif
 
 #if LIVEDEBUG

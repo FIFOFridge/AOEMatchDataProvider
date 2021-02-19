@@ -43,5 +43,10 @@ namespace AOEMatchDataProviderTests.Services.Test
         {
             testContext.WriteLine("[WARNING] " + message);
         }
+
+        public void Trace(string message, Dictionary<string, object> logProperties = null)
+        {
+            
+        }
     }
 }

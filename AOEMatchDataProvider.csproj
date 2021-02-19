@@ -216,7 +216,6 @@
     <Compile Include="Converters\StorageHasToBooleanConverter.cs" />
     <Compile Include="Converters\UserRankModeConverter.cs" />
     <Compile Include="Events\Services\InactiveDetectionService\AppInactivityEvent.cs" />
-    <Compile Include="Events\Views\DisplayView.cs" />
     <Compile Include="Events\Views\InfoBar\InfoBarMessageChanged.cs" />
     <Compile Include="Events\Views\InitialConfiguration\UserIdChanged.cs" />
     <Compile Include="Events\Views\Shell\ShellResizedEvent.cs" />
@@ -230,8 +229,6 @@
     <Compile Include="Helpers\Navigation\NavigationHelper.cs" />
     <Compile Include="Helpers\Validation\UserIdValidator.cs" />
     <Compile Include="Helpers\Windows\ExternalRedirectionHelper.cs" />
-    <Compile Include="Helpers\Windows\WindowManagmentHelper.cs" />
-    <Compile Include="Helpers\WPF\BindingLoger.cs" />
     <Compile Include="Models\ISerializableModel.cs" />
     <Compile Include="Models\Licenses\License.cs" />
     <Compile Include="Models\LogService\LogPropertyCollection.cs" />
@@ -250,8 +247,6 @@
     <Compile Include="Models\UserRankMode.cs" />
     <Compile Include="Models\UserRankService\AoeNetAPIStringResources.cs" />
     <Compile Include="Models\UserRankService\MatchResponse.cs" />
-    <Compile Include="Models\UserRankService\MatchResponseWrapper.cs" />
-    <Compile Include="Models\UserRankService\UserRankResponseWrapper.cs" />
     <Compile Include="Models\UserRankService\UserRatingResponse.cs" />
     <Compile Include="Models\Views\Shell\Rectangle.cs" />
     <Compile Include="Mvvm\IShell.cs" />
@@ -445,7 +440,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include=".sign\keys\FIFOFridge_cert.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -458,6 +452,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include=".sign\keys\" />
     <Folder Include="Helpers\Parsers\" />
     <Folder Include="Helpers\Request\" />
     <Folder Include="Resources\Dictionaries\ViewCategories\Configuration\" />

@@ -31,9 +31,6 @@ namespace AOEMatchDataProvider
     //TODO: replace with AppWrapper
     public partial class App : PrismApplication
     {
-        ////view models that requires view injection to work, which is required in some specific cases
-        //internal Dictionary<Type, Func<object, IViewInjector>> InjectableViews { get; private set; }
-
         internal static App Instance { get; private set; }
         //mutex to make sure only one instance of app is running
         internal static Mutex InstanceMutex { get; private set; }
@@ -64,6 +61,8 @@ namespace AOEMatchDataProvider
             PresentationTraceSources.DataBindingSource.Listeners.Add(new ConsoleTraceListener());
             //PresentationTraceSources.DataBindingSource.Listeners.Add(new DebugTraceListener());
             PresentationTraceSources.DataBindingSource.Switch.Level = SourceLevels.Warning | SourceLevels.Error;
+
+            DumpAppConfig();
 
             LoadSettings();
             InitialNavigation();
@@ -129,21 +128,7 @@ namespace AOEMatchDataProvider
 
                 NavigationHelper.NavigateTo("MainRegion", "AppStateInfo", navigationParameters);
             }
-
-            //Resolve<IApplicationCommands>().UpdateMatchDataCommand.Execute(null);
-
-            //redirect to app state info
         }
-
-        //void SetupInjectableViewModels()
-        //{
-        //    InjectableViews = new Dictionary<Type, Func<object, IViewInjector>>();
-        //    InjectableViews.Add(typeof(TeamsPanel), (view) =>
-        //    {
-        //        //create VM instance
-        //        return new ViewModels.TeamsPanelViewModel(view as ITeamsPanelView);
-        //    });
-        //}
 
         protected override Window CreateShell()
         {
@@ -295,25 +280,31 @@ namespace AOEMatchDataProvider
             return AppDomain.CurrentDomain.BaseDirectory;
         }
 
-        //protected override void ConfigureViewModelLocator()
-        //{
-        //    base.ConfigureViewModelLocator();
-        //    ViewModelLocationProvider.SetDefaultViewModelFactory((view, viewModelType) =>
-        //    {
-        //        //if view model implements IViewInjector then get it's mapping from InjectableViews and initialize it's VM
-        //        if(viewModelType.GetInterfaces().Contains(typeof(IViewInjector)))
-        //        {
-        //            //VM is implementing IViewInjector but don't have set factory
-        //            if (!(InjectableViews.ContainsKey(view.GetType())))
-        //                throw new InvalidOperationException();
+        static void DumpAppConfig()
+        {
+            var logService = App.Resolve<ILogService>();
+            var appConfigService = App.Resolve<IAppConfigurationService>();
 
-        //            //create VM using factory
-        //            var vmInstance = InjectableViews[view.GetType()](view); 
-
-        //            return vmInstance;
-        //        } else //use default prism container to resolve
-        //            return base.Container.Resolve(viewModelType);
-        //    });
-        //}
+            logService.Info("------------- App config dump -------------");
+            logService.Info($"Version: {appConfigService.AppVersion}");
+            //timeouts
+            var timeouts = new Dictionary<string, object>();
+            timeouts.Add("MatchUpdateTimeout", appConfigService.MatchUpdateTimeout);
+            timeouts.Add("DefaultRequestTimeout", appConfigService.DefaultRequestTimeout);
+            logService.Info($"Timeouts: ", timeouts);
+            //ticks
+            var ticks = new Dictionary<string, object>();
+            ticks.Add("AppStateInfoUpdateTick", appConfigService.AppStateInfoUpdateTick);
+            ticks.Add("TeamPanelUpdateTick", appConfigService.TeamPanelUpdateTick);
+            ticks.Add("AppInactivitySamples", appConfigService.AppInactivitySamples);
+            ticks.Add("AppBootingUpdateTick", appConfigService.AppBootingUpdateTick);
+            logService.Info($"Ticks: ", ticks);
+#if RELEASE
+            logService.Info($"Is Release: true");
+#else
+            logService.Info($"Is Release: false");
+#endif
+            logService.Info("---------- End of App config dump ----------");
+        }
     }
 }

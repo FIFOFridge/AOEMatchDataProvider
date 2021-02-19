@@ -22,7 +22,13 @@ namespace AOEMatchDataProvider.Helpers.Navigation
 
         public static bool TryNavigateTo(string region, string view, NavigationParameters navigationParameters, out Exception exception)
         {
-            LogService.Debug($">> Safe navigating to: {view} in region: {region}");
+            var logMessage = $"Safe navigating to: {view} in region: {region}";
+
+            if (region == "MainRegion")
+                logMessage = ">> " + logMessage;
+
+            LogService.Trace(logMessage);
+
             Exception e = null;
 
             App.Current.Dispatcher.Invoke(() =>
@@ -48,7 +54,13 @@ namespace AOEMatchDataProvider.Helpers.Navigation
 
         public static void NavigateTo(string region, string view, NavigationParameters navigationParameters)
         {
-            LogService.Debug($">> Navigating to: {view} in region: {region}");
+            var logMessage = $"Navigating to: {view} in region: {region}";
+
+            if (region == "MainRegion")
+                logMessage = ">> " + logMessage;
+
+            LogService.Trace(logMessage);
+
             Exception e = null;
 
             App.Current.Dispatcher.Invoke(() =>

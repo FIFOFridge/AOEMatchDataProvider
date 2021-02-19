@@ -36,7 +36,7 @@ namespace AOEMatchDataProvider.ViewModels
             set
             {
                 SetProperty(ref opacity, value);
-                LogService.Debug($"Window opacity has been changed to: {value}");
+                LogService.Trace($"Window opacity has been changed to: {value}");
             }
         }
 
@@ -51,7 +51,7 @@ namespace AOEMatchDataProvider.ViewModels
             set
             {
                 SetProperty(ref canUpdateMatchData, value);
-                LogService.Debug($"CanUpdateMatchData has been changed to: {value}");
+                LogService.Trace($"CanUpdateMatchData has been changed to: {value}");
             }
         }
         #region Services
@@ -202,7 +202,7 @@ namespace AOEMatchDataProvider.ViewModels
                 }
 #endif
 
-                LogService.Debug("Updadting current match state...");
+                LogService.Trace("Updadting current match state...");
                 
                 string lastMatchId = MatchProcessingService.LastPulledMatchId;
                 int updateFailsInRow = MatchProcessingService.InRowProcessingFails;
@@ -274,7 +274,7 @@ namespace AOEMatchDataProvider.ViewModels
                 {
                     if(lastMatchId == MatchProcessingService.LastPulledMatchId) //last processed match is same as current
                     {
-                        LogService.Debug("Skiping match update...");
+                        LogService.Trace("Skiping match update...");
                         CanUpdateMatchData = true;
                         return;
                     }
@@ -293,8 +293,6 @@ namespace AOEMatchDataProvider.ViewModels
 
         void ToggleWindowVisibility()
         {
-            LogService.Info("Toggling window visibility");
-
             if (Opacity <= 1 && Opacity > 0) //hide if visible
             {
                 SetWindowOpacity(0);
@@ -307,8 +305,6 @@ namespace AOEMatchDataProvider.ViewModels
 
         void SetWindowOpacity(object opacity)
         {
-            LogService.Info($"Seting windows opacity to: {opacity}");
-
             //todo: add safe checks, handle convertion exceptions
             var _opacity = double.Parse(opacity.ToString());
 
@@ -327,8 +323,6 @@ namespace AOEMatchDataProvider.ViewModels
                 throw new ArgumentOutOfRangeException($"Opacity defined as in visible range cannot be less then: {minimumVisibleOpacity}");
 
             CurrentMaxOpacity = _opacity;
-
-            LogService.Debug($"CurrentMaxOpacity set to: {CurrentMaxOpacity}");
 
             //check if current window opacity need update
             //if window is hidden

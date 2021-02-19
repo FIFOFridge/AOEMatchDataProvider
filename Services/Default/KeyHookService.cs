@@ -18,11 +18,6 @@ namespace AOEMatchDataProvider.Services.Default
         static LowLevelKeyboardProc _proc = HookCallback;
         static IntPtr _hookID = IntPtr.Zero;
 
-        //static Dictionary<
-        //    object,
-        //    List<KeyHandlerPair>
-        //    > handlers;
-
         static Dictionary<string, KeyHandlerPair> handlers;
         static List<string> tokens;
 
@@ -92,60 +87,6 @@ namespace AOEMatchDataProvider.Services.Default
             UnhookWindowsHookEx(_hookID);
         }
 
-        //public void Add(object owner, Keys keys, Action action)
-        //{
-        //    lock(((ICollection)handlers).SyncRoot)
-        //    {
-        //        LogService.Info($"Hooking key: {keys.ToString()} by: {owner.GetType().ToString()}");
-
-        //        KeyHandlerPair keyHandlerPair = new KeyHandlerPair
-        //        {
-        //            key = keys,
-        //            action = action
-        //        };
-
-
-        //        if (!handlers.ContainsKey(owner))
-        //            handlers.Add(owner, new List<KeyHandlerPair>());
-
-        //        //lock owner collection
-        //        lock (((ICollection)handlers[owner]).SyncRoot)
-        //        {
-        //            //check if owner already did register specified key
-        //            var exisintg = handlers[owner].Where(i => i.key == keys);
-
-        //            //if owner already has pair where key is assigned then throw
-        //            if (exisintg.Count() > 1)
-        //                throw new InvalidOperationException("Owner already has assigned action for this key");
-
-        //            handlers[owner].Add(keyHandlerPair);
-        //        }
-        //    }
-        //}
-
-        //public void Remove(object owner, Keys keys)
-        //{
-        //    lock (((ICollection)handlers).SyncRoot)
-        //    {
-
-        //        LogService.Info($"Unhooking key: {keys.ToString()} by: {owner.GetType().ToString()}");
-
-        //        KeyHandlerPair keyHandlerPair;
-
-        //        if (!handlers.ContainsKey(owner))
-        //            return;
-
-        //        //lock owner collection
-        //        lock (((ICollection)handlers[owner]).SyncRoot)
-        //        {
-        //            keyHandlerPair = handlers[owner].Where(i => i.key == keys).First();
-
-        //            if (keyHandlerPair != null)
-        //                handlers[owner].Remove(keyHandlerPair);
-        //        }
-        //    }
-        //}
-
         public string Add(Keys keys, Action action)
         {
             var token = RandomString(7);
@@ -153,7 +94,7 @@ namespace AOEMatchDataProvider.Services.Default
             if (tokens.Contains(token))
                 return Add(keys, action);
 
-            LogService.Debug($"Hooking action key: {keys} with token: {token}");
+            LogService.Trace($"Hooking action key: {keys} ({token})");
 
             handlers.Add(
                 token,
@@ -172,7 +113,7 @@ namespace AOEMatchDataProvider.Services.Default
             if (!handlers.ContainsKey(token))
                 return;
 
-            LogService.Debug($"Unhooking action with token: {token}");
+            LogService.Trace($"Unhooking action assigned with key: {handlers[token].key} ({token})");
 
             handlers.Remove(token);
             tokens.Remove(token);

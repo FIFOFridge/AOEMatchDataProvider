@@ -12,6 +12,7 @@ namespace AOEMatchDataProvider.Services
         void Warning(string message, Dictionary<string, object> logProperties = null);
         void Error(string message, Dictionary<string, object> logProperties = null);
         void Debug(string message, Dictionary<string, object> logProperties = null);
+        void Trace(string message, Dictionary<string, object> logProperties = null);
         //void Exception(string message, Exception exception, Dictionary<string, object> logProperties = null); 
         void Critical(string message, Dictionary<string, object> logProperties = null);
     }

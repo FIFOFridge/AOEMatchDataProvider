@@ -204,7 +204,7 @@ namespace AOEMatchDataProvider.ViewModels
 
             await Task.WhenAll(updateTasks);
 
-            LogService.Debug("All updates has been completed", logProperties);
+            LogService.Trace("All updates has been completed", logProperties);
         }
 
         void HandleUserDataUpdated(Task<RequestWrapper<UserRank>> updateTask, UserRankMode userRankMode, UserGameProfileId userGameProfileId)

@@ -58,11 +58,13 @@ namespace AOEMatchDataProvider.Services.Default
                 CreateDirs = true
             };
 
-#if DEBUG
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logFile);
-#else //RELEASE
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logFile);
-#endif
+//#if DEBUG
+//            config.AddRule(LogLevel.Debug, LogLevel.Fatal, logFile);
+//#else //RELEASE
+
+//#endif
+
+            config.AddRule(LogLevel.Trace, LogLevel.Fatal, logFile);
 
             LogManager.Configuration = config;
             logger = LogManager.GetCurrentClassLogger();
@@ -70,10 +72,22 @@ namespace AOEMatchDataProvider.Services.Default
 
         public void Debug(string message, Dictionary<string, object> logProperties = null)
         {
+#if DEBUG
             if (logProperties != null)
                 message = InsertProperties(message, logProperties);
 
             logger.Debug(message);
+#endif
+        }
+
+        public void Trace(string message, Dictionary<string, object> logProperties = null)
+        {
+#if TRACE
+            if (logProperties != null)
+                message = InsertProperties(message, logProperties);
+
+            logger.Trace(message);
+#endif
         }
 
         public void Critical(string message, Dictionary<string, object> logProperties = null)

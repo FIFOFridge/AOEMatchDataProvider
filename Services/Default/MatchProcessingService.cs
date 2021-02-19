@@ -36,7 +36,6 @@ namespace AOEMatchDataProvider.Services.Default
             QueryCacheService = queryCacheService;
             UserRankProcessingService = userRankProcessingService;
             #endregion
-            LogService.Info("Initialized MatchProcessingService");
         }
 
         public virtual async Task<MatchUpdateStatus> TryUpdateCurrentMatch()

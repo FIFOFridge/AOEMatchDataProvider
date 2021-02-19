@@ -34,8 +34,6 @@ namespace AOEMatchDataProvider.Services.Default
             RequestService = requestService;
 
             isCacheLoaded = false;
-
-            LogService.Info("created instance of: UserRankService");
         }
 
         void ValidateCacheState()
@@ -57,7 +55,6 @@ namespace AOEMatchDataProvider.Services.Default
 
             Dictionary<string, object> logProperties = new Dictionary<string, object>
             {
-                { "userId", userId },
                 { "timeout", timeout }
             };
 
@@ -110,8 +107,29 @@ namespace AOEMatchDataProvider.Services.Default
                     throw e;
                 }
 
+                string responseContent = "";
+                string responseCode = "";
+
+                if (requestWrapper != null) //to make sure this will not conflict with test cases
+                {
+                    if (requestWrapper.RequestResponseWrapper != null)
+                    {
+                        if (requestWrapper.RequestResponseWrapper.ResponseContent != null)
+                        {
+                            responseContent = requestWrapper.RequestResponseWrapper.ResponseContent;
+                        }
+
+                        if(requestWrapper.RequestResponseWrapper.Response != null) //to make sure this will not conflict with test cases
+                        {
+                            responseCode = requestWrapper.RequestResponseWrapper.Response.StatusCode.ToString();
+                        }
+                    }
+                }
+
                 logProperties.Add("stack", e.StackTrace);
-                LogService.Error("Error while requesting user match", logProperties);
+                logProperties.Add("response-code", responseCode);
+                logProperties.Add("response-raw", responseContent);
+                LogService.Error($"Error while requesting user match: {e.ToString()}", logProperties);
 
                 requestWrapper.Exception = e;
             }
@@ -129,10 +147,12 @@ namespace AOEMatchDataProvider.Services.Default
             ValidateCacheState();
 
             RequestWrapper<UserRank> requestWrapper = new RequestWrapper<UserRank>();
-            Dictionary<string, object> logProperties = new Dictionary<string, object>();
-            logProperties.Add("userGameProfileId", userGameProfileId);
-            logProperties.Add("rankMode", rankMode.ToString());
-            logProperties.Add("timeout", timeout);
+            Dictionary<string, object> logProperties = new Dictionary<string, object>
+            {
+                { "timeout", timeout },
+                { "game-profile-id", userGameProfileId.ProfileId },
+                { "rank-mode", rankMode.ToString() }
+            };
 
             //queryCacheService.Load();
 
@@ -189,8 +209,29 @@ namespace AOEMatchDataProvider.Services.Default
                     throw e;
                 }
 
-                //logProperties.Add("stack", e.StackTrace);
-                //LogService.Error($"Error while requesting user rating: {e.Message}", logProperties);
+                string responseContent = "";
+                string responseCode = "";
+
+                if (requestWrapper != null) //to make sure this will not conflict with test cases
+                {
+                    if (requestWrapper.RequestResponseWrapper != null)
+                    {
+                        if (requestWrapper.RequestResponseWrapper.ResponseContent != null)
+                        {
+                            responseContent = requestWrapper.RequestResponseWrapper.ResponseContent;
+                        }
+
+                        if (requestWrapper.RequestResponseWrapper.Response != null) //to make sure this will not conflict with test cases
+                        {
+                            responseCode = requestWrapper.RequestResponseWrapper.Response.StatusCode.ToString();
+                        }
+                    }
+                }
+
+                logProperties.Add("stack", e.StackTrace);
+                logProperties.Add("response-code", responseCode);
+                logProperties.Add("response-raw", responseContent);
+                LogService.Error($"Error while requesting ladder: {e.ToString()}", logProperties);
 
                 requestWrapper.Exception = e;
             }
@@ -344,31 +385,6 @@ namespace AOEMatchDataProvider.Services.Default
             return requestWrapper;
         }
         #endregion IUserRankService implementation
-
-        //#region Request/Data processing
-        //UserRankData ProcessUserRating(UserRatingResponse userRatingResponse)
-        //{
-        //    var userRankData = new UserRankData();
-
-        //    //the api don't allow for collecting more then one user per request (when specifing userId)
-        //    //so most propably that's some request error
-        //    if (userRatingResponse.Leaderboard.Count > 1)
-        //        throw new InvalidOperationException("Invalid user data");
-
-        //    var ratingType = (UserRankMode)userRatingResponse.LeaderboardId;
-        //    var user = userRatingResponse.Leaderboard.First();
-
-        //    var userRank = new UserRank
-        //    {
-        //        Elo = user.Rating,
-        //        Ladder = user.Rank
-        //    };
-
-        //    userRankData.UserRatings.Add(ratingType, userRank);
-
-        //    return userRankData;
-        //}
-        //#endregion
 
         RequestState AddTimeoutHandler(CancellationTokenSource cancellationTokenSource, int timeout)
         {
