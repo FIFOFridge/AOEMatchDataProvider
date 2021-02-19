@@ -18,6 +18,6 @@ if (!(Test-Path $backup))
 }
 
 #((Get-Content -path $filePath -Raw) -replace $toReplace, $replaceWith) | Write-Host
-((Get-Content -path $filePath -Raw) -replace $toReplace, $replaceWith) | Set-Content -Path $filePath
+((Get-Content -path $filePath -Raw) -replace $toReplace, $replaceWith) | Set-Content -NoNewLine -Path $filePath
 
 #git stash push --no-keep-index -m "File patch: $toReplace -> $replaceWith" $filePath
