@@ -24,7 +24,7 @@ namespace AOEMatchDataProvider.Views
     /// <summary>
     /// Logika interakcji dla klasy Shell.xaml
     /// </summary>
-    public partial class Shell : Window, IShell
+    public partial class Shell : Window
     {
         IEventAggregator EventAggregator { get;}
 
@@ -48,8 +48,6 @@ namespace AOEMatchDataProvider.Views
                     (int)this.Height)
                 );
         }
-
-        Window IShell.Shell => this;
 
         private void Shell_Unloaded(object sender, RoutedEventArgs e)
         {

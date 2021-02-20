@@ -23,7 +23,6 @@ namespace AOEMatchDataProvider.ViewModels
         IApplicationCommands ApplicationCommands { get; }
         IAppCriticalExceptionHandlerService AppCriticalExceptionHandlerService { get; }
         IEventAggregator EventAggregator { get; }
-        IShell Shell { get; }
 
         string keyHandlerTokenHome;
         string keyHandlerTokenEnd;
@@ -32,15 +31,13 @@ namespace AOEMatchDataProvider.ViewModels
             IKeyHookService keyHookService, 
             IApplicationCommands applicationCommands,
             IEventAggregator eventAggregator,
-            IAppCriticalExceptionHandlerService appCriticalExceptionHandlerService,
-            IShell shell
+            IAppCriticalExceptionHandlerService appCriticalExceptionHandlerService
             )
         {
             KeyHookService = keyHookService;
             ApplicationCommands = applicationCommands;
             EventAggregator = eventAggregator;
             AppCriticalExceptionHandlerService = appCriticalExceptionHandlerService;
-            Shell = shell;
 
             keyHandlerTokenHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, DisplayMatch);
             keyHandlerTokenEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, HideWindowAndLoadMatchInBackground);

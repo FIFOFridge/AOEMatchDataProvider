@@ -135,8 +135,6 @@ namespace AOEMatchDataProvider
             //shell = new MatchData(); //save reference
             shell = new Shell(App.Resolve<IEventAggregator>());
 
-            appContainerRegistry.RegisterInstance<IShell>(shell as IShell);
-
             return shell;
         }
 
