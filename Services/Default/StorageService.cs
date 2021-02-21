@@ -273,10 +273,10 @@ namespace AOEMatchDataProvider.Services.Default
             }
 
             [JsonConstructor]
-            internal ValueWrapper(DateTime? Expires, object EntryValue, StorageEntryExpirePolicy expirePolicy, string SerializationTypeMaping)
+            internal ValueWrapper(DateTime? Expires, object EntryValue, StorageEntryExpirePolicy StorageEntryExpirePolicy, string SerializationTypeMaping)
             {
                 //keepForSession = false;
-                this.StorageEntryExpirePolicy = expirePolicy;
+                this.StorageEntryExpirePolicy = StorageEntryExpirePolicy;
                 this.Expires = Expires;
                 this.SerializationTypeMaping = SerializationTypeMaping;
                 //this.Value = EntryValue;

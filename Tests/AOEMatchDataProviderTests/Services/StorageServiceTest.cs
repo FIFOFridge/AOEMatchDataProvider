@@ -119,6 +119,29 @@ namespace AOEMatchDataProviderTests.Services
             Assert.IsFalse(storageService.Has("sessionKey"), "Session key shouldn't be saved and loaded");
             Assert.AreEqual(storageService.Get<StorageValueWrapper>("infiniteKey").value, 1, "Inifinite key should be aviable");
         }
+
+        [TestMethod]
+        public void TestDeserializedStorageEntityExpireRule()
+        {
+            //make sure all entries will be deleted
+            TestingResourcesHelper.PreapareTestingDirectory(ServiceResolver.GetService<IAppConfigurationService>());
+
+            var storageService = ServiceResolver.GetService<IStorageService>();
+
+            storageService.Create("infiniteKey", StorageValueWrapper.FromValue(1), StorageEntryExpirePolicy.Never);
+
+            //save data
+            storageService.Flush();
+
+            //reset service(es)
+            Cleanup();
+            Init();
+
+            storageService = ServiceResolver.GetService<IStorageService>();
+            storageService.Load();
+
+            Assert.AreEqual(storageService.GetExpirePolicy("infiniteKey"), StorageEntryExpirePolicy.Never, "Created and loaded expire policies should be same");
+        }
     }
 
     public class StorageValueWrapper : ISerializableModel
