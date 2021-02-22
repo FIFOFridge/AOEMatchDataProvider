@@ -46,7 +46,7 @@ Application is designed to behave like overlay so you can pop it up and hide at 
 #### [↑↑ Back to "Table of Contents"](#table-of-contents)
 
 # Installation
-[Here](https://github.com/FIFOFridge/AOEMatchDataProvider/releases) [(https://github.com/FIFOFridge/AOEMatchDataProvider/releases)](https://github.com/FIFOFridge/AOEMatchDataProvider/releases) you can find newest app realeases, download windows installer, run it and follow through installation process.
+[Here: https://github.com/FIFOFridge/AOEMatchDataProvider/releases/latest)](https://github.com/FIFOFridge/AOEMatchDataProvider/releases/latest) you can find newest app realeases, download windows installer, run it and follow through installation process.
 
 ## Picking app installer:
 - Release.zip - (No installation required) File packed up with Zip archive, simply unpack them anywhere and run AOEMatchDataProvider.exe
