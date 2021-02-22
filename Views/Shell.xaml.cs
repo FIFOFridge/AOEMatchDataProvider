@@ -1,6 +1,5 @@
 ﻿using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.Shell;
-using AOEMatchDataProvider.Mvvm;
 using Prism.Events;
 using System;
 using System.Collections.Generic;

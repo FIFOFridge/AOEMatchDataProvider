@@ -73,7 +73,7 @@ namespace AOEMatchDataProvider.Other
             if (!(storage.Has("settings")))
             {
                 App.Resolve<ILogService>().Debug("Settings file not found, creating...");
-                storage.Create("settings", new AppSettings(), StorageEntryExpirePolicy.Never);
+                storage.Create("settings", new Models.Settings.AppSettings(), StorageEntryExpirePolicy.Never);
             }
 
             storage.Flush();

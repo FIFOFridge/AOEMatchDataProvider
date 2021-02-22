@@ -10,6 +10,7 @@ namespace AOEMatchDataProvider.Models.RequestService
 {
     public class RequestResponseWrapper : ISerializableModel
     {
+        [JsonIgnore]
         public HttpResponseMessage Response { get; internal set; }
         public bool IsSuccess { get; internal set; }
         public Exception Exception { get; internal set; }
@@ -19,6 +20,15 @@ namespace AOEMatchDataProvider.Models.RequestService
         internal RequestResponseWrapper()
         {
 
+        }
+
+        [JsonConstructor]
+        internal RequestResponseWrapper(/*HttpResponseMessage Response, */bool IsSuccess, Exception Exception, string ResponseContent)
+        {
+            //this.Response = Response;
+            this.IsSuccess = IsSuccess;
+            this.Exception = Exception;
+            this.ResponseContent = ResponseContent;
         }
 
         public string ToJSON()

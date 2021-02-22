@@ -1,7 +1,8 @@
 ﻿using AOEMatchDataProvider.Command;
+using AOEMatchDataProvider.Events;
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Helpers.Navigation;
-using AOEMatchDataProvider.Mvvm;
+using AOEMatchDataProvider.Models.Settings;
 using AOEMatchDataProvider.Services;
 using Prism.Events;
 using Prism.Mvvm;
@@ -23,21 +24,23 @@ namespace AOEMatchDataProvider.ViewModels
         IApplicationCommands ApplicationCommands { get; }
         IAppCriticalExceptionHandlerService AppCriticalExceptionHandlerService { get; }
         IEventAggregator EventAggregator { get; }
+        IStorageService StorageService { get; }
 
         string keyHandlerTokenHome;
         string keyHandlerTokenEnd;
 
         public MatchFoundNotificationViewModel(
-            IKeyHookService keyHookService, 
+            IKeyHookService keyHookService,
             IApplicationCommands applicationCommands,
             IEventAggregator eventAggregator,
-            IAppCriticalExceptionHandlerService appCriticalExceptionHandlerService
-            )
+            IAppCriticalExceptionHandlerService appCriticalExceptionHandlerService,
+            IStorageService storageService)
         {
             KeyHookService = keyHookService;
             ApplicationCommands = applicationCommands;
             EventAggregator = eventAggregator;
             AppCriticalExceptionHandlerService = appCriticalExceptionHandlerService;
+            StorageService = storageService;
 
             keyHandlerTokenHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, DisplayMatch);
             keyHandlerTokenEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, HideWindowAndLoadMatchInBackground);
@@ -74,12 +77,12 @@ namespace AOEMatchDataProvider.ViewModels
 
             NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomShadowPanel", null, out _);
 
-            ApplicationCommands.SetMaxWindowOpacity.Execute(0.8);
+            UpdateMaxOpacity();
+            EventAggregator.GetEvent<AppSettingsChangedEvent>().Subscribe(UpdateMaxOpacity);
 
             //ignore mouse input
             //Shell.IgnoreInput = true;
             ApplicationCommands.SetIgnoreInput.Execute(true);
-            ApplicationCommands.SetWindowOpacity.Execute(0.6);
             parameters = navigationContext.Parameters;
         }
 
@@ -98,6 +101,13 @@ namespace AOEMatchDataProvider.ViewModels
 
             if (!NavigationHelper.TryNavigateTo("MainRegion", "TeamsPanel", parameters, out Exception exception))
                 AppCriticalExceptionHandlerService.HandleCriticalError(exception);
+        }
+
+        void UpdateMaxOpacity()
+        {
+            var settings = StorageService.Get<AppSettings>("settings");
+
+            ApplicationCommands.SetMaxWindowOpacity.Execute(settings.NotificationOpacity);
         }
 
         void HandleUnload(UserControl view)

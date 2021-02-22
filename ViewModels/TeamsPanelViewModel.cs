@@ -1,11 +1,11 @@
 ﻿using AOEMatchDataProvider.Command;
 using AOEMatchDataProvider.Controls.MatchData;
+using AOEMatchDataProvider.Events;
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Models;
 using AOEMatchDataProvider.Models.RequestService;
-using AOEMatchDataProvider.Mvvm;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.Views;
 using Prism.Events;
@@ -100,6 +100,7 @@ namespace AOEMatchDataProvider.ViewModels
         IUserRankService UserRankService { get; }
         IKeyHookService KeyHookService { get; }
         ILogService LogService { get; }
+        IStorageService StorageService { get; }
 
         string keyHandlerTokenHome;
         string keyHandlerTokenEnd;
@@ -110,8 +111,8 @@ namespace AOEMatchDataProvider.ViewModels
             IEventAggregator eventAggregator,
             IUserRankService userRankService,
             IKeyHookService keyHookService,
-            ILogService logService
-            )
+            ILogService logService, 
+            IStorageService storageService)
         {
             ApplicationCommands = applicationCommands;
             AppConfigurationService = appConfigurationService;
@@ -119,6 +120,7 @@ namespace AOEMatchDataProvider.ViewModels
             UserRankService = userRankService;
             KeyHookService = keyHookService;
             LogService = logService;
+            StorageService = storageService;
 
             //ApplicationCommands.ShowWindow.Execute(null);
 
@@ -273,7 +275,8 @@ namespace AOEMatchDataProvider.ViewModels
             if (!navigationContext.Parameters.ContainsKey("MatchType"))
                 throw new ArgumentNullException();
 
-            ApplicationCommands.SetMaxWindowOpacity.Execute(0.9);
+            UpdateMaxOpacity();
+            EventAggregator.GetEvent<AppSettingsChangedEvent>().Subscribe(UpdateMaxOpacity);
 
             UserMatchData = (List<Models.UserMatchData>)navigationContext.Parameters["UserMatchData"];
             MatchType = (MatchType)navigationContext.Parameters["MatchType"];
@@ -290,6 +293,13 @@ namespace AOEMatchDataProvider.ViewModels
         }
 
         public void OnNavigatedFrom(NavigationContext navigationContext) { }
+
+        void UpdateMaxOpacity()
+        {
+            var appSettings = StorageService.Get<Models.Settings.AppSettings>("settings");
+
+            ApplicationCommands.SetMaxWindowOpacity.Execute(appSettings.TeamsPanelOpacity);
+        }
 
         void HandleUnload(UserControl view)
         {

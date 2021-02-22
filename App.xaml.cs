@@ -2,7 +2,6 @@
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Models.Settings;
-using AOEMatchDataProvider.Mvvm;
 using AOEMatchDataProvider.Other;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.Services.Default;
@@ -84,7 +83,7 @@ namespace AOEMatchDataProvider
             if(!(storage.Has("settings")))
             {
                 App.Resolve<ILogService>().Debug("Settings file not found, creating...");
-                storage.Create("settings", new AppSettings(), StorageEntryExpirePolicy.Never);
+                storage.Create("settings", new Models.Settings.AppSettings(), StorageEntryExpirePolicy.Never);
             }
 
             storage.Flush();
@@ -95,7 +94,7 @@ namespace AOEMatchDataProvider
             var storage = Resolve<IStorageService>();
             var eventAggregator = Resolve<IEventAggregator>();
             var regionManager = App.Resolve<IRegionManager>();
-            var settings = storage.Get<AppSettings>("settings");
+            var settings = storage.Get<Models.Settings.AppSettings>("settings");
 
             //make sure string resources are valid
             if (!storage.Has("stringResources"))

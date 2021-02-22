@@ -199,7 +199,7 @@ namespace AOEMatchDataProvider.ViewModels
             if (!CanContinue)
                 throw new InvalidOperationException("what the hell?");
 
-            var settings = StorageService.Get<AppSettings>("settings");
+            var settings = StorageService.Get<Models.Settings.AppSettings>("settings");
 
             if(detectedUserIdMode == UserIdMode.SteamId64)
             {

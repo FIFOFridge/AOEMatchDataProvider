@@ -215,6 +215,7 @@
     <Compile Include="Converters\BooleanNegationConverter.cs" />
     <Compile Include="Converters\StorageHasToBooleanConverter.cs" />
     <Compile Include="Converters\UserRankModeConverter.cs" />
+    <Compile Include="Events\AppSettingsChangedEvent.cs" />
     <Compile Include="Events\Services\InactiveDetectionService\AppInactivityEvent.cs" />
     <Compile Include="Events\Views\InfoBar\InfoBarMessageChanged.cs" />
     <Compile Include="Events\Views\InitialConfiguration\UserIdChanged.cs" />
@@ -222,8 +223,10 @@
     <Compile Include="Events\Views\TeamsPanel\UserCollectionChanged.cs" />
     <Compile Include="Events\Views\TeamsPanel\UserRatingChangedEvent.cs" />
     <Compile Include="Events\Views\ViewDestroyed.cs" />
+    <Compile Include="Extensions\ArrayExtension\ArrayExtensions.cs" />
     <Compile Include="Extensions\DateTimeExtension.cs" />
     <Compile Include="Extensions\ExceptionHandling\ExceptionRethrowExtension.cs" />
+    <Compile Include="Extensions\ObjectExtension\ObjectCopyExtensions.cs" />
     <Compile Include="Extensions\UserExtensions.cs" />
     <Compile Include="Helpers\Deserialization\ModelDeserializationHelper.cs" />
     <Compile Include="Helpers\Navigation\NavigationHelper.cs" />
@@ -249,7 +252,6 @@
     <Compile Include="Models\UserRankService\MatchResponse.cs" />
     <Compile Include="Models\UserRankService\UserRatingResponse.cs" />
     <Compile Include="Models\Views\Shell\Rectangle.cs" />
-    <Compile Include="Mvvm\IShell.cs" />
     <Compile Include="Other\AppWrapper.cs" />
     <Compile Include="Other\ICriticalDisposable.cs" />
     <Compile Include="Converters\Logic\ConverterPipe.cs" />
@@ -276,6 +278,7 @@
     <Compile Include="Services\IQueryCacheService.cs" />
     <Compile Include="Services\IStorageService.cs" />
     <Compile Include="Services\IUserRankService.cs" />
+    <Compile Include="ViewModels\AppSettingsViewModel.cs" />
     <Compile Include="ViewModels\AppInactivityViewModel.cs" />
     <Compile Include="ViewModels\AppStateInfoViewModel.cs" />
     <Compile Include="ViewModels\BottomButtonsPanelViewModel.cs" />
@@ -291,6 +294,9 @@
     </Compile>
     <Compile Include="Views\AppInactivity.xaml.cs">
       <DependentUpon>AppInactivity.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AppSettings.xaml.cs">
+      <DependentUpon>AppSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\AppStateInfo.xaml.cs">
       <DependentUpon>AppStateInfo.xaml</DependentUpon>
@@ -380,6 +386,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\AppSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\AppStateInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -453,8 +463,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include=".sign\keys\" />
+    <Folder Include="Controls\Window\" />
     <Folder Include="Helpers\Parsers\" />
     <Folder Include="Helpers\Request\" />
+    <Folder Include="Mvvm\" />
     <Folder Include="Resources\Dictionaries\ViewCategories\Configuration\" />
     <Folder Include="Resources\Dictionaries\ViewCategories\TeamsPanel\" />
   </ItemGroup>

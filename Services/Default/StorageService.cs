@@ -1,7 +1,9 @@
 ﻿using AOEMatchDataProvider.Extensions;
+using AOEMatchDataProvider.Extensions.ObjectExtension;
 using AOEMatchDataProvider.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -28,26 +30,33 @@ namespace AOEMatchDataProvider.Services.Default
 
         public bool TryGet(string key, out object value)
         {
-            if(storageEntries.ContainsKey(key))
+            lock (((ICollection)storageEntries).SyncRoot)
             {
-                value = storageEntries[key].Value;
-                return true;
-            }
+                if (storageEntries.ContainsKey(key))
+                {
+                    value = storageEntries[key].Value;
+                    return true;
+                }
 
-            value = null;
-            return false;
+                value = null;
+                
+                return false;
+            }
         }
 
         public bool TryGet<T>(string key, out T value)
         {
-            if (storageEntries.ContainsKey(key))
+            lock (((ICollection)storageEntries).SyncRoot)
             {
-                value = (T)storageEntries[key].Value;
-                return true;
-            }
+                if (storageEntries.ContainsKey(key))
+                {
+                    value = (T)storageEntries[key].Value;
+                    return true;
+                }
 
-            value = default(T);
-            return false;
+                value = default(T);
+                return false;
+            }
         }
 
         public void Flush()
@@ -55,24 +64,29 @@ namespace AOEMatchDataProvider.Services.Default
             if (!Directory.Exists(AppConfigurationService.StorageDirectory))
                 Directory.CreateDirectory(AppConfigurationService.StorageDirectory);
 
-            foreach (var keyValuePair in storageEntries)
+            lock(((ICollection)storageEntries).SyncRoot)
             {
-                string serialized = null;
+                var storageCopy = new Dictionary<string, ValueWrapper>(storageEntries);
 
-                if (
-                    //skip if entry is only for current app session
-                    keyValuePair.Value.StorageEntryExpirePolicy == StorageEntryExpirePolicy.AfterSession ||
-                    //skip if entry is expired
-                    (keyValuePair.Value.StorageEntryExpirePolicy == StorageEntryExpirePolicy.Expire && keyValuePair.Value.Expired)
-                    )
-                    continue;
+                foreach (var keyValuePair in storageCopy) //make sure to use a copy of original
+                {
+                    string serialized = null;
 
-                serialized = JsonConvert.SerializeObject(keyValuePair.Value);
-                File.WriteAllText(
-                    Path.Combine( //${storage}/{key}.{storageExtension}
-                        AppConfigurationService.StorageDirectory, 
-                        keyValuePair.Key + fileStorageExtension),
-                    serialized);
+                    if (
+                        //skip if entry is only for current app session
+                        keyValuePair.Value.StorageEntryExpirePolicy == StorageEntryExpirePolicy.AfterSession ||
+                        //skip if entry is expired
+                        (keyValuePair.Value.StorageEntryExpirePolicy == StorageEntryExpirePolicy.Expire && keyValuePair.Value.Expired)
+                        )
+                        continue;
+
+                    serialized = JsonConvert.SerializeObject(keyValuePair.Value);
+                    File.WriteAllText(
+                        Path.Combine( //${storage}/{key}.{storageExtension}
+                            AppConfigurationService.StorageDirectory,
+                            keyValuePair.Key + fileStorageExtension),
+                        serialized);
+                }
             }
         }
 
@@ -85,47 +99,50 @@ namespace AOEMatchDataProvider.Services.Default
                 ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
             };
 
-            foreach (var filePath in files)
+            lock (((ICollection)storageEntries).SyncRoot)
             {
-                try
+                foreach (var filePath in files)
                 {
-                    var keyName = Path.GetFileNameWithoutExtension(filePath);
-                    var value = JsonConvert.DeserializeObject<ValueWrapper>(File.ReadAllText(filePath), deserializerSettings);
-
-                    storageEntries.Add(keyName, value);
-                }
-                catch(Exception e)
-                {
-                    if (
-                        e is StackOverflowException ||
-                        e is ThreadAbortException ||
-                        e is AccessViolationException
-                       )
-                        throw e; //rethrow if not related with file operation
-
-                    var logProperties = new Dictionary<string, object>();
-                    logProperties.Add("Exception", e.ToString());
-                    logProperties.Add("Stack", e.StackTrace);
-                    LogService.Warning($"Unable to load storage entity: {filePath}", logProperties);
-
-                    //try to delete file
                     try
                     {
-                        File.Delete(filePath);
+                        var keyName = Path.GetFileNameWithoutExtension(filePath);
+                        var value = JsonConvert.DeserializeObject<ValueWrapper>(File.ReadAllText(filePath), deserializerSettings);
+
+                        storageEntries.Add(keyName, value);
                     }
-                    catch (Exception de)
+                    catch (Exception e)
                     {
                         if (
-                            de is StackOverflowException ||
-                            de is ThreadAbortException ||
-                            de is AccessViolationException
+                            e is StackOverflowException ||
+                            e is ThreadAbortException ||
+                            e is AccessViolationException
                            )
-                             throw de; //rethrow if not related with file operation
+                            throw e; //rethrow if not related with file operation
 
-                        var fileDeleteLogProperties = new Dictionary<string, object>();
-                        fileDeleteLogProperties.Add("Exception", de.ToString());
-                        fileDeleteLogProperties.Add("Stack", de.StackTrace);
-                        LogService.Warning($"Unable to delete saved storage entity: {filePath}", fileDeleteLogProperties);
+                        var logProperties = new Dictionary<string, object>();
+                        logProperties.Add("Exception", e.ToString());
+                        logProperties.Add("Stack", e.StackTrace);
+                        LogService.Warning($"Unable to load storage entity: {filePath}", logProperties);
+
+                        //try to delete file
+                        try
+                        {
+                            File.Delete(filePath);
+                        }
+                        catch (Exception de)
+                        {
+                            if (
+                                de is StackOverflowException ||
+                                de is ThreadAbortException ||
+                                de is AccessViolationException
+                               )
+                                throw de; //rethrow if not related with file operation
+
+                            var fileDeleteLogProperties = new Dictionary<string, object>();
+                            fileDeleteLogProperties.Add("Exception", de.ToString());
+                            fileDeleteLogProperties.Add("Stack", de.StackTrace);
+                            LogService.Warning($"Unable to delete saved storage entity: {filePath}", fileDeleteLogProperties);
+                        }
                     }
                 }
             }
@@ -133,111 +150,138 @@ namespace AOEMatchDataProvider.Services.Default
 
         public object Get(string key)
         {
-            var entry = storageEntries[key];
+            lock (((ICollection)storageEntries).SyncRoot)
+            {
+                var entry = storageEntries[key];
 
-            if (entry.Expired)
-                throw new EntryExpiredException("Entry has expired");
+                if (entry.Expired)
+                    throw new EntryExpiredException("Entry has expired");
 
-            return entry.Value;
+                return entry.Value;
+            }
         }
 
         public T Get<T>(string key)
         {
-            var value = Get(key);
-            return (T)value;
+            lock (((ICollection)storageEntries).SyncRoot)
+            {
+                var value = Get(key);
+                return (T)value;
+            }
         }
 
         public IEnumerable<string> GetKeysByPrefix(string prefix)
         {
-            List<string> keys = new List<string>();
-
-            foreach(var entryKey in storageEntries.Keys)
+            lock (((ICollection)storageEntries).SyncRoot)
             {
-                if(entryKey.StartsWith(prefix))
-                {
-                    keys.Add(entryKey);
-                }
-            }
+                List<string> keys = new List<string>();
 
-            return keys;
+                foreach (var entryKey in storageEntries.Keys)
+                {
+                    if (entryKey.StartsWith(prefix))
+                    {
+                        keys.Add(entryKey);
+                    }
+                }
+
+                return keys;
+            }
         }
 
         public StorageEntryExpirePolicy GetExpirePolicy(string key)
         {
-            if (!Has(key))
-                throw new InvalidOperationException($"Unable to find entry with key: {key}");
+            lock (((ICollection)storageEntries).SyncRoot)
+            {
+                if (!Has(key))
+                    throw new InvalidOperationException($"Unable to find entry with key: {key}");
 
-            return storageEntries[key].StorageEntryExpirePolicy;
+                return storageEntries[key].StorageEntryExpirePolicy;
+            }
         }
 
         public bool Has(string key)
         {
-            return storageEntries.ContainsKey(key);
+            lock (((ICollection)storageEntries).SyncRoot)
+            {
+                return storageEntries.ContainsKey(key);
+            }
         }
 
         public void Create(string key, object value, StorageEntryExpirePolicy expirePolicy, DateTime? expires = null)
         {
-            //if entry exists and its valid (non expired) we have to use Update
-            if (Has(key) && !(storageEntries[key].Expired))
-                throw new InvalidOperationException($"Entry with key: {key} already exists and not expired, use Update(...) instead");
-
-            //if entry exists but expired, we can override it
-            if(Has(key))
-                storageEntries.Remove(key);
-
-            //make sure 'expires' value is valid for specified expire policy
-            if (
-                (expirePolicy == StorageEntryExpirePolicy.AfterSession || expirePolicy == StorageEntryExpirePolicy.Never) &&
-                expires != null
-                )
-                throw new ArgumentException("expires argument have to be null if expirePlicy is other then 'Expire'");
-
-            //validate expire parmater
-            if(expirePolicy == StorageEntryExpirePolicy.Expire)
+            lock (((ICollection)storageEntries).SyncRoot)
             {
-                if (expires == null)
-                    throw new ArgumentException("expirePolicy is set to expire but 'expires' parameter is null");
+                //if entry exists and its valid (non expired) we have to use Update
+                if (Has(key) && !(storageEntries[key].Expired))
+                    throw new InvalidOperationException($"Entry with key: {key} already exists and not expired, use Update(...) instead");
 
-                var notNullexpires = (DateTime)expires;
+                //if entry exists but expired, we can override it
+                if (Has(key))
+                    storageEntries.Remove(key);
 
-                if (!notNullexpires.IsUTC())
-                    throw new ArgumentException("'expire' have to be provided as UTC");
+                //make sure 'expires' value is valid for specified expire policy
+                if (
+                    (expirePolicy == StorageEntryExpirePolicy.AfterSession || expirePolicy == StorageEntryExpirePolicy.Never) &&
+                    expires != null
+                    )
+                    throw new ArgumentException("expires argument have to be null if expirePlicy is other then 'Expire'");
+
+                //validate expire parmater
+                if (expirePolicy == StorageEntryExpirePolicy.Expire)
+                {
+                    if (expires == null)
+                        throw new ArgumentException("expirePolicy is set to expire but 'expires' parameter is null");
+
+                    var notNullexpires = (DateTime)expires;
+
+                    if (!notNullexpires.IsUTC())
+                        throw new ArgumentException("'expire' have to be provided as UTC");
+                }
+
+                storageEntries.Add(key, new ValueWrapper(value, expirePolicy, expires));
             }
-
-            storageEntries.Add(key, new ValueWrapper(value, expirePolicy, expires));
         }
 
         public void UpdateExpireDate(string key, DateTime expires)
         {
-            //only valid policy is 'Expire'
-            if (!(GetExpirePolicy(key) == StorageEntryExpirePolicy.Expire))
-                throw new InvalidOperationException("Current entry policy don't allow to modify it's expire time");
+            lock (((ICollection)storageEntries).SyncRoot)
+            {
+                //only valid policy is 'Expire'
+                if (!(GetExpirePolicy(key) == StorageEntryExpirePolicy.Expire))
+                    throw new InvalidOperationException("Current entry policy don't allow to modify it's expire time");
 
-            if (!expires.IsUTC())
-                throw new ArgumentException("'expire' have to be provided as UTC");
+                if (!expires.IsUTC())
+                    throw new ArgumentException("'expire' have to be provided as UTC");
 
-            storageEntries[key].ChangeExpireDate(expires);
+                storageEntries[key].ChangeExpireDate(expires);
+            }
         }
 
         public void Update(string key, object value)
         {
-            var entry = storageEntries[key];
+            lock (((ICollection)storageEntries).SyncRoot)
+            {
+                var entry = storageEntries[key];
 
-            if (entry.Expired)
-                throw new EntryExpiredException("Entry has expired");
+                if (entry.Expired)
+                    throw new EntryExpiredException("Entry has expired");
 
-            if (entry.SerializationTypeMaping != value.GetType().FullName)
-                throw new InvalidOperationException("Value type is different then previously assigned");
+                if (entry.SerializationTypeMaping != value.GetType().FullName)
+                    throw new InvalidOperationException("Value type is different then previously assigned");
 
-            entry.Value = value;
+                entry.Value = value;
+            }
         }
 
         public void Remove(string key)
         {
-            if (!Has(key))
-                throw new InvalidOperationException($"Entry with key: ${key} don't exists");
+            lock (((ICollection)storageEntries).SyncRoot)
+            {
+                if (!Has(key))
+                    throw new InvalidOperationException($"Entry with key: ${key} don't exists");
 
-            storageEntries.Remove(key);
+                storageEntries.Remove(key);
+            }
         }
 
         //public void Set(string key, object value, bool keepForSession = false, DateTime? expires = null)

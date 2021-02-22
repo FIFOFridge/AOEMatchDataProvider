@@ -1,7 +1,9 @@
 ﻿using AOEMatchDataProvider.Command;
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Helpers.Navigation;
+using AOEMatchDataProvider.Models.Settings;
 using AOEMatchDataProvider.Services;
+using AOEMatchDataProvider.Events;
 using Prism.Events;
 using Prism.Mvvm;
 using Prism.Regions;
@@ -38,6 +40,7 @@ namespace AOEMatchDataProvider.ViewModels
         IEventAggregator EventAggregator { get; }
         IAppConfigurationService AppConfigurationService { get; }
         IKeyHookService KeyHookService { get; }
+        IStorageService StorageService { get; }
 
         string tokenKeyHandlerHome;
         string tokenKeyHandlerEnd;
@@ -46,13 +49,14 @@ namespace AOEMatchDataProvider.ViewModels
             IApplicationCommands applicationCommands,
             IEventAggregator eventAggregator,
             IAppConfigurationService appConfigurationService,
-            IKeyHookService keyHookService
-            )
+            IKeyHookService keyHookService, 
+            IStorageService storageService)
         {
             KeyHookService = keyHookService;
             ApplicationCommands = applicationCommands;
             EventAggregator = eventAggregator;
             AppConfigurationService = appConfigurationService;
+            StorageService = storageService;
 
             tokenKeyHandlerHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
             tokenKeyHandlerEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
@@ -77,9 +81,11 @@ namespace AOEMatchDataProvider.ViewModels
             else
                 SetupTimer(AppConfigurationService.AppStateInfoUpdateTick);
 
+            UpdateMaxOpacity();
+            EventAggregator.GetEvent<AppSettingsChangedEvent>().Subscribe(UpdateMaxOpacity);
+
             NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
-            
-            ApplicationCommands.SetMaxWindowOpacity.Execute(0.85);
+
             var description = navigationContext.Parameters["description"] as string;
             Description = description;
         }
@@ -114,6 +120,13 @@ namespace AOEMatchDataProvider.ViewModels
             {
                 ApplicationCommands.UpdateMatchDataCommand.Execute(null);
             }
+        }
+
+        void UpdateMaxOpacity()
+        {
+            var appSettings = StorageService.Get<AppSettings>("settings");
+
+            ApplicationCommands.SetMaxWindowOpacity.Execute(appSettings.AppStateInfoOpacity);
         }
         
         void HandleUnload(UserControl view)

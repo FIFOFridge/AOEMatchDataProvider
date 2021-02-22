@@ -56,7 +56,7 @@ namespace AOEMatchDataProvider.ViewModels
                 }
 
             });
-            CoffeClickCommand = new DelegateCommand(() => ExternalRedirectionHelper.RedirectTo("coffe-redirection")); //patch before release
+            CoffeClickCommand = new DelegateCommand(() => ExternalRedirectionHelper.RedirectTo("https://www.paypal.com/paypalme/FIFOFridge/5")); //patch before release
         }
 
         private void NewAppConfigInstance_Closed(object sender, EventArgs e)
