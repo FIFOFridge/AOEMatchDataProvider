@@ -1,11 +1,11 @@
 ﻿using AOEMatchDataProvider.Command;
 using AOEMatchDataProvider.Events.Views;
-using AOEMatchDataProvider.Events.Views.InfoBar;
 using AOEMatchDataProvider.Events.Views.InitialConfiguration;
 using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Helpers.Validation;
 using AOEMatchDataProvider.Models;
 using AOEMatchDataProvider.Models.Settings;
+using AOEMatchDataProvider.Models.User;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.Views;
 using Newtonsoft.Json;
@@ -120,7 +120,7 @@ namespace AOEMatchDataProvider.ViewModels
             LogService = logService;
             ApplicationCommands = applicationCommands;
 
-            EventAggregator.GetEvent<UserIdChanged>().Subscribe(UserIdChangedHandler);
+            EventAggregator.GetEvent<UserIdChangedEvent>().Subscribe(UserIdChangedHandler);
 
             ConfigurationMessage = "To setup app ente:\n - Your steam ID 64 (for Steam game version)";
             //ConfigurationMessage = "To setup app enter one of the following:\n - Your steam ID 64 (for Steam game version)\n - Your game profile ID(for Windows Store game version)";
@@ -205,7 +205,7 @@ namespace AOEMatchDataProvider.ViewModels
             {
                 //if(settings.UserId == null)
                 //{
-                    settings.UserId = new Models.UserId();
+                    settings.UserId = new UserId();
                 //}
 
                 settings.UserId.SteamId = userId;

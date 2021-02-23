@@ -4,6 +4,8 @@ using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Extensions;
 using AOEMatchDataProvider.Extensions.ExceptionHandling;
 using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.Match;
+using AOEMatchDataProvider.Models.User;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.ViewModels;
 using Prism.Events;
@@ -26,7 +28,7 @@ namespace AOEMatchDataProvider.Views
 {
     public partial class TeamsPanel : UserControl//, ITeamsPanelView
     {
-        List<Models.UserMatchData> UserMatchData { get; }
+        List<UserMatchData> UserMatchData { get; }
 
         IEventAggregator EventAggregator { get; }
         ILogService LogService { get; }
@@ -41,9 +43,9 @@ namespace AOEMatchDataProvider.Views
             EventAggregator = eventAggregator;
             LogService = logService;
 
-            UserMatchData = new List<Models.UserMatchData>();
+            UserMatchData = new List<UserMatchData>();
 
-            EventAggregator.GetEvent<UserCollectionChanged>().Subscribe(HandleUserCollectionChanged);
+            EventAggregator.GetEvent<UserCollectionChangedEvent>().Subscribe(HandleUserCollectionChanged);
             EventAggregator.GetEvent<UserRatingChangedEvent>().Subscribe(HandleUserRatingChanged);
 
             Unloaded += TeamsPanel_Unloaded;
@@ -51,10 +53,10 @@ namespace AOEMatchDataProvider.Views
 
         private void TeamsPanel_Unloaded(object sender, RoutedEventArgs e)
         {
-            EventAggregator.GetEvent<ViewDestroyed>().Publish(this);
+            EventAggregator.GetEvent<ViewDestroyedEvent>().Publish(this);
         }
 
-        void HandleUserCollectionChanged(IEnumerable<Models.UserMatchData> userMatchData)
+        void HandleUserCollectionChanged(IEnumerable<UserMatchData> userMatchData)
         {
             var logProperties = new Dictionary<string, object>
             {
@@ -74,7 +76,7 @@ namespace AOEMatchDataProvider.Views
             var id = userRatingData.Item1;
             var rank = userRatingData.Item2;
 
-            Models.UserMatchData targetData = null;
+            UserMatchData targetData = null;
             PlayerPanel2 targetControl = null;
 
             team1.Dispatcher.Invoke(() =>
@@ -151,7 +153,7 @@ namespace AOEMatchDataProvider.Views
             });
         }
 
-        public void Add(Models.UserMatchData userMatchData)
+        public void Add(UserMatchData userMatchData)
         {
             //get correct elo(s) types to display
             var formatingTargetTypes = EloFormattController.GetTargetEloTypes(userMatchData.MatchType);

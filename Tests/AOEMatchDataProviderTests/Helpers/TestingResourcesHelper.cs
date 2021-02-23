@@ -47,7 +47,7 @@ namespace AOEMatchDataProviderTests.Helpers
         {
             return new AppSettings()
             {
-                UserId = new AOEMatchDataProvider.Models.UserId()
+                UserId = new AOEMatchDataProvider.Models.User.UserId()
                 {
                     SteamId = "testingId",
                     GameProfileId = null

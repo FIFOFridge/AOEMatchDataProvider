@@ -1,5 +1,4 @@
 ﻿using AOEMatchDataProvider.Extensions;
-using AOEMatchDataProvider.Extensions.ObjectExtension;
 using AOEMatchDataProvider.Models;
 using Newtonsoft.Json;
 using System;

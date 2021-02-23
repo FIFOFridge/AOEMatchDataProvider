@@ -1,4 +1,6 @@
 ﻿using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.Match;
+using AOEMatchDataProvider.Models.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;

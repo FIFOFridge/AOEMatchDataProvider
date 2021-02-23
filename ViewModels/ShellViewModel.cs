@@ -86,7 +86,7 @@ namespace AOEMatchDataProvider.ViewModels
         public DelegateCommand CloseAppCommand { get; private set; }
         public DelegateCommand ShowLicensesWindowCommand { get; private set; }
 
-        public Models.Match CurrentMatch { get; set; }
+        public Match CurrentMatch { get; set; }
 
         bool ignoreInput;
         public bool IgnoreInput

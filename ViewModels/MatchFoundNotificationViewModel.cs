@@ -45,7 +45,7 @@ namespace AOEMatchDataProvider.ViewModels
             keyHandlerTokenHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, DisplayMatch);
             keyHandlerTokenEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, HideWindowAndLoadMatchInBackground);
 
-            EventAggregator.GetEvent<ViewDestroyed>()
+            EventAggregator.GetEvent<ViewDestroyedEvent>()
             .Subscribe(
                 HandleUnload,
                 ThreadOption.UIThread,

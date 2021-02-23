@@ -1,4 +1,5 @@
 ﻿using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.User;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
@@ -8,5 +9,5 @@ using System.Threading.Tasks;
 
 namespace AOEMatchDataProvider.Events.Views.TeamsPanel
 {
-    public class UserCollectionChanged : PubSubEvent<IEnumerable<UserMatchData>> { }
+    public class UserCollectionChangedEvent : PubSubEvent<IEnumerable<UserMatchData>> { }
 }

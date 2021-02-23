@@ -32,7 +32,7 @@ namespace AOEMatchDataProvider.Views
 
         private void AppStateInfo_Unloaded(object sender, RoutedEventArgs e)
         {
-            EventAggregator.GetEvent<ViewDestroyed>().Publish(this);
+            EventAggregator.GetEvent<ViewDestroyedEvent>().Publish(this);
         }
     }
 }

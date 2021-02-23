@@ -1,4 +1,5 @@
 ﻿using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.User;
 using Prism.Events;
 using System;
 using System.Collections.Generic;

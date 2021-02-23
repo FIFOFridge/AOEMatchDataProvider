@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AOEMatchDataProvider.Events.Views.InfoBar
+namespace AOEMatchDataProvider.Events.Views.InitialConfiguration
 {
-    public class InfoBarMessageChanged : PubSubEvent<string> { }
+    public class UserIdChangedEvent : PubSubEvent<string> { }
 }

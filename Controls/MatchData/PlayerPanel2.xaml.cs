@@ -1,6 +1,8 @@
 ﻿using AOEMatchDataProvider.Converters;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.Match;
+using AOEMatchDataProvider.Models.User;
 using AOEMatchDataProvider.Resources.Other;
 using AOEMatchDataProvider.Services;
 using System;
@@ -30,11 +32,11 @@ namespace AOEMatchDataProvider.Controls.MatchData
 
         #region DependencyProperties
         public static readonly DependencyProperty UserMatchDataProperty =
-        DependencyProperty.Register("UserMatchData", typeof(Models.UserMatchData), typeof(PlayerPanel));
+        DependencyProperty.Register("UserMatchData", typeof(UserMatchData), typeof(PlayerPanel2));
 
-        public Models.UserMatchData UserMatchData
+        public UserMatchData UserMatchData
         {
-            get { return GetValue(UserMatchDataProperty) as Models.UserMatchData; }
+            get { return GetValue(UserMatchDataProperty) as UserMatchData; }
             set
             {
                 SetValue(UserMatchDataProperty, value);
@@ -45,7 +47,7 @@ namespace AOEMatchDataProvider.Controls.MatchData
         }
 
         public static readonly DependencyProperty MatchTypeProperty =
-        DependencyProperty.Register("MatchType", typeof(MatchType), typeof(PlayerPanel));
+        DependencyProperty.Register("MatchType", typeof(MatchType), typeof(PlayerPanel2));
 
         public MatchType MatchType
         {
@@ -58,7 +60,7 @@ namespace AOEMatchDataProvider.Controls.MatchData
         }
 
         public static readonly DependencyProperty PrimaryUserRankModeDisplayProperty =
-        DependencyProperty.Register("PrimaryUserRankModeDisplay", typeof(UserRankMode?), typeof(PlayerPanel));
+        DependencyProperty.Register("PrimaryUserRankModeDisplay", typeof(UserRankMode?), typeof(PlayerPanel2));
 
         public UserRankMode? PrimaryUserRankModeDisplay
         {
@@ -71,7 +73,7 @@ namespace AOEMatchDataProvider.Controls.MatchData
         }
 
         public static readonly DependencyProperty SecondaryUserRankModeDisplayProperty =
-        DependencyProperty.Register("SecondaryUserRankModeDisplay", typeof(UserRankMode?), typeof(PlayerPanel));
+        DependencyProperty.Register("SecondaryUserRankModeDisplay", typeof(UserRankMode?), typeof(PlayerPanel2));
 
         public UserRankMode? SecondaryUserRankModeDisplay
         {
@@ -84,7 +86,7 @@ namespace AOEMatchDataProvider.Controls.MatchData
         }
 
         public static readonly DependencyProperty ContentAlignProperty =
-        DependencyProperty.Register("ContentAlign", typeof(PlayerPanelContentAlignMode), typeof(PlayerPanel));
+        DependencyProperty.Register("ContentAlign", typeof(PlayerPanelContentAlignMode), typeof(PlayerPanel2));
 
         public PlayerPanelContentAlignMode ContentAlign
         {

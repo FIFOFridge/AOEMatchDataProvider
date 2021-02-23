@@ -7,7 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.Match;
 using AOEMatchDataProvider.Models.RequestService;
+using AOEMatchDataProvider.Models.User;
 using AOEMatchDataProvider.Models.UserRankService;
 using Newtonsoft.Json;
 

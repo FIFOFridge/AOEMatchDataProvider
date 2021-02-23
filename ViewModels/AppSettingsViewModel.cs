@@ -1,7 +1,6 @@
 ﻿using AOEMatchDataProvider.Command;
 using AOEMatchDataProvider.Events;
 using AOEMatchDataProvider.Extensions.ExceptionHandling;
-using AOEMatchDataProvider.Extensions.ObjectExtension;
 using AOEMatchDataProvider.Models.Settings;
 using AOEMatchDataProvider.Services;
 using Prism.Commands;
@@ -53,36 +52,10 @@ namespace AOEMatchDataProvider.ViewModels
             ApplicationCommands = applicationCommands;
             EventAggregator = eventAggregator;
 
-            //LoadValuesFromCurrentSettings();
-            
-            //at this point we require that setting entity already exist and their default values 
-            //were already set while creating initial settings model by InitialConfigurationViewModel
-            AppSettingsToApply = StorageService.Get<AppSettings>("settings").Copy(); //deep copy model
+            AppSettingsToApply = StorageService.Get<AppSettings>("settings");
 
             SubmitSettingsChangeCommand = new DelegateCommand(SubmitSettingsChange);
             WindowCloseCommand = new DelegateCommand<object>(WindowClose);
-        }
-
-        void LoadValuesFromCurrentSettings()
-        {
-            //if(!StorageService.TryGet<AppSettings>("settings", out AppSettings appSettings))
-            
-            //try
-            //{
-            //    //at this point we require that setting entity already exist and their default values 
-            //    //were already set while creating initial settings model by InitialConfigurationViewModel
-            //    var appSettings = StorageService.Get<AppSettings>("settings");
-
-            //    this.NotificationOpacity = appSettings.NotificationOpacity;
-            //    this.TeamsPanelOpacity = appSettings.TeamsPanelOpacity;
-            //    this.AppStateInfoOpacity = appSettings.AppStateInfoOpacity;
-            //}
-            //catch(Exception e)
-            //{
-            //    e.RethrowIfExceptionCantBeHandled();
-
-            //    IAppCriticalExceptionHandlerService.HandleCriticalError(e);
-            //}
         }
 
         void SubmitSettingsChange()

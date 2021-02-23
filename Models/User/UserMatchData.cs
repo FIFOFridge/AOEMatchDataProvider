@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AOEMatchDataProvider.Models.Match;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,12 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AOEMatchDataProvider.Models
+namespace AOEMatchDataProvider.Models.User
 {
     public class UserMatchData
     {
-        //[JsonIgnore]
-        //public Dictionary<UserRankMode, UserRank> Rating { get; set; }
         public UserRankData UserRankData { get; internal set; }
 
         public string Name { get; set; }
@@ -23,26 +22,11 @@ namespace AOEMatchDataProvider.Models
         public UserGameProfileId UserGameProfileId { get; internal set; }
         public MatchType MatchType { get; internal set; }
 
-        //public MatchType MatchType { get; internal set; }
-
-        public UserMatchData()
-        {
-            //Rating = new Dictionary<UserRankMode, UserRank>();
-        }
+        public UserMatchData() { }
 
         public override string ToString()
         {
             return $"User match data (UserGameProfileId: {UserGameProfileId.ToString()}), ratings: {UserRankData.ToString()}";
         }
     }
-
-    //TODO: implement deathmatches
-    //aviable rating modes, excluding "Unranked"
-
-
-    //enum Team
-    //{
-    //    First,
-    //    Secound
-    //}
 }

@@ -206,9 +206,6 @@
     <Compile Include="Controls\LicenseWindow\LicenseHolder.xaml.cs">
       <DependentUpon>LicenseHolder.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\MatchData\PlayerPanel.xaml.cs">
-      <DependentUpon>PlayerPanel.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Controls\MatchData\PlayerPanel2.xaml.cs">
       <DependentUpon>PlayerPanel2.xaml</DependentUpon>
     </Compile>
@@ -217,16 +214,13 @@
     <Compile Include="Converters\UserRankModeConverter.cs" />
     <Compile Include="Events\AppSettingsChangedEvent.cs" />
     <Compile Include="Events\Services\InactiveDetectionService\AppInactivityEvent.cs" />
-    <Compile Include="Events\Views\InfoBar\InfoBarMessageChanged.cs" />
-    <Compile Include="Events\Views\InitialConfiguration\UserIdChanged.cs" />
+    <Compile Include="Events\Views\InitialConfiguration\UserIdChangedEvent.cs" />
     <Compile Include="Events\Views\Shell\ShellResizedEvent.cs" />
-    <Compile Include="Events\Views\TeamsPanel\UserCollectionChanged.cs" />
+    <Compile Include="Events\Views\TeamsPanel\UserCollectionChangedEvent.cs" />
     <Compile Include="Events\Views\TeamsPanel\UserRatingChangedEvent.cs" />
-    <Compile Include="Events\Views\ViewDestroyed.cs" />
-    <Compile Include="Extensions\ArrayExtension\ArrayExtensions.cs" />
+    <Compile Include="Events\Views\ViewDestroyedEvent.cs" />
     <Compile Include="Extensions\DateTimeExtension.cs" />
     <Compile Include="Extensions\ExceptionHandling\ExceptionRethrowExtension.cs" />
-    <Compile Include="Extensions\ObjectExtension\ObjectCopyExtensions.cs" />
     <Compile Include="Extensions\UserExtensions.cs" />
     <Compile Include="Helpers\Deserialization\ModelDeserializationHelper.cs" />
     <Compile Include="Helpers\Navigation\NavigationHelper.cs" />
@@ -236,18 +230,18 @@
     <Compile Include="Models\Licenses\License.cs" />
     <Compile Include="Models\LogService\LogPropertyCollection.cs" />
     <Compile Include="Models\MatchProcessingService\MatchUpdateStatus.cs" />
-    <Compile Include="Models\MatchType.cs" />
+    <Compile Include="Models\Match\MatchType.cs" />
     <Compile Include="Models\QueryCacheService\QueriesCache.cs" />
     <Compile Include="Models\RequestService\RequestResponseWrapper.cs" />
     <Compile Include="Models\RequestService\RequestWrapper.cs" />
-    <Compile Include="Models\UserColors.cs" />
+    <Compile Include="Models\User\UserColors.cs" />
     <Compile Include="Models\Settings\AppSettings.cs" />
-    <Compile Include="Models\UserGameProfileId.cs" />
-    <Compile Include="Models\UserId.cs" />
-    <Compile Include="Models\UserMatchData.cs" />
-    <Compile Include="Models\UserRank.cs" />
-    <Compile Include="Models\UserRankData.cs" />
-    <Compile Include="Models\UserRankMode.cs" />
+    <Compile Include="Models\User\UserGameProfileId.cs" />
+    <Compile Include="Models\User\UserId.cs" />
+    <Compile Include="Models\User\UserMatchData.cs" />
+    <Compile Include="Models\User\UserRank.cs" />
+    <Compile Include="Models\User\UserRankData.cs" />
+    <Compile Include="Models\User\UserRankMode.cs" />
     <Compile Include="Models\UserRankService\AoeNetAPIStringResources.cs" />
     <Compile Include="Models\UserRankService\MatchResponse.cs" />
     <Compile Include="Models\UserRankService\UserRatingResponse.cs" />
@@ -274,7 +268,6 @@
     <Compile Include="Services\IAppCriticalExceptionHandlerService.cs" />
     <Compile Include="Services\IKeyHookService.cs" />
     <Compile Include="Services\ILogService.cs" />
-    <Compile Include="Services\InactiveDetectionService.cs" />
     <Compile Include="Services\IQueryCacheService.cs" />
     <Compile Include="Services\IStorageService.cs" />
     <Compile Include="Services\IUserRankService.cs" />
@@ -282,16 +275,12 @@
     <Compile Include="ViewModels\AppInactivityViewModel.cs" />
     <Compile Include="ViewModels\AppStateInfoViewModel.cs" />
     <Compile Include="ViewModels\BottomButtonsPanelViewModel.cs" />
-    <Compile Include="ViewModels\InfoBarViewModel.cs" />
     <Compile Include="ViewModels\InitialConfigurationViewModel.cs" />
     <Compile Include="ViewModels\InitialResourcesValidationViewModel.cs" />
     <Compile Include="ViewModels\LicenseWindowViewModel.cs" />
     <Compile Include="ViewModels\MatchFoundNotificationViewModel.cs" />
     <Compile Include="ViewModels\ShellViewModel.cs" />
     <Compile Include="ViewModels\TeamsPanelViewModel.cs" />
-    <Compile Include="Views\About.xaml.cs">
-      <DependentUpon>About.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\AppInactivity.xaml.cs">
       <DependentUpon>AppInactivity.xaml</DependentUpon>
     </Compile>
@@ -307,16 +296,12 @@
     <Compile Include="Views\BottomShadowPanel.xaml.cs">
       <DependentUpon>BottomShadowPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\InfoBar.xaml.cs">
-      <DependentUpon>InfoBar.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\InitialConfiguration.xaml.cs">
       <DependentUpon>InitialConfiguration.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\InitialResourcesValidation.xaml.cs">
       <DependentUpon>InitialResourcesValidation.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ITeamsPanelView.cs" />
     <Compile Include="Views\LicenseWindow.xaml.cs">
       <DependentUpon>LicenseWindow.xaml</DependentUpon>
     </Compile>
@@ -334,10 +319,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\LicenseWindow\LicenseHolder.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Controls\MatchData\PlayerPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -378,10 +359,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\About.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\AppInactivity.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -399,10 +376,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BottomShadowPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\InfoBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -432,7 +405,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Match.cs" />
+    <Compile Include="Models\Match\Match.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -62,7 +62,7 @@ namespace AOEMatchDataProvider.ViewModels
             tokenKeyHandlerEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
 
             //handle "unload" event from view to cleanup VM resources
-            EventAggregator.GetEvent<ViewDestroyed>()
+            EventAggregator.GetEvent<ViewDestroyedEvent>()
                 .Subscribe(
                     HandleUnload,
                     ThreadOption.UIThread,

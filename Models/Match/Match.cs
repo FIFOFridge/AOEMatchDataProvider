@@ -1,11 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using AOEMatchDataProvider.Models.User;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AOEMatchDataProvider.Models
+namespace AOEMatchDataProvider.Models.Match
 {
     public class Match
     {

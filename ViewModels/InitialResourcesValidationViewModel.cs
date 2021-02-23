@@ -54,7 +54,7 @@ namespace AOEMatchDataProvider.ViewModels
             UserRankService = userRankService;
             ApplicationCommands = applicationCommands;
 
-            EventAggregator.GetEvent<ViewDestroyed>().Subscribe(
+            EventAggregator.GetEvent<ViewDestroyedEvent>().Subscribe(
                 HandleViewDestroyed,
                 ThreadOption.UIThread,
                 false,

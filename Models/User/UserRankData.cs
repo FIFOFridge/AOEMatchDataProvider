@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AOEMatchDataProvider.Models
+namespace AOEMatchDataProvider.Models.User
 {
     public class UserRankData : ISerializableModel
     {
@@ -22,7 +22,6 @@ namespace AOEMatchDataProvider.Models
                 return UserRatings.Keys.ToArray();
             }
         }
-
 
         public UserRankData()
         {

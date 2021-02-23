@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AOEMatchDataProvider.Models.User;
+using Newtonsoft.Json;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;

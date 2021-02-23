@@ -30,7 +30,7 @@ namespace AOEMatchDataProvider.Views
 
         private void UserId_TextChanged(object sender, TextChangedEventArgs e)
         {
-            EventAggregator.GetEvent<UserIdChanged>().Publish(UserId.Text);
+            EventAggregator.GetEvent<UserIdChangedEvent>().Publish(UserId.Text);
         }
     }
 }

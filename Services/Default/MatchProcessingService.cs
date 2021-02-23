@@ -1,4 +1,5 @@
 ﻿using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.Match;
 using AOEMatchDataProvider.Models.MatchProcessingService;
 using AOEMatchDataProvider.Models.Settings;
 using System;

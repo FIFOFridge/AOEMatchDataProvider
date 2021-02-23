@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AOEMatchDataProvider.Models
+namespace AOEMatchDataProvider.Models.User
 {
+    // Single ladder rank model
     public class UserRank : ISerializableModel
     {
         public int? Elo { get; set; }

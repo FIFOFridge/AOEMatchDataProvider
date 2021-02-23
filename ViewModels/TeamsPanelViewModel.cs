@@ -5,7 +5,9 @@ using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
 using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.Match;
 using AOEMatchDataProvider.Models.RequestService;
+using AOEMatchDataProvider.Models.User;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.Views;
 using Prism.Events;
@@ -28,8 +30,8 @@ namespace AOEMatchDataProvider.ViewModels
     {
         System.Timers.Timer updateTimer;
 
-        List<Models.UserMatchData> userMatchData;
-        public List<Models.UserMatchData> UserMatchData
+        List<UserMatchData> userMatchData;
+        public List<UserMatchData> UserMatchData
         {
             get
             {
@@ -111,7 +113,7 @@ namespace AOEMatchDataProvider.ViewModels
             IEventAggregator eventAggregator,
             IUserRankService userRankService,
             IKeyHookService keyHookService,
-            ILogService logService, 
+            ILogService logService,
             IStorageService storageService)
         {
             ApplicationCommands = applicationCommands;
@@ -135,7 +137,7 @@ namespace AOEMatchDataProvider.ViewModels
             keyHandlerTokenHome = KeyHookService.Add(System.Windows.Forms.Keys.Home, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
             keyHandlerTokenEnd = KeyHookService.Add(System.Windows.Forms.Keys.End, () => ApplicationCommands.ToggleWindowVisibility.Execute(null));
 
-            EventAggregator.GetEvent<ViewDestroyed>()
+            EventAggregator.GetEvent<ViewDestroyedEvent>()
                 .Subscribe(
                     HandleUnload,
                     ThreadOption.UIThread,
@@ -278,12 +280,12 @@ namespace AOEMatchDataProvider.ViewModels
             UpdateMaxOpacity();
             EventAggregator.GetEvent<AppSettingsChangedEvent>().Subscribe(UpdateMaxOpacity);
 
-            UserMatchData = (List<Models.UserMatchData>)navigationContext.Parameters["UserMatchData"];
+            UserMatchData = (List<UserMatchData>)navigationContext.Parameters["UserMatchData"];
             MatchType = (MatchType)navigationContext.Parameters["MatchType"];
 
             NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
 
-            EventAggregator.GetEvent<UserCollectionChanged>().Publish(userMatchData);
+            EventAggregator.GetEvent<UserCollectionChangedEvent>().Publish(userMatchData);
             Task.Run(UpdateUsersData);
         }
 

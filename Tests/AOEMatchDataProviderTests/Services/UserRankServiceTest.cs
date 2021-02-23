@@ -1,4 +1,6 @@
 ﻿using AOEMatchDataProvider.Models;
+using AOEMatchDataProvider.Models.Match;
+using AOEMatchDataProvider.Models.User;
 using AOEMatchDataProvider.Models.UserRankService;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProviderTests.Helpers;

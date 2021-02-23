@@ -9,5 +9,5 @@ using System.Windows.Controls;
 
 namespace AOEMatchDataProvider.Events.Views
 {
-    public class ViewDestroyed : PubSubEvent<UserControl> { }
+    public class ViewDestroyedEvent : PubSubEvent<UserControl> { }
 }
