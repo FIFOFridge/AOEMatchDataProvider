@@ -148,52 +148,6 @@ namespace AOEMatchDataProvider.ViewModels
 
         }
 
-        //void HandleResourcesDownload(Task resourcesDownloadTask)
-        //{
-        //    var @event = EventAggregator.GetEvent<InfoBarMessageChanged>();
-
-        //    resourcesDownloadTask.
-
-        //    if (resourcesDownloadTask.Status == TaskStatus.Faulted)
-        //    {
-        //        if(resourcesDownloadTask.Exception.GetRootException().GetType() == typeof(ContentProcessingException))
-        //        {
-        //            App.HandleCriticalError(new InvalidOperationException(
-        //                "Critical error occured while processing app resources: inner: " +
-        //                resourcesDownloadTask.Exception.GetRootException().Message,
-        //                resourcesDownloadTask.Exception.GetRootException() //inner
-        //                ));
-        //            return;
-        //        }
-
-        //        //todo: allow to retry download, when unable to connect
-        //        if (resourcesDownloadTask.Exception.GetRootException().GetType() == typeof(RequestException))
-        //        {
-        //            @event.Publish("Unable to download resources that are required to run app from: aoe2.net, make sure your connection is working and site is responsing.");
-        //            return;
-        //        }
-
-        //        //handle other exceptions
-        //        App.HandleCriticalError(new InvalidOperationException(
-        //            "Unknown exception occured while downloading app resources: inner: " +
-        //            resourcesDownloadTask.Exception.GetRootException().Message,
-        //            resourcesDownloadTask.Exception.GetRootException() //inner
-        //            ));
-
-        //        return;
-        //    }
-
-        //    if(resourcesDownloadTask.Status == TaskStatus.RanToCompletion)
-        //    {
-        //        @event.Publish("Successfully setup app resources");
-        //        UpdateCanContinue();
-        //    }
-        //    else //huh?
-        //    {
-        //        App.HandleCriticalError(new InvalidOperationException("Invalid task state, while downloading resources"));
-        //    }
-        //}
-
         void ContinueClicked()
         {
             if (!CanContinue)
@@ -229,9 +183,6 @@ namespace AOEMatchDataProvider.ViewModels
 
             //navigate to teams panel
             RegionManager.RequestNavigate("MainRegion", "AppStateInfo", navigationParameters);
-            //EventAggregator.GetEvent<DisplayView>().Publish(
-            //        new Views.TeamsPanel(App.Resolve<IEventAggregator>())
-            //    );
         }
 
         void UpdateUserIdDescription()
