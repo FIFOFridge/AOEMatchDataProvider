@@ -45,7 +45,15 @@
         <!-- ConverterParameter can't use "Binding" so, perform conversion in "code behind" and bind to result -->
         <!--<Label Content="{Binding UserMatchData.UserRankData, Converter={StaticResource UserRankModeConverter}, ConverterParameter={Binding PrimaryUserRankModeDisplayProperty}, FallbackValue=Invalid ELO Binding}" Grid.Row="1" FontSize="10" Foreground="#FFE0E0E0" VerticalAlignment="Bottom" HorizontalAlignment="{Binding ContentAlign, FallbackValue=Left}" Margin="10,0,0,0" Height="29" Width="112" Grid.ColumnSpan="4"/>-->
 
-        <cf:CountryFlag Code="{Binding LadderData.Country, FallbackValue='AZ'}" Width="36" Height="36" Grid.Column="1" Margin="244,0,0,30" />
+        <cf:CountryFlag 
+            Code="{Binding LadderData.Country}" 
+            Grid.Column="1" 
+            VerticalAlignment="Top" 
+            HorizontalAlignment="Right"
+            Width="50" 
+            Height="32" 
+            Margin="0,5,10,0" 
+            />
         
         <!-- ELO labales -->
         <!-- Primary ELO -->
