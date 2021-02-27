@@ -39,14 +39,14 @@ namespace AOEMatchDataProvider.ViewModels
         ILogService LogService { get; }
         IStorageService StorageService { get; }
         IEventAggregator EventAggregator { get; }
-        IUserRankService UserRankService { get; }
+        IDataService UserRankService { get; }
         IApplicationCommands ApplicationCommands { get; }
 
         public DelegateCommand RetryUpdateCommand { get; set; }
 
         Timer retryTimer;
 
-        public InitialResourcesValidationViewModel(IStorageService storageService, ILogService logService, IEventAggregator eventAggregator, IUserRankService userRankService, IApplicationCommands applicationCommands)
+        public InitialResourcesValidationViewModel(IStorageService storageService, ILogService logService, IEventAggregator eventAggregator, IDataService userRankService, IApplicationCommands applicationCommands)
         {
             StorageService = storageService;
             LogService = logService;

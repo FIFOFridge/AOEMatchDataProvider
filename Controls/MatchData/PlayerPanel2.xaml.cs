@@ -30,6 +30,20 @@ namespace AOEMatchDataProvider.Controls.MatchData
     {
         UserRankModeConverter userRankModeConverter;
 
+        UserLadderData ladderData;
+        public UserLadderData LadderData
+        {
+            get
+            {
+                return ladderData;
+            }
+            set
+            {
+                ladderData = value;
+                OnPropertyChanged();
+            }
+        }
+
         #region DependencyProperties
         public static readonly DependencyProperty UserMatchDataProperty =
         DependencyProperty.Register("UserMatchData", typeof(UserMatchData), typeof(PlayerPanel2));
@@ -60,11 +74,11 @@ namespace AOEMatchDataProvider.Controls.MatchData
         }
 
         public static readonly DependencyProperty PrimaryUserRankModeDisplayProperty =
-        DependencyProperty.Register("PrimaryUserRankModeDisplay", typeof(UserRankMode?), typeof(PlayerPanel2));
+        DependencyProperty.Register("PrimaryUserRankModeDisplay", typeof(Ladders?), typeof(PlayerPanel2));
 
-        public UserRankMode? PrimaryUserRankModeDisplay
+        public Ladders? PrimaryUserRankModeDisplay
         {
-            get { return (UserRankMode?)GetValue(PrimaryUserRankModeDisplayProperty); }
+            get { return (Ladders?)GetValue(PrimaryUserRankModeDisplayProperty); }
             set
             {
                 SetValue(PrimaryUserRankModeDisplayProperty, value);
@@ -73,11 +87,11 @@ namespace AOEMatchDataProvider.Controls.MatchData
         }
 
         public static readonly DependencyProperty SecondaryUserRankModeDisplayProperty =
-        DependencyProperty.Register("SecondaryUserRankModeDisplay", typeof(UserRankMode?), typeof(PlayerPanel2));
+        DependencyProperty.Register("SecondaryUserRankModeDisplay", typeof(Ladders?), typeof(PlayerPanel2));
 
-        public UserRankMode? SecondaryUserRankModeDisplay
+        public Ladders? SecondaryUserRankModeDisplay
         {
-            get { return (UserRankMode?)GetValue(SecondaryUserRankModeDisplayProperty); }
+            get { return (Ladders?)GetValue(SecondaryUserRankModeDisplayProperty); }
             set
             {
                 SetValue(SecondaryUserRankModeDisplayProperty, value);
@@ -332,9 +346,9 @@ namespace AOEMatchDataProvider.Controls.MatchData
                 throw new InvalidOperationException("Player color can not be null");
 
             //BorderColor = UserMatchData.Color;
-            
+
             var key = UserMatchData.Color.ToLower();
-            if(ColorsMaping.Colors.TryGetValue(key, out string mapedColor))
+            if (ColorsMaping.Colors.TryGetValue(key, out string mapedColor))
                 BorderColor = mapedColor;
             else
                 BorderColor = "Black";
@@ -355,6 +369,11 @@ namespace AOEMatchDataProvider.Controls.MatchData
                 ContentHorizontalAlignment = HorizontalAlignment.Right;
                 BorderColorGradientAngle = 90;
             }
+        }
+
+        public void UpadteUserData(UserLadderData ladderData)
+        {
+            LadderData = ladderData;
         }
     }
 

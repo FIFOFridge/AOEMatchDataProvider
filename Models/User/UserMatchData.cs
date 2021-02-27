@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 
 namespace AOEMatchDataProvider.Models.User
 {
+    //match data related to match request
     public class UserMatchData
     {
-        public UserRankData UserRankData { get; internal set; }
+        public UserData UserRankData { get; internal set; }
 
         public string Name { get; set; }
         public int Team { get; set; }

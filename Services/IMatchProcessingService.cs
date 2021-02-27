@@ -14,7 +14,7 @@ namespace AOEMatchDataProvider.Services
         ILogService LogService { get; }
         IStorageService StorageService { get; }
         IQueryCacheService QueryCacheService { get; }
-        IUserRankService UserRankProcessingService { get; }
+        IDataService UserRankProcessingService { get; }
 
         string LastPulledMatchId { get; }
         bool IsLastPulledMatchInProgress { get; }

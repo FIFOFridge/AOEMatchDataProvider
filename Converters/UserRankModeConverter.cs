@@ -20,36 +20,36 @@ namespace AOEMatchDataProvider.Converters
             //if (!(value.GetType() == typeof(Dictionary<UserRankMode, UserRank>)))
             //    throw new InvalidCastException("Wrong target type");
 
-            if (!(value.GetType() == typeof(UserRankData)))
+            if (!(value.GetType() == typeof(UserData)))
                 throw new InvalidCastException("Wrong target type");
 
             if (parameter == null) //ignore if null
                 return "";
 
-            if (!(parameter is UserRankMode || parameter is UserRankMode?))
+            if (!(parameter is Ladders || parameter is Ladders?))
                 throw new InvalidCastException("Wrong parameter type");
 
-            var ranks = value as UserRankData;//Dictionary<UserRankMode, UserRank>;
+            var ranks = value as UserData;//Dictionary<UserRankMode, UserRank>;
             var elo = string.Empty;
 
-            if (!ranks.AviableRatings.Contains((UserRankMode)parameter))
+            if (!ranks.AviableRatings.Contains((Ladders)parameter))
             {
                 return "-";
             }
 
             switch (parameter)
             {
-                case UserRankMode.RandomMap:
-                    elo = "Random Map: " + ranks.UserRatings[UserRankMode.RandomMap].Elo.ToString();
+                case Ladders.RandomMap:
+                    elo = "Random Map: " + ranks.UserRatings[Ladders.RandomMap].Elo.ToString();
                     break;
-                case UserRankMode.TeamRandomMap:
-                    elo = "Team Random Map: " + ranks.UserRatings[UserRankMode.TeamRandomMap].Elo.ToString();
+                case Ladders.TeamRandomMap:
+                    elo = "Team Random Map: " + ranks.UserRatings[Ladders.TeamRandomMap].Elo.ToString();
                     break;
-                case UserRankMode.Deathmatch:
-                    elo = "Deathmatch: " + ranks.UserRatings[UserRankMode.Deathmatch].Elo.ToString();
+                case Ladders.Deathmatch:
+                    elo = "Deathmatch: " + ranks.UserRatings[Ladders.Deathmatch].Elo.ToString();
                     break;
-                case UserRankMode.TeamdeathMatch:
-                    elo = "Teamdeath Match:" + ranks.UserRatings[UserRankMode.TeamdeathMatch].Elo.ToString();
+                case Ladders.TeamdeathMatch:
+                    elo = "Teamdeath Match:" + ranks.UserRatings[Ladders.TeamdeathMatch].Elo.ToString();
                     break;
                 default:
                     throw new InvalidOperationException("Incorrect target rank"); //unranked shouldn't be set as parameter

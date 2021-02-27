@@ -1,5 +1,4 @@
-﻿using AOEMatchDataProvider.Models;
-using AOEMatchDataProvider.Models.User;
+﻿using AOEMatchDataProvider.Models.User;
 using Prism.Events;
 using System;
 using System.Collections.Generic;
@@ -9,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace AOEMatchDataProvider.Events.Views.TeamsPanel
 {
-    public class UserRatingChangedEvent : PubSubEvent<Tuple<UserGameProfileId, UserData>> { }
+    public class UserDataChangedEvent : PubSubEvent<Tuple<UserGameProfileId, UserLadderData>> { }
 }

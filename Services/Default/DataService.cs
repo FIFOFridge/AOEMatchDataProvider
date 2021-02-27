@@ -15,7 +15,7 @@ using Newtonsoft.Json;
 
 namespace AOEMatchDataProvider.Services.Default
 {
-    public sealed class UserRankService : IUserRankService, IUserRankDataProcessingService, IDisposable
+    public sealed class DataService : IDataService, IUserDataProcessingService, IDisposable
     {
         Dictionary<string, RequestState> requests;
 
@@ -26,7 +26,7 @@ namespace AOEMatchDataProvider.Services.Default
 
         bool isCacheLoaded;
 
-        public UserRankService(ILogService logService, IStorageService storageService, IQueryCacheService queryCacheService, IRequestService requestService)
+        public DataService(ILogService logService, IStorageService storageService, IQueryCacheService queryCacheService, IRequestService requestService)
         {
             requests = new Dictionary<string, RequestState>();
             //userRanksCache = new Dictionary<string, UserRankData>();
@@ -40,14 +40,14 @@ namespace AOEMatchDataProvider.Services.Default
 
         void ValidateCacheState()
         {
-            if(!isCacheLoaded)
+            if (!isCacheLoaded)
             {
                 QueryCacheService.Load();
                 isCacheLoaded = true;
             }
         }
 
-        #region IUserRankService implementation
+        #region IDataService implementation
         public async Task<RequestWrapper<Match>> GetUserMatch(UserId userId, int timeout)
         {
             ValidateCacheState();
@@ -96,9 +96,9 @@ namespace AOEMatchDataProvider.Services.Default
                 if (!requestResult.IsSuccess)
                     throw new AggregateException("Request failed", requestResult.Exception);
 
-                requestWrapper.Value = (this as IUserRankDataProcessingService).ProcessMatch(responseRaw, stringResources);
+                requestWrapper.Value = (this as IUserDataProcessingService).ProcessMatch(responseRaw, stringResources);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (
                     e is StackOverflowException ||
@@ -121,7 +121,7 @@ namespace AOEMatchDataProvider.Services.Default
                             responseContent = requestWrapper.RequestResponseWrapper.ResponseContent;
                         }
 
-                        if(requestWrapper.RequestResponseWrapper.Response != null) //to make sure this will not conflict with test cases
+                        if (requestWrapper.RequestResponseWrapper.Response != null) //to make sure this will not conflict with test cases
                         {
                             responseCode = requestWrapper.RequestResponseWrapper.Response.StatusCode.ToString();
                         }
@@ -144,7 +144,7 @@ namespace AOEMatchDataProvider.Services.Default
             return requestWrapper;
         }
 
-        public async Task<RequestWrapper<UserRank>> GetUserRank(UserGameProfileId userGameProfileId, UserRankMode rankMode, int timeout)
+        public async Task<RequestWrapper<UserRank>> GetUserRankFromLadder(UserGameProfileId userGameProfileId, Ladders ladder, int timeout)
         {
             ValidateCacheState();
 
@@ -153,12 +153,9 @@ namespace AOEMatchDataProvider.Services.Default
             {
                 { "timeout", timeout },
                 { "game-profile-id", userGameProfileId.ProfileId },
-                { "rank-mode", rankMode.ToString() }
+                { "ladder", ladder.ToString() }
             };
 
-            //queryCacheService.Load();
-
-            RequestResponseWrapper requestResult = null;
             RequestState requestState = null;
 
             try
@@ -175,7 +172,7 @@ namespace AOEMatchDataProvider.Services.Default
                 var query = HttpUtility.ParseQueryString(string.Empty);
 
                 query["profile_id"] = HttpUtility.UrlEncode(userGameProfileId.ProfileId);
-                query["leaderboard_id"] = HttpUtility.UrlEncode(((int)rankMode).ToString());
+                query["leaderboard_id"] = HttpUtility.UrlEncode(((int)ladder).ToString());
                 query["game"] = HttpUtility.UrlEncode("aoe2de"); //only aviable for DE at this moment, https://aoe2.net/#api
 
                 var finallQuery = "https://aoe2.net/api/leaderboard?" + query.ToString();
@@ -189,16 +186,16 @@ namespace AOEMatchDataProvider.Services.Default
                 requestState.isRunning = true;
                 requestWrapper.RequestUrl = finallQuery;
                 //sumbit query via query cache service
-                requestWrapper.RequestResponseWrapper = requestResult = await QueryCacheService.GetOrUpdate(
+                requestWrapper.RequestResponseWrapper = await QueryCacheService.GetOrUpdate(
                     finallQuery,
                     cts.Token,
                     DateTime.UtcNow.AddHours(1.5)
                     );
 
-                if (!requestResult.IsSuccess)
-                    throw new AggregateException("Request failed", requestResult.Exception);
+                if (!requestWrapper.RequestResponseWrapper.IsSuccess)
+                    throw new AggregateException("Request failed", requestWrapper.RequestResponseWrapper.Exception);
 
-                requestWrapper.Value = (this as IUserRankDataProcessingService).ProcessUserRank(requestResult.ResponseContent, rankMode, stringResources);
+                requestWrapper.Value = (this as IUserDataProcessingService).ProcessUserRankFromLadder(requestWrapper.RequestResponseWrapper.ResponseContent, ladder, stringResources);
             }
             catch (Exception e) // request timedout
             {
@@ -246,7 +243,106 @@ namespace AOEMatchDataProvider.Services.Default
             return requestWrapper;
         }
 
-        Match IUserRankDataProcessingService.ProcessMatch(string jsonResponse, AoeNetAPIStringResources apiStringResources)
+        public async Task<RequestWrapper<UserLadderData>> GetUserDataFromLadder(UserGameProfileId userGameProfileId, Ladders ladder, int timeout)
+        {
+            ValidateCacheState();
+
+            RequestWrapper<UserLadderData> requestWrapper = new RequestWrapper<UserLadderData>();
+            Dictionary<string, object> logProperties = new Dictionary<string, object>
+            {
+                { "timeout", timeout },
+                { "game-profile-id", userGameProfileId.ProfileId },
+                { "ladder", ladder.ToString() }
+            };
+
+            RequestState requestState = null;
+
+            try
+            {
+                if (!StorageService.Has("stringResources"))
+                    throw new InvalidOperationException("App resources unaviable while sending request");
+
+                if (string.IsNullOrEmpty(userGameProfileId.ProfileId))
+                    throw new InvalidOperationException("Missing user id");
+
+                var stringResources = StorageService.Get<AoeNetAPIStringResources>("stringResources");
+
+                //preapare query
+                var query = HttpUtility.ParseQueryString(string.Empty);
+
+                query["profile_id"] = HttpUtility.UrlEncode(userGameProfileId.ProfileId);
+                query["leaderboard_id"] = HttpUtility.UrlEncode(((int)ladder).ToString());
+                query["game"] = HttpUtility.UrlEncode("aoe2de"); //only aviable for DE at this moment, https://aoe2.net/#api
+
+                var finallQuery = "https://aoe2.net/api/leaderboard?" + query.ToString();
+                logProperties.Add("query", finallQuery);
+
+                //create cts
+                var cts = new CancellationTokenSource();
+                //create timeout handler for current query
+                requestState = AddTimeoutHandler(cts, timeout);
+
+                requestState.isRunning = true;
+                requestWrapper.RequestUrl = finallQuery;
+                //sumbit query via query cache service
+                requestWrapper.RequestResponseWrapper = await QueryCacheService.GetOrUpdate(
+                    finallQuery,
+                    cts.Token,
+                    DateTime.UtcNow.AddHours(1.5)
+                    );
+
+                if (!requestWrapper.RequestResponseWrapper.IsSuccess)
+                    throw new AggregateException("Request failed", requestWrapper.RequestResponseWrapper.Exception);
+
+                requestWrapper.Value = (this as IUserDataProcessingService).ProcessUserDataFromLadder(requestWrapper.RequestResponseWrapper.ResponseContent, stringResources);
+            }
+            catch (Exception e) // request timedout
+            {
+                if (
+                    e is StackOverflowException ||
+                    e is ThreadAbortException ||
+                    e is AccessViolationException
+                    )
+                {
+                    throw e;
+                }
+
+                string responseContent = "";
+                string responseCode = "";
+
+                if (requestWrapper != null) //to make sure this will not conflict with test cases
+                {
+                    if (requestWrapper.RequestResponseWrapper != null)
+                    {
+                        if (requestWrapper.RequestResponseWrapper.ResponseContent != null)
+                        {
+                            responseContent = requestWrapper.RequestResponseWrapper.ResponseContent;
+                        }
+
+                        if (requestWrapper.RequestResponseWrapper.Response != null) //to make sure this will not conflict with test cases
+                        {
+                            responseCode = requestWrapper.RequestResponseWrapper.Response.StatusCode.ToString();
+                        }
+                    }
+                }
+
+                logProperties.Add("stack", e.StackTrace);
+                logProperties.Add("response-code", responseCode);
+                logProperties.Add("response-raw", responseContent);
+                LogService.Error($"Error while requesting ladder: {e.ToString()}", logProperties);
+
+                requestWrapper.Exception = e;
+            }
+            finally
+            {
+                if (requestState != null)
+                    requestState.isRunning = false; //prevent cancelling operation by timeout handler
+            }
+
+            return requestWrapper;
+        }
+
+        Match IUserDataProcessingService.ProcessMatch(string jsonResponse, AoeNetAPIStringResources apiStringResources)
         {
             var matchResponse = JsonConvert.DeserializeObject<MatchResponse>(
                 jsonResponse
@@ -310,13 +406,13 @@ namespace AOEMatchDataProvider.Services.Default
                     ProfileId = player.profile_id.ToString()
                 };
                 userMatchData.UserGameProfileId = userGameProfileId;
-                userMatchData.UserRankData = new UserRankData();
+                userMatchData.UserRankData = new UserData();
                 userMatchData.MatchType = (MatchType)matchResponse.last_match.leaderboard_id;
 
                 //assign ratings if aviable
                 if (player.rating != null)
                 {
-                    var ratingType = (UserRankMode)matchResponse.last_match.leaderboard_id;
+                    var ratingType = (Ladders)matchResponse.last_match.leaderboard_id;
 
                     var userRank = new UserRank
                     {
@@ -333,9 +429,9 @@ namespace AOEMatchDataProvider.Services.Default
             return match;
         }
 
-        UserRank IUserRankDataProcessingService.ProcessUserRank(string jsonResponse, UserRankMode rankMode, AoeNetAPIStringResources apiStringResources)
+        UserRank IUserDataProcessingService.ProcessUserRankFromLadder(string jsonResponse, Ladders ladder, AoeNetAPIStringResources apiStringResources)
         {
-            var ratingResponse = JsonConvert.DeserializeObject<UserRatingResponse>(jsonResponse);
+            var ratingResponse = JsonConvert.DeserializeObject<UserLadderDataResponse>(jsonResponse);
 
             //response to UserRank model
             var userRank = new UserRank
@@ -345,11 +441,31 @@ namespace AOEMatchDataProvider.Services.Default
                 Ladder = ratingResponse.Leaderboard.First().Rank
             };
 
-            var userRankData = new UserRankData();
+            var userRankData = new UserData();
 
-            userRankData.UserRatings.Add(rankMode, userRank);
+            userRankData.UserRatings.Add(ladder, userRank);
 
             return userRank;
+        }
+
+        UserLadderData IUserDataProcessingService.ProcessUserDataFromLadder(string jsonResponse, AoeNetAPIStringResources apiStringResources)
+        {
+            var leadbord = JsonConvert.DeserializeObject<UserLadderDataResponse>(jsonResponse);//.Leaderboard.First();
+            var ladderData = leadbord.Leaderboard.First();
+
+            return new UserLadderData()
+            {
+                Country = ladderData.Country,
+                PreviousRating = ladderData.PreviousRating,
+                HighestRating = ladderData.HighestRating,
+                Streak = ladderData.Streak,
+                LowestStreak = ladderData.LowestStreak,
+                HighestStreak = ladderData.HighestStreak,
+                Games = ladderData.Games,
+                Wins = ladderData.Wins,
+                Losses = ladderData.Losses,
+                Drops = ladderData.Drops
+            };
         }
 
         public async Task<RequestWrapper<AoeNetAPIStringResources>> GetStringResources()
@@ -360,7 +476,7 @@ namespace AOEMatchDataProvider.Services.Default
             try
             {
                 var response = await RequestService.GetAsync(request, CancellationToken.None);
-                
+
                 requestWrapper.RequestResponseWrapper = response;
 
                 if (!response.IsSuccess)
@@ -382,7 +498,7 @@ namespace AOEMatchDataProvider.Services.Default
                 }
 
                 requestWrapper.Exception = e;
-            } 
+            }
 
             return requestWrapper;
         }

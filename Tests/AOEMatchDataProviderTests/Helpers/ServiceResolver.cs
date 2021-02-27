@@ -39,8 +39,8 @@ namespace AOEMatchDataProviderTests.Helpers
                     )
                 );
 
-            Container.RegisterFactory<IUserRankDataProcessingService>(
-                f => new AOEMatchDataProvider.Services.Default.UserRankService(
+            Container.RegisterFactory<IUserDataProcessingService>(
+                f => new AOEMatchDataProvider.Services.Default.DataService(
                         f.Resolve<ILogService>(),
                         f.Resolve<IStorageService>(),
                         f.Resolve<IQueryCacheService>(),
@@ -133,8 +133,8 @@ namespace AOEMatchDataProviderTests.Helpers
             //        )
             //    );
 
-            Container.RegisterFactory<IUserRankService>(
-                f => new AOEMatchDataProvider.Services.Default.UserRankService(
+            Container.RegisterFactory<IDataService>(
+                f => new AOEMatchDataProvider.Services.Default.DataService(
                         f.Resolve<ILogService>(),
                         f.Resolve<IStorageService>(),
                         f.Resolve<IQueryCacheService>(),
@@ -147,7 +147,7 @@ namespace AOEMatchDataProviderTests.Helpers
                     f.Resolve<ILogService>(),
                     f.Resolve<IStorageService>(),
                     f.Resolve<IQueryCacheService>(),
-                    f.Resolve<IUserRankService>(),
+                    f.Resolve<IDataService>(),
                     f.Resolve<IAppConfigurationService>()
             ));
         }

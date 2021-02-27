@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace AOEMatchDataProvider.Models.UserRankService
 {
     //model generated with: https://json2csharp.com/
-    public class UserRatingResponse
+    public class UserLadderDataResponse
     {
         [JsonProperty("total")]
         public int Total { get; set; }

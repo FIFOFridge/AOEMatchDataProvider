@@ -11,10 +11,11 @@ using System.Threading.Tasks;
 
 namespace AOEMatchDataProvider.Services
 {
-    public interface IUserRankService
+    public interface IDataService
     {
         Task<RequestWrapper<Match>> GetUserMatch(UserId userId, int timeout);
-        Task<RequestWrapper<UserRank>> GetUserRank(UserGameProfileId playerProfileId, UserRankMode rankMode, int timeout); //CancellationToken cancellationToken);
+        Task<RequestWrapper<UserRank>> GetUserRankFromLadder(UserGameProfileId playerProfileId, Ladders rankMode, int timeout); //CancellationToken cancellationToken);
+        Task<RequestWrapper<UserLadderData>> GetUserDataFromLadder(UserGameProfileId playerProfileId, Ladders rankMode, int timeout); //CancellationToken cancellationToken);
 
         Task<RequestWrapper<AoeNetAPIStringResources>> GetStringResources();
     }

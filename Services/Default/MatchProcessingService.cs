@@ -20,7 +20,7 @@ namespace AOEMatchDataProvider.Services.Default
         public ILogService LogService { get; }
         public IStorageService StorageService { get; }
         public IQueryCacheService QueryCacheService { get; }
-        public IUserRankService UserRankProcessingService { get; }
+        public IDataService UserRankProcessingService { get; }
 
         public string LastPulledMatchId { get; protected set; }
         public bool IsLastPulledMatchInProgress { get; protected set; }
@@ -28,7 +28,7 @@ namespace AOEMatchDataProvider.Services.Default
 
         public Match CurrentMatch { get; protected set; }
 
-        public MatchProcessingService(ILogService logService, IStorageService storageService, IQueryCacheService queryCacheService, IUserRankService userRankProcessingService, IAppConfigurationService appConfigurationService)
+        public MatchProcessingService(ILogService logService, IStorageService storageService, IQueryCacheService queryCacheService, IDataService userRankProcessingService, IAppConfigurationService appConfigurationService)
         {
             #region Assign services
             AppConfigurationService = appConfigurationService;

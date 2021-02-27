@@ -59,7 +59,7 @@ namespace AOEMatchDataProvider.ViewModels
         public IAppConfigurationService AppConfigurationService { get; }
         public IAppCriticalExceptionHandlerService AppCriticalExceptionHandlerService { get; }
         public IKeyHookService KeyHookService { get; }
-        public IUserRankService UserRankService { get; }
+        public IDataService UserRankService { get; }
         public IStorageService StorageService { get; }
         public IEventAggregator EventAggregator { get; }
         public IRegionManager RegionManager { get; }
@@ -119,7 +119,7 @@ namespace AOEMatchDataProvider.ViewModels
             IAppConfigurationService appConfigurationService,
             IAppCriticalExceptionHandlerService appCriticalExceptionHandlerService,
             IKeyHookService keyHookService,
-            IUserRankService userRankService,
+            IDataService userRankService,
             IStorageService storageService,
             IEventAggregator eventAggregator,
             IRegionManager regionManager,

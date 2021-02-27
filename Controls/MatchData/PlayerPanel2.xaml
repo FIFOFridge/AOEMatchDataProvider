@@ -45,7 +45,7 @@
         <!-- ConverterParameter can't use "Binding" so, perform conversion in "code behind" and bind to result -->
         <!--<Label Content="{Binding UserMatchData.UserRankData, Converter={StaticResource UserRankModeConverter}, ConverterParameter={Binding PrimaryUserRankModeDisplayProperty}, FallbackValue=Invalid ELO Binding}" Grid.Row="1" FontSize="10" Foreground="#FFE0E0E0" VerticalAlignment="Bottom" HorizontalAlignment="{Binding ContentAlign, FallbackValue=Left}" Margin="10,0,0,0" Height="29" Width="112" Grid.ColumnSpan="4"/>-->
 
-        <!--<cf:CountryFlag Code="GB" Width="48" Height="48" Grid.Column="3" />-->
+        <cf:CountryFlag Code="{Binding LadderData.Country, FallbackValue='AZ'}" Width="36" Height="36" Grid.Column="1" Margin="244,0,0,30" />
         
         <!-- ELO labales -->
         <!-- Primary ELO -->
@@ -97,12 +97,13 @@
             </Frame.Background>
         </Frame>
 
-        
-        
-        <!--<WrapPanel Grid.Row="1" Grid.Column="3" HorizontalAlignment="Right" VerticalAlignment="Bottom">
-            --><!-- Total games --><!--
+        <WrapPanel Grid.Row="1" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+             
+            <!--Total games--> 
             <Label 
-                Content="{Binding PrimaryELO, FallbackValue='T: 10000'}" 
+                Content="{Binding LadderData.Games, FallbackValue='-'}"
+                ContentStringFormat="G: {0}"
+                ToolTip="Total games"
                 FontSize="12" 
                 FontFamily="{StaticResource Texturina}"
                 Foreground="#FFE0E0E0" 
@@ -112,7 +113,21 @@
                 Width="auto" Grid.ColumnSpan="2" 
             />
 
-            --><!-- Divider --><!--
+            <!--Highest rating -->
+            <Label
+                Content="{Binding LadderData.HighestRating, FallbackValue='-'}"
+                ContentStringFormat="H: {0}"
+                ToolTip="Highest rating (ELO)"
+                FontSize="12" 
+                FontFamily="{StaticResource Texturina}"
+                Foreground="#FFE0E0E0" 
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="{Binding ContentAlign, FallbackValue=Left}" 
+                Height="29" 
+                Width="auto" Grid.ColumnSpan="2" 
+            />
+
+            <!--Divider--> 
             <Label 
                 Content="/" 
                 FontSize="12" 
@@ -124,9 +139,11 @@
                 Width="auto" Grid.ColumnSpan="2" 
             />
 
-            --><!-- Streak --><!--
+            <!--Streak--> 
             <Label 
-                Content="{Binding PrimaryELO, FallbackValue='S: +1'}" 
+                Content="{Binding LadderData.Streak, FallbackValue='-'}"
+                ContentStringFormat="S: {0}"
+                ToolTip="Streak"
                 FontSize="12" 
                 FontFamily="{StaticResource Texturina}"
                 Foreground="#FFE0E0E0" 
@@ -135,6 +152,6 @@
                 Height="29" 
                 Width="auto" Grid.ColumnSpan="2" 
             />
-        </WrapPanel>-->
+        </WrapPanel>
     </Grid>
 </UserControl>

@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,32 +8,33 @@ using System.Threading.Tasks;
 
 namespace AOEMatchDataProvider.Models.User
 {
-    public class UserRankData : ISerializableModel
+    public class UserData : BindableBase, ISerializableModel
     {
-        public Dictionary<UserRankMode, UserRank> UserRatings { get; }
+        Dictionary<Ladders, UserRank> userRatings;
+        public Dictionary<Ladders, UserRank> UserRatings { get => userRatings; set => SetProperty(ref userRatings, value); }
 
         [JsonIgnore]
-        public IEnumerable<UserRankMode> AviableRatings
+        public IEnumerable<Ladders> AviableRatings
         {
             get
             {
                 if (UserRatings == null)
-                    return new UserRankMode[0];
+                    return new Ladders[0];
 
                 return UserRatings.Keys.ToArray();
             }
         }
 
-        public UserRankData()
+        public UserData()
         {
-            UserRatings = new Dictionary<UserRankMode, UserRank>();
+            UserRatings = new Dictionary<Ladders, UserRank>();
         }
 
         [JsonConstructor]
-        internal UserRankData(Dictionary<UserRankMode, UserRank> UserRatings)
+        internal UserData(Dictionary<Ladders, UserRank> UserRatings)
         {
             if (UserRatings == null)
-                UserRatings = new Dictionary<UserRankMode, UserRank>();
+                UserRatings = new Dictionary<Ladders, UserRank>();
 
             this.UserRatings = UserRatings;
         }
@@ -44,7 +46,7 @@ namespace AOEMatchDataProvider.Models.User
 
         public object FromJSON(string serialized)
         {
-            return JsonConvert.DeserializeObject<UserRankData>(serialized);
+            return JsonConvert.DeserializeObject<UserData>(serialized);
         }
 
         public override string ToString()

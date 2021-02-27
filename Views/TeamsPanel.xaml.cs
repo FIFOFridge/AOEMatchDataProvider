@@ -47,6 +47,7 @@ namespace AOEMatchDataProvider.Views
 
             EventAggregator.GetEvent<UserCollectionChangedEvent>().Subscribe(HandleUserCollectionChanged);
             EventAggregator.GetEvent<UserRatingChangedEvent>().Subscribe(HandleUserRatingChanged);
+            EventAggregator.GetEvent<UserDataChangedEvent>().Subscribe(HandleUserDataChanged);
 
             Unloaded += TeamsPanel_Unloaded;
         }
@@ -71,7 +72,7 @@ namespace AOEMatchDataProvider.Views
             }
         }
 
-        void HandleUserRatingChanged(Tuple<UserGameProfileId, UserRankData> userRatingData)
+        void HandleUserRatingChanged(Tuple<UserGameProfileId, UserData> userRatingData)
         {
             var id = userRatingData.Item1;
             var rank = userRatingData.Item2;
@@ -120,16 +121,20 @@ namespace AOEMatchDataProvider.Views
                             { "update target", targetData.ToString() }
                         };
 
-                        LogService.Trace($"Merging user {id} rank", logPropertiesBeforeUpdate);
-                        
+#if DEBUG
+                        LogService.Debug($"Updating user data {id} rank", logPropertiesBeforeUpdate);
+#else
+                        LogService.Trace($"Updating user data {id} rank");
+#endif
+
                         try
                         {
                             targetData.MergeUserRank(rank);
 
                             //todo: refactor implementing INotifyPropertyChanged chain in models to auto perform property update
                             targetControl.UpdateUserELO();
-                        } 
-                        catch(Exception e)
+                        }
+                        catch (Exception e)
                         {
                             //rethrow if should be handled ie: if exception is StackOverflowException
                             e.RethrowIfExceptionCantBeHandled();
@@ -144,13 +149,105 @@ namespace AOEMatchDataProvider.Views
                 }
                 else
                 {
-                    var logProperties = new Dictionary<string, object>();
-                    //logProperties.Add("Team 1: ", team1.Children);
-                    //logProperties.Add("Team 2: ", team2.Children);
-                    logProperties.Add("User id to update: ", id);
+                    var logProperties = new Dictionary<string, object>
+                    {
+                        //logProperties.Add("Team 1: ", team1.Children);
+                        //logProperties.Add("Team 2: ", team2.Children);
+                        { "User id to update: ", id }
+                    };
                     LogService.Error("Unable to find game profileId to update");
                 }
             });
+        }
+
+        void HandleUserDataChanged(Tuple<UserGameProfileId, UserLadderData> userData)
+        {
+            var id = userData.Item1;
+            var data = userData.Item2;
+
+            team1.Dispatcher.Invoke(() =>
+            {
+                var control = GetPlayerPanelByUserGameProfileId(id);
+
+                //if found
+                if (control != null)
+                {
+                    var logPropertiesBeforeUpdate = new Dictionary<string, object>
+                    {
+                        { "update target", data.ToString() }
+                    };
+
+#if DEBUG
+                    LogService.Debug($"Updating user data {id} rank", logPropertiesBeforeUpdate);
+#else
+                    LogService.Trace($"Updating user data {id} rank");
+#endif
+                    try
+                    {
+                        //todo: refactor implementing INotifyPropertyChanged chain in models to auto perform property update
+                        control.UpadteUserData(data);
+                    }
+                    catch (Exception e)
+                    {
+                        //rethrow if should be handled ie: if exception is StackOverflowException
+                        e.RethrowIfExceptionCantBeHandled();
+
+                        var logProperties = new Dictionary<string, object>
+                        {
+                            { "id", id },
+                            { "stack", e.StackTrace }
+                        };
+
+                        LogService.Warning($"Unable to update user data: {e.ToString()}", logProperties);
+                    }
+                }
+                else
+                {
+                    var logProperties = new Dictionary<string, object>
+                    {
+                        { "User id to update: ", id }
+                    };
+
+                    LogService.Error("Unable to find game profileId to update");
+                }
+            });
+        }
+
+        PlayerPanel2 GetPlayerPanelByUserGameProfileId(UserGameProfileId userGameProfileId)
+        {
+            PlayerPanel2 panelToFind = null;
+
+            this.Dispatcher.Invoke(() =>
+            {
+                //search for data related with userGameProfileId in fisrt collection (team 1)
+                foreach (var child in team1.Children)
+                {
+                    var control = child as PlayerPanel2;
+
+                    if (control.UserMatchData.UserGameProfileId.ProfileId == userGameProfileId.ProfileId)
+                    {
+                        panelToFind = control;
+                        break;
+                    }
+                }
+
+                //search for data related with userGameProfileId in second collection (team 2)
+                foreach (var child in team2.Children)
+                {
+                    if (panelToFind != null)
+                        break;
+
+                    var control = child as PlayerPanel2;
+
+                    if (control.UserMatchData.UserGameProfileId.ProfileId == userGameProfileId.ProfileId)
+                    {
+                        panelToFind = control;
+                        break;
+                    }
+                }
+            });
+
+            return panelToFind;
         }
 
         public void Add(UserMatchData userMatchData)
@@ -176,7 +273,7 @@ namespace AOEMatchDataProvider.Views
                 playerPanel.ContentAlign = PlayerPanelContentAlignMode.Left;
                 team1.Children.Add(playerPanel);
             }
-            else if(userMatchData.Team == 2)
+            else if (userMatchData.Team == 2)
             {
                 playerPanel.ContentAlign = PlayerPanelContentAlignMode.Right;
                 team2.Children.Add(playerPanel);
@@ -194,37 +291,37 @@ namespace AOEMatchDataProvider.Views
         {
             //get primary and/or secondary types of elo to display for each user
             internal static Tuple<
-                UserRankMode?, 
-                UserRankMode?
+                Ladders?,
+                Ladders?
                 > GetTargetEloTypes(MatchType matchType)
             {
-                UserRankMode? primary;
-                UserRankMode? secondary;
+                Ladders? primary;
+                Ladders? secondary;
 
                 switch (matchType)
                 {
                     case MatchType.RandomMap:
-                        primary = UserRankMode.RandomMap;
+                        primary = Ladders.RandomMap;
                         secondary = null;
                         break;
 
                     case MatchType.TeamRandomMap:
-                        primary = UserRankMode.RandomMap;
-                        secondary = UserRankMode.TeamRandomMap;
+                        primary = Ladders.RandomMap;
+                        secondary = Ladders.TeamRandomMap;
                         break;
 
                     case MatchType.Deathmatch:
-                        primary = UserRankMode.Deathmatch;
+                        primary = Ladders.Deathmatch;
                         secondary = null;
                         break;
 
                     case MatchType.TeamdeathMatch:
-                        primary = UserRankMode.Deathmatch;
-                        secondary = UserRankMode.TeamdeathMatch;
+                        primary = Ladders.Deathmatch;
+                        secondary = Ladders.TeamdeathMatch;
                         break;
 
                     case MatchType.Unranked:
-                        primary = UserRankMode.RandomMap;
+                        primary = Ladders.RandomMap;
                         secondary = null;
                         break;
 

@@ -156,7 +156,7 @@ namespace AOEMatchDataProvider
             containerRegistry.RegisterSingleton<IRequestService, RequestService>();
 
             containerRegistry.Register<IMatchProcessingService, MatchProcessingService>();
-            containerRegistry.Register<IUserRankService, UserRankService>();
+            containerRegistry.Register<IDataService, DataService>();
             #endregion
 
             #region Navigation

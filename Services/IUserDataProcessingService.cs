@@ -10,9 +10,10 @@ using System.Threading.Tasks;
 namespace AOEMatchDataProvider.Services
 {
     //separated part of IUserRankService for testing
-    internal interface IUserRankDataProcessingService
+    internal interface IUserDataProcessingService
     {
         Match ProcessMatch(string jsonResponse, AoeNetAPIStringResources apiStringResources);
-        UserRank ProcessUserRank(string jsonResponse, UserRankMode rankMode, AoeNetAPIStringResources apiStringResources);
+        UserRank ProcessUserRankFromLadder(string jsonResponse, Ladders ladder, AoeNetAPIStringResources apiStringResources);
+        UserLadderData ProcessUserDataFromLadder(string jsonResponse, AoeNetAPIStringResources apiStringResources);
     }
 }

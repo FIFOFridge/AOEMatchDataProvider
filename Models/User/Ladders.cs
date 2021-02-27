@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AOEMatchDataProvider.Models.User
 {
-    public enum UserRankMode
+    public enum Ladders
     {
         Unranked = 0,
         Deathmatch = 1,

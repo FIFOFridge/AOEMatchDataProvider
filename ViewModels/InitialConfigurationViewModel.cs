@@ -102,14 +102,14 @@ namespace AOEMatchDataProvider.ViewModels
         IEventAggregator EventAggregator { get; }
         IRegionManager RegionManager { get; }
         IStorageService StorageService { get; }
-        IUserRankService UserRankService { get; }
+        IDataService UserRankService { get; }
         ILogService LogService { get; }
 
         public InitialConfigurationViewModel(
             IEventAggregator eventAggregator,
             IRegionManager regionManager,
             IStorageService storageService,
-            IUserRankService userRankService,
+            IDataService userRankService,
             ILogService logService,
             IApplicationCommands applicationCommands)
         {

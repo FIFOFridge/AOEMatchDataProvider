@@ -10,7 +10,7 @@ namespace AOEMatchDataProvider.Extensions
 {
     public static class UserExtensions
     {
-        public static UserRankData GetUserRankData(this IEnumerable<UserMatchData> userMatchDatas, UserGameProfileId userGameProfileId)
+        public static UserData GetUserRankData(this IEnumerable<UserMatchData> userMatchDatas, UserGameProfileId userGameProfileId)
         {
             var userMatchData = userMatchDatas.First
                 (umd => umd.UserGameProfileId.ProfileId == userGameProfileId.ProfileId);
@@ -24,7 +24,7 @@ namespace AOEMatchDataProvider.Extensions
             return userMatchData.UserRankData;
         }
 
-        public static UserRank GetUserRank(this IEnumerable<UserMatchData> userMatchDatas, UserGameProfileId userGameProfileId, UserRankMode userRankMode)
+        public static UserRank GetUserRank(this IEnumerable<UserMatchData> userMatchDatas, UserGameProfileId userGameProfileId, Ladders userRankMode)
         {
             var userMatchData = userMatchDatas.First
                 (umd => umd.UserGameProfileId.ProfileId == userGameProfileId.ProfileId);
@@ -38,12 +38,12 @@ namespace AOEMatchDataProvider.Extensions
             return userMatchData.UserRankData.UserRatings[userRankMode];
         }
 
-        public static void MergeUserRank(this UserMatchData userMatchData, UserRankData userRankData)
+        public static void MergeUserRank(this UserMatchData userMatchData, UserData userRankData)
         {
             //iterate over all rank types
-            foreach(var rank in Enum.GetValues(typeof(UserRankMode)))
+            foreach(var rank in Enum.GetValues(typeof(Ladders)))
             {
-                var rankType = (UserRankMode)rank;
+                var rankType = (Ladders)rank;
 
                 //check what ranting type we can expect to be update
                 if(userRankData.AviableRatings.Contains(rankType))

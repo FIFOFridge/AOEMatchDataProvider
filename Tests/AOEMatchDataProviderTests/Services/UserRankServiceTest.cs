@@ -41,7 +41,7 @@ namespace AOEMatchDataProviderTests.Services
         public void UsersDataProcessingFromMatchData()
         {
             var responseRaw = TestingResourcesHelper.GetApiResoponses("MatchDetailsValid.json");
-            var processingService = ServiceResolver.GetService<IUserRankDataProcessingService>();
+            var processingService = ServiceResolver.GetService<IUserDataProcessingService>();
 
             var stringResources = JsonConvert.DeserializeObject<AoeNetAPIStringResources>(TestingResourcesHelper.GetApiResoponses("ApiStringResources.json"));
 
@@ -51,13 +51,13 @@ namespace AOEMatchDataProviderTests.Services
 
             Assert.AreEqual(
                 match.Users.First() //matchDetailsValid.json --> players[0]
-                    .UserRankData.UserRatings[UserRankMode.RandomMap].Elo,
+                    .UserRankData.UserRatings[Ladders.RandomMap].Elo,
                 2255,
                 "Player[0] ELO from match is incorrect");
 
             Assert.AreEqual(
                 match.Users.Last() //matchDetailsValid.json --> players[1]
-                    .UserRankData.UserRatings[UserRankMode.RandomMap].Elo,
+                    .UserRankData.UserRatings[Ladders.RandomMap].Elo,
                 2292,
                 "Player[1] ELO from match is incorrect");
 
@@ -88,7 +88,7 @@ namespace AOEMatchDataProviderTests.Services
         public void IncompleteUsersDataProcessingFromMatchData()
         {
             var responseRaw = TestingResourcesHelper.GetApiResoponses("MatchDetailsValid.json");
-            var processingService = ServiceResolver.GetService<IUserRankDataProcessingService>();
+            var processingService = ServiceResolver.GetService<IUserDataProcessingService>();
 
             var stringResources = JsonConvert.DeserializeObject<AoeNetAPIStringResources>(TestingResourcesHelper.GetApiResoponses("ApiStringResources.json"));
 
@@ -119,19 +119,19 @@ namespace AOEMatchDataProviderTests.Services
         [TestMethod]
         public void UserDataByLadderRequest()
         {
-            var processingService = ServiceResolver.GetService<IUserRankDataProcessingService>();
+            var processingService = ServiceResolver.GetService<IUserDataProcessingService>();
 
             var stringResources = JsonConvert.DeserializeObject<AoeNetAPIStringResources>(TestingResourcesHelper.GetApiResoponses("ApiStringResources.json"));
 
-            var ladderRandomMap = processingService.ProcessUserRank(
+            var ladderRandomMap = processingService.ProcessUserRankFromLadder(
                     TestingResourcesHelper.GetApiResoponses("LeadboardRandomMapValid.json"),
-                    UserRankMode.RandomMap,
+                    Ladders.RandomMap,
                     stringResources
                 );
 
-            var ladderTeamRandomMap = processingService.ProcessUserRank(
+            var ladderTeamRandomMap = processingService.ProcessUserRankFromLadder(
                     TestingResourcesHelper.GetApiResoponses("LeadbordTeamRandomMapValid.json"),
-                    UserRankMode.TeamRandomMap,
+                    Ladders.TeamRandomMap,
                     stringResources
                 );
 
@@ -143,7 +143,7 @@ namespace AOEMatchDataProviderTests.Services
         [TestMethod]
         public void MatchState()
         {
-            var processingService = ServiceResolver.GetService<IUserRankDataProcessingService>();
+            var processingService = ServiceResolver.GetService<IUserDataProcessingService>();
 
             var stringResources = JsonConvert.DeserializeObject<AoeNetAPIStringResources>(TestingResourcesHelper.GetApiResoponses("ApiStringResources.json"));
 

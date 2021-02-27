@@ -3,6 +3,7 @@ using AOEMatchDataProvider.Controls.MatchData;
 using AOEMatchDataProvider.Events;
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Events.Views.TeamsPanel;
+using AOEMatchDataProvider.Extensions.ExceptionHandling;
 using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Models;
 using AOEMatchDataProvider.Models.Match;
@@ -99,7 +100,7 @@ namespace AOEMatchDataProvider.ViewModels
         IApplicationCommands ApplicationCommands { get; }
         IAppConfigurationService AppConfigurationService { get; }
         IEventAggregator EventAggregator { get; }
-        IUserRankService UserRankService { get; }
+        IDataService UserRankService { get; }
         IKeyHookService KeyHookService { get; }
         ILogService LogService { get; }
         IStorageService StorageService { get; }
@@ -111,7 +112,7 @@ namespace AOEMatchDataProvider.ViewModels
             IApplicationCommands applicationCommands,
             IAppConfigurationService appConfigurationService,
             IEventAggregator eventAggregator,
-            IUserRankService userRankService,
+            IDataService userRankService,
             IKeyHookService keyHookService,
             ILogService logService,
             IStorageService storageService)
@@ -146,8 +147,8 @@ namespace AOEMatchDataProvider.ViewModels
                 );
         }
 
-        //Request more detailed user rank data if needed, only in case of team games, when team game elo is not not unreliable
-        //so we are going to request 1v1 elo for specified game type
+        #region User data updates
+        //request general users data
         async Task UpdateUsersData()
         {
             var logProperties = new Dictionary<string, object>
@@ -158,8 +159,40 @@ namespace AOEMatchDataProvider.ViewModels
             LogService.Debug("Starting user data update tasks", logProperties);
 
             List<Task> updateTasks = new List<Task>();
+            int requestTimeout = AppConfigurationService.DefaultRequestTimeout;
 
-            UserRankMode userRankModeToUpadte = UserRankMode.RandomMap;
+            foreach (var user in UserMatchData)
+            {
+                //update primary/secondary ELO
+                LogService.Trace($"Starting user data update: for user id: {user.UserGameProfileId} user data ladder source: {Ladders.RandomMap}, operation timeout: {requestTimeout}");
+
+                var userDataUpdateTask = UserRankService.GetUserDataFromLadder(user.UserGameProfileId, Ladders.RandomMap, requestTimeout);
+
+                updateTasks.Add(
+                    userDataUpdateTask.ContinueWith(
+                            //t => HandleUserRankUpdated(userDataUpdateTask, Ladders.RandomMap, user.UserGameProfileId)
+                            t => HandleUserDataUpadted(userDataUpdateTask, user.UserGameProfileId)
+                        )
+                    );
+            }
+
+            await Task.WhenAll(updateTasks);
+
+            LogService.Trace("All data updates has been completed", logProperties);
+        }
+
+        async Task UpdateUsersRank()
+        {
+            var logProperties = new Dictionary<string, object>
+            {
+                { "threadId", Thread.CurrentThread }
+            };
+
+            LogService.Debug("Starting user rank update tasks", logProperties);
+
+            List<Task> updateTasks = new List<Task>();
+
+            Ladders userRankModeToUpadte = Ladders.RandomMap;
 
             switch (matchType)
             {
@@ -173,15 +206,15 @@ namespace AOEMatchDataProvider.ViewModels
 
                 //update 1v1 ratings for team matches
                 case MatchType.TeamdeathMatch:
-                    userRankModeToUpadte = UserRankMode.Deathmatch;
+                    userRankModeToUpadte = Ladders.Deathmatch;
                     break;
                 case MatchType.TeamRandomMap:
-                    userRankModeToUpadte = UserRankMode.RandomMap;
+                    userRankModeToUpadte = Ladders.RandomMap;
                     break;
 
                 //update 1v1 
                 case MatchType.Unranked:
-                    userRankModeToUpadte = UserRankMode.RandomMap;
+                    userRankModeToUpadte = Ladders.RandomMap;
                     break;
 
                 //if match is custom game (any unraked, includes all "quick match" types) then use Random map rating (most reliable type across rating types)
@@ -197,21 +230,21 @@ namespace AOEMatchDataProvider.ViewModels
                 //update primary/secondary ELO
                 LogService.Info($"Starting user ELO update: for user id: {user.UserGameProfileId} user rank mode to update: {userRankModeToUpadte}, operation timeout: {userELOUpdateTimeout}");
 
-                var userDataUpdateTask = UserRankService.GetUserRank(user.UserGameProfileId, userRankModeToUpadte, userELOUpdateTimeout);
+                var userDataUpdateTask = UserRankService.GetUserRankFromLadder(user.UserGameProfileId, userRankModeToUpadte, userELOUpdateTimeout);
 
                 updateTasks.Add(
                     userDataUpdateTask.ContinueWith(
-                            t => HandleUserDataUpdated(userDataUpdateTask, userRankModeToUpadte, user.UserGameProfileId)
+                            t => HandleUserRankUpdated(userDataUpdateTask, userRankModeToUpadte, user.UserGameProfileId)
                         )
                     );
             }
 
             await Task.WhenAll(updateTasks);
 
-            LogService.Trace("All updates has been completed", logProperties);
+            LogService.Trace("All rank updates has been completed", logProperties);
         }
 
-        void HandleUserDataUpdated(Task<RequestWrapper<UserRank>> updateTask, UserRankMode userRankMode, UserGameProfileId userGameProfileId)
+        void HandleUserRankUpdated(Task<RequestWrapper<UserRank>> updateTask, Ladders userRankMode, UserGameProfileId userGameProfileId)
         {
             Dictionary<string, object> logProperties = null;
 
@@ -253,12 +286,59 @@ namespace AOEMatchDataProvider.ViewModels
                 return;
             }
 
-            UserRankData userRankData = new UserRankData();
+            UserData userRankData = new UserData();
             userRankData.UserRatings.Add(userRankMode, updateTask.Result.Value);
 
             //publish rating change event
             EventAggregator.GetEvent<UserRatingChangedEvent>().Publish(Tuple.Create(userGameProfileId, userRankData));
         }
+
+        void HandleUserDataUpadted(Task<RequestWrapper<UserLadderData>> updateTask, UserGameProfileId userGameProfileId)
+        {
+            Dictionary<string, object> logProperties = null;
+
+            //unahndled exception inside task scope
+            if (updateTask.IsFaulted || updateTask.IsCanceled)
+            {
+                if (updateTask.Exception != null)
+                {
+                    logProperties = new Dictionary<string, object>
+                    {
+                        { "exception", updateTask.Exception.ToString() },
+                        { "stack", updateTask.Exception.StackTrace }
+                    };
+                }
+
+                LogService.Error("HandleUserDataUpdated: Internal task processing exception", logProperties ?? null);
+                return;
+            }
+
+            //handled exception
+            if (!updateTask.Result.IsSuccess)
+            {
+                if (updateTask.Exception != null)
+                {
+                    logProperties = new Dictionary<string, object>
+                    {
+                        { "exception", updateTask.Exception.ToString() },
+                        { "stack", updateTask.Exception.StackTrace }
+                    };
+                }
+
+                LogService.Warning("HandleUserDataUpdated: Unable to complete task successfully", logProperties);
+                return;
+            }
+
+            if (updateTask.Exception != null)
+            {
+                LogService.Warning("Error while updating user rating: ");
+                return;
+            }
+
+            //publish data changed event
+            EventAggregator.GetEvent<UserDataChangedEvent>().Publish(Tuple.Create(userGameProfileId, updateTask.Result.Value));
+        }
+        #endregion
 
         private void UpdateTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
@@ -286,7 +366,22 @@ namespace AOEMatchDataProvider.ViewModels
             NavigationHelper.TryNavigateTo("QuickActionRegion", "BottomButtonsPanel", null, out _);
 
             EventAggregator.GetEvent<UserCollectionChangedEvent>().Publish(userMatchData);
-            Task.Run(UpdateUsersData);
+
+            //update user data & rank
+            var task = Task.Run(async () =>
+            {
+                try
+                {
+                    await UpdateUsersData();
+                    await UpdateUsersRank();
+                } 
+                catch(Exception e)
+                {
+                    e.RethrowIfExceptionCantBeHandled();
+
+                    LogService.Error($"Error occured while updating users information {e.ToString()}");
+                }
+            });
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

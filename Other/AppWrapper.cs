@@ -52,7 +52,7 @@ namespace AOEMatchDataProvider.Other
             containerRegistry.RegisterSingleton<IStorageService, StorageService>();
             containerRegistry.RegisterSingleton<IQueryCacheService, QueryCacheService>();
 
-            containerRegistry.Register<IUserRankService, UserRankService>();
+            containerRegistry.Register<IDataService, DataService>();
             #endregion
         }
 
