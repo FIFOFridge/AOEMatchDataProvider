@@ -7,8 +7,9 @@
     <system:String x:Key="BackgroundColorString">#FF1D1A27</system:String>
     
     <Color x:Key="ForegroundColor">#FFc7bfe3</Color>
-    
+
     <Color x:Key="BackgroundColor">#FF1D1A27</Color>
+    <Color x:Key="BackgroundDarkColor">#FF17151f</Color>
     <Color x:Key="BackgroundAccentColor">#312a47</Color>
     
     <Color x:Key="FrameGradientColorEnd">#3FFFFFFF</Color>
@@ -21,5 +22,6 @@
     <SolidColorBrush x:Key="ForegroundBrush" Color="{DynamicResource ForegroundColor}"/>
 
     <SolidColorBrush x:Key="BackgroundBrush" Color="{DynamicResource BackgroundColor}"/>
+    <SolidColorBrush x:Key="BackgroundDarkBrush" Color="{DynamicResource BackgroundDarkColor}"/>
     <SolidColorBrush x:Key="BackgroundAccentBrush" Color="{DynamicResource BackgroundAccentColor}"/>
 </ResourceDictionary>

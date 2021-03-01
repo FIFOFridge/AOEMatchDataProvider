@@ -30,8 +30,8 @@
         <ResourceDictionary>
             <!-- Dictionaries -->
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/Resources/Common/Controls.xaml"></ResourceDictionary>
-                <ResourceDictionary Source="/Resources/Common/TransparentImageButton.xaml"></ResourceDictionary>
+                <!--<ResourceDictionary Source="/Resources/Common/Controls.xaml"></ResourceDictionary>-->
+                <ResourceDictionary Source="/Resources/Styles/TransparentImageButton.xaml"></ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
             
             <!-- Converters -->

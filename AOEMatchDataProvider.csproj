@@ -99,6 +99,8 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <WarningLevel>3</WarningLevel>
+	<XamlDebuggingInformation>True</XamlDebuggingInformation>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
@@ -333,23 +335,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\Common\AutoPopupToggleButton.xaml">
+    <Page Include="Resources\Styles\DefaultsOverrride.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Resources\Common\Controls.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Common\TransparentImageButton.xaml">
+    <Page Include="Resources\Styles\TransparentImageButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Dictionaries\ViewCategories\BottomPanel\Sizes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\Dictionaries\ViewCategories\Info\Sizes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -442,7 +436,9 @@
     <Folder Include="Helpers\Parsers\" />
     <Folder Include="Helpers\Request\" />
     <Folder Include="Mvvm\" />
+    <Folder Include="Resources\Common\" />
     <Folder Include="Resources\Dictionaries\ViewCategories\Configuration\" />
+    <Folder Include="Resources\Dictionaries\ViewCategories\Info\" />
     <Folder Include="Resources\Dictionaries\ViewCategories\TeamsPanel\" />
   </ItemGroup>
   <ItemGroup>
@@ -472,4 +468,12 @@
     </PropertyGroup>
     <Error Condition="!Exists('packages\squirrel.windows.2.0.1\build\squirrel.windows.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\squirrel.windows.2.0.1\build\squirrel.windows.props'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

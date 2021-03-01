@@ -7,7 +7,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <!-- controls changed by default -->
-                <ResourceDictionary Source="/Resources/Common/Controls.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/DefaultsOverrride.xaml"/>
 
                 <!-- todo: add more themes and implement theme selector -->
                 <ResourceDictionary Source="/Resources/Themes/Dark.xaml"/>

@@ -36,6 +36,11 @@ BundledInstaller.exe
 .patch-for-release.ps1
 .patch-for-staging.ps1
 
+.assets/.github/manualSetup.md
+.clear-release.ps1
+
+Release-*.zip
+
 #ResourcesGenerationScripts
 ResourcesGenerationScripts/
 
