@@ -1,6 +1,6 @@
 # Table of Contents:
 ![Build status](https://img.shields.io/appveyor/build/FIFOFridge/AOEMatchDataProvider/main?label=build%3A%20main)
-![Tests](https://img.shields.io/appveyor/tests/FIFOFridge/AOEMatchDataProvider?label=tests%3A%20main)
+![Tests](https://img.shields.io/appveyor/tests/FIFOFridge/AOEMatchDataProvider/main)
 ![Build branch: Stable](https://img.shields.io/appveyor/build/FIFOFridge/aoematchdataprovider/stable?label=build%3A%20stable)
 ![License shield](https://img.shields.io/github/license/FIFOFridge/AOEMatchDataProvider)
 
@@ -28,17 +28,17 @@
 # App overview:
 ## Description 
 
-Application was made to simply track CURRENT MATCH data, like:
+Application was made to simply track current match data::
 - [x] Players names
 - [x] Complete player ELO(s) (app will find 1v1 rating for each player during Team Game)
 - [x] Players colours
+- [x] Player stats like streak(s) and/or country
 - [ ] Game server location
-- [ ] Other player stats like streak(s) and/or country
 
 Application is designed to behave like overlay so you can pop it up and hide at any moment, without colliding with your actual game, for more details check: [Hotkeys](#hotkeys)
 
-##### Image: In game teams view
-![in game teamsView image](https://raw.githubusercontent.com/FIFOFridge/AOEMatchDataProvider/main/.assets/.github/teamspanel_crop.png)
+##### Image: In game teams view (beta-0.14)
+![in game teamsView image](https://raw.githubusercontent.com/FIFOFridge/AOEMatchDataProvider/main/.assets/.github/teamPanel_new.png)
 
 ##### Image: In game notification window
 ![in game notification window image](https://raw.githubusercontent.com/FIFOFridge/AOEMatchDataProvider/main/.assets/.github/notification_crop.png)
