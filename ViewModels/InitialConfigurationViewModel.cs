@@ -104,6 +104,7 @@ namespace AOEMatchDataProvider.ViewModels
         IStorageService StorageService { get; }
         IDataService UserRankService { get; }
         ILogService LogService { get; }
+        //IUserIdDetectionService UserIdDetectionService { get; }
 
         public InitialConfigurationViewModel(
             IEventAggregator eventAggregator,
@@ -111,7 +112,9 @@ namespace AOEMatchDataProvider.ViewModels
             IStorageService storageService,
             IDataService userRankService,
             ILogService logService,
-            IApplicationCommands applicationCommands)
+            IApplicationCommands applicationCommands//, 
+            //IUserIdDetectionService userIdDetectionService
+            )
         {
             EventAggregator = eventAggregator;
             RegionManager = regionManager;
@@ -119,6 +122,7 @@ namespace AOEMatchDataProvider.ViewModels
             UserRankService = userRankService;
             LogService = logService;
             ApplicationCommands = applicationCommands;
+            //UserIdDetectionService = userIdDetectionService;
 
             EventAggregator.GetEvent<UserIdChangedEvent>().Subscribe(UserIdChangedHandler);
 
@@ -129,7 +133,14 @@ namespace AOEMatchDataProvider.ViewModels
 
             detectedUserIdMode = UserIdMode.Invalid;
 
+            //TryDetectUserId(); //detection fully moved into InitialConfiguration
             UpdateCanContinue();
+
+            //if auto detected user id then instant navigate to appStateInfo
+            //if (detectedUserIdMode == UserIdMode.SteamId64)
+            //{
+            //    ContinueClicked(); //trigger confirmation
+            //}
         }
 
         public void OnNavigatedTo(NavigationContext navigationContext)
@@ -148,10 +159,23 @@ namespace AOEMatchDataProvider.ViewModels
 
         }
 
+        //void TryDetectUserId()
+        //{
+        //    var detectionResult = UserIdDetectionService.DetectUserId();
+
+        //    //leave initial configuration screen if detection result isn't a single steam64 id format
+        //    if (detectionResult.OperationResult != Models.UserIdDetectionService.DetectionOperationResult.UserSteamIdDetected)
+        //        return;
+
+        //    //handle auto detected data
+        //    detectedUserIdMode = UserIdMode.SteamId64;
+        //    userId = detectionResult.UserId;
+        //}
+
         void ContinueClicked()
         {
             if (!CanContinue)
-                throw new InvalidOperationException("what the hell?");
+                throw new InvalidOperationException("Invalid operation");
 
             var settings = StorageService.Get<Models.Settings.AppSettings>("settings");
 
@@ -173,6 +197,8 @@ namespace AOEMatchDataProvider.ViewModels
 
             //    settings.UserId.GameProfileId = userId;
             //}
+
+            //FIX: handle invalid id passed into form!!!
 
             var navigationParameters = new NavigationParameters
             {

@@ -2,6 +2,7 @@
 using AOEMatchDataProvider.Events.Views;
 using AOEMatchDataProvider.Helpers.Navigation;
 using AOEMatchDataProvider.Models.Settings;
+using AOEMatchDataProvider.Models.User;
 using AOEMatchDataProvider.Other;
 using AOEMatchDataProvider.Services;
 using AOEMatchDataProvider.Services.Default;
@@ -89,12 +90,14 @@ namespace AOEMatchDataProvider
             storage.Flush();
         }
 
+        //todo: refactor name to: InitialCheckAndNavigate()
         internal static void InitialNavigation()
         {
             var storage = Resolve<IStorageService>();
             var eventAggregator = Resolve<IEventAggregator>();
             var regionManager = App.Resolve<IRegionManager>();
             var settings = storage.Get<Models.Settings.AppSettings>("settings");
+            var userIdDetectionService = Resolve<IUserIdDetectionService>();
 
             //make sure string resources are valid
             if (!storage.Has("stringResources"))
@@ -112,9 +115,32 @@ namespace AOEMatchDataProvider
                 )
             )
             {
-                if (!NavigationHelper.TryNavigateTo("MainRegion", "InitialConfiguration", null, out Exception exception))
-                    HandleCriticalError(exception);
+                //todo: refactor: move this and initial configuration id setup into helper class
+                var detectionResult = userIdDetectionService.DetectUserId();
 
+                //navigate in any matching profile wasn't found or multiple profiles was found
+                if (detectionResult.OperationResult != Models.UserIdDetectionService.DetectionOperationResult.UserSteamIdDetected)
+                {
+                    if (!NavigationHelper.TryNavigateTo("MainRegion", "InitialConfiguration", null, out Exception exception))
+                    {
+                        HandleCriticalError(exception);
+                    }
+
+                    return;
+                }
+
+                //assert userId isn't null or empty
+                //todo: refactor: change lenght validation to regex
+                if (detectionResult.UserId == null || detectionResult.UserId.Length < 1)
+                    throw new InvalidOperationException("Invalid userId");
+
+                //valid only for steam id
+                settings.UserId = new UserId
+                {
+                    SteamId = detectionResult.UserId
+                };
+
+                InitialNavigation(); //recursion call
                 return;
             }
             else
@@ -157,6 +183,7 @@ namespace AOEMatchDataProvider
 
             containerRegistry.Register<IMatchProcessingService, MatchProcessingService>();
             containerRegistry.Register<IDataService, DataService>();
+            containerRegistry.Register<IUserIdDetectionService, UserIdDetectionService>();
             #endregion
 
             #region Navigation

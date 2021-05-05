@@ -235,6 +235,8 @@
     <Compile Include="Models\QueryCacheService\QueriesCache.cs" />
     <Compile Include="Models\RequestService\RequestResponseWrapper.cs" />
     <Compile Include="Models\RequestService\RequestWrapper.cs" />
+    <Compile Include="Models\UserIdDetectionService\DetectionResult.cs" />
+    <Compile Include="Models\UserIdDetectionService\DetectionOperationResult.cs" />
     <Compile Include="Models\User\UserColors.cs" />
     <Compile Include="Models\Settings\AppSettings.cs" />
     <Compile Include="Models\User\UserGameProfileId.cs" />
@@ -257,6 +259,7 @@
     <Compile Include="Services\Default\AppCriticalExceptionHandlerService.cs" />
     <Compile Include="Services\Default\MatchProcessingService.cs" />
     <Compile Include="Services\Default\RequestService.cs" />
+    <Compile Include="Services\Default\UserIdDetectionService.cs" />
     <Compile Include="Services\IMatchProcessingService.cs" />
     <Compile Include="Services\IRequestService.cs" />
     <Compile Include="Services\IUserDataProcessingService.cs" />
@@ -273,6 +276,7 @@
     <Compile Include="Services\IQueryCacheService.cs" />
     <Compile Include="Services\IStorageService.cs" />
     <Compile Include="Services\IDataService.cs" />
+    <Compile Include="Services\IUserIdDetectionService.cs" />
     <Compile Include="ViewModels\AppSettingsViewModel.cs" />
     <Compile Include="ViewModels\AppInactivityViewModel.cs" />
     <Compile Include="ViewModels\AppStateInfoViewModel.cs" />
